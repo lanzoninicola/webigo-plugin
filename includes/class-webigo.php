@@ -238,6 +238,13 @@ class Webigo
 		// for each modules I let available the related actions
 
 		foreach ($module_registered as $module_name => $module_obj_instance) {
+
+			$module_hooks = $module_obj_instance->hooks->hooks();
+
+			foreach ($module_hooks as $hook => $callback) {
+				$this->loader->add_action($hook, 'Webigo_' . $module_name, $callback);
+			}
+
 		}
 	}
 

@@ -116,7 +116,7 @@ class Webigo_Module_Script
 
         $this->action_name = 'wp_enqueue_scripts';
         $this->init_module_info($script_data['module']);
-        $this->build_js_file_root_path();
+        $this->build_public_js_file_root_path();
         $this->add($script_data);
     }
 
@@ -140,7 +140,7 @@ class Webigo_Module_Script
 
         $this->action_name = 'admin_enqueue_scripts';
         $this->init_module_info($script_data['module']);
-        $this->build_js_file_root_path();
+        $this->build_admin_js_file_root_path();
         $this->add($script_data);
     }
 
@@ -181,14 +181,27 @@ class Webigo_Module_Script
     }
 
      /**
-     *  Internal utility function to build the full css path
+     *  Internal utility function to build the full js path of public facing site
      *  
      *  @return void
      */
-    public function build_js_file_root_path()
+    public function build_public_js_file_root_path()
     {
 
         $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/js/';
+
+        $this->script_root_path = $path;
+    }
+
+    /**
+     *  Internal utility function to build the full js path of admin side
+     *  
+     *  @return void
+     */
+    public function build_admin_js_file_root_path()
+    {
+
+        $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/admin/js/';
 
         $this->script_root_path = $path;
     }

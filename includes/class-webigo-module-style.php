@@ -108,7 +108,7 @@ class Webigo_Module_Style
 
         $this->action_name = 'wp_enqueue_scripts';
         $this->init_module_info($style_data['module']);
-        $this->build_css_file_root_path();
+        $this->build_public_css_file_root_path();
         $this->add($style_data);
     }
 
@@ -131,7 +131,7 @@ class Webigo_Module_Style
 
         $this->action_name = 'admin_enqueue_scripts';
         $this->init_module_info($style_data['module']);
-        $this->build_css_file_root_path();
+        $this->build_admin_css_file_root_path();
         $this->add($style_data);
     }
 
@@ -170,14 +170,27 @@ class Webigo_Module_Style
     }
 
      /**
-     *  Internal utility function to build the full css path
+     *  Internal utility function to build the full css path for the public facing site
      *  
      *  @return void
      */
-    public function build_css_file_root_path()
+    public function build_public_css_file_root_path()
     {
 
         $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/css/';
+
+        $this->stylesheet_root_path = $path;
+    }
+
+    /**
+     *  Internal utility function to build the full css path for the public facing site
+     *  
+     *  @return void
+     */
+    public function build_admin_css_file_root_path()
+    {
+
+        $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/admin/css/';
 
         $this->stylesheet_root_path = $path;
     }
