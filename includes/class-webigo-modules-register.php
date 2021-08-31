@@ -83,6 +83,8 @@ class Webigo_Modules_Register
     public function load()
     {
 
+        // TODO: Here where the single module dependencies might be developed
+
         foreach ($this->modules as $module) {
 
             require_once $module->bootstrap_class_file();

@@ -39,7 +39,14 @@ define( 'PLUGIN_NAME', 'webigo' );
  */
 define( 'WEBIGO_VERSION', '1.0.0' );
 
+
+/**
+ * 	The path of plugin
+ * 
+ * 	...\wp-content\plugins\webigo
+ */
 define( 'WEBIGO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+
 
 /**
  * The code that runs during plugin activation.
