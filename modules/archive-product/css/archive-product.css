@@ -1,3 +1,446 @@
-body {
-  background-color: red;
+.webigo-archive-product-container {
+  background-color: var(--hzbi-whitesmoke);
+}
+
+.webigo-archive-product-container ul li {
+  list-style-type: none;
+}
+
+.webigo-archive-product-wrapper {
+  padding: 0 0.5em 0 0.5em;
+}
+
+.webigo-category-card {
+  min-height: 200px;
+  border-radius: 20px;
+  background: var(--hzbi-light-grey);
+  box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px var(--hzbi-white);
+  margin-bottom: 3em;
+  padding-bottom: 1em;
+}
+
+.arrow-toggle-expand-collapse {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0px,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrow-toggle-expand-collapse[data-visualization="hidden"] {
+  display: none;
+}
+
+.arrow-toggle-expand-collapse[data-visualization="shown"] {
+}
+
+.expanded {
+  animation: expand 1s ease;
+  height: auto;
+}
+
+@keyframes expand {
+  0% {
+    opacity: 0.9;
+  }
+
+  100% {
+    height: auto;
+    /*transform: scaleY(1);*/
+    opacity: 1;
+  }
+}
+
+.collapsed {
+  animation: collapse 1s ease;
+}
+
+@keyframes collapse {
+  0% {
+    height: 100vh;
+    opacity: 0.7;
+  }
+
+  100% {
+    /*transform: scaleY(1);*/
+    opacity: 1;
+  }
+}
+
+.webigo-category-inner-card {
+  margin: 3em 1em 0 1em;
+  display: flex;
+  padding-top: 0.75em;
+}
+
+.webigo-category-inner-image {
+  flex: 0.8;
+}
+
+.webigo-category-inner-image img {
+  margin-top: -2em;
+  margin-left: 1em;
+}
+
+.webigo-category-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1.2;
+}
+
+.webigo-category-name {
+  /* font-size: 1em; */
+  font-weight: 900;
+  text-transform: uppercase;
+  margin: 0.5em 0 0.25em 0;
+  color: var(--hzbi-light-black);
+  letter-spacing: 0.15em;
+  /* line-height: 1.12em; */
+}
+
+/*
+.webigo-category-description p {
+  font-size: 0.8em;
+  line-height: 1em;
+}
+*/
+
+.webigo-category-info-details {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  margin-top: 0.5rem;
+}
+
+.webigo-category-info-detail {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d6b184;
+  text-align: center;
+  /* font-size: 0.8em; */
+  font-weight: 900;
+  /* line-height: 1em; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+}
+
+.webigo-category-info-detail-description[data-visualization="hidden"] {
+  display: none;
+}
+
+.webigo-category-info-detail-description[data-visualization="shown"] {
+  display: none;
+}
+
+.product-category-explode {
+  margin-top: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.product-category-explode .toggleExpandLabel {
+  /* font-size: 0.75em; */
+  letter-spacing: 0.1em;
+  font-weight: 900;
+  color: var(--hzbi-green);
+}
+
+.webigo-hidden {
+  display: none;
+}
+
+.webigo-category-card ul.reset {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  list-style-type: none;
+}
+
+.webigo-product {
+  padding: 1em 0em 1em 0em;
+  border-top: 1px solid #00593014;
+  margin-top: 1em;
+}
+
+.webigo-product-image {
+  flex: 0.8;
+}
+
+.webigo-product-inner-details {
+  flex: 1.2;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.webigo-product-name {
+  /* font-size: 1.15em; */
+  font-weight: 900;
+  color: var(--hzbi-green);
+  text-transform: uppercase;
+  /* line-height: 1em; */
+}
+
+.webigo-product-price {
+  /* font-size: 1.2em; */
+  color: var(--hzbi-green);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.webigo-product-cart-actions {
+  margin-bottom: 1em;
+}
+
+.webigo-product-cart-actions div.webigo-product-qty-label {
+  /* font-size: 0.75em; */
+  font-weight: 600;
+  text-align: right;
+  letter-spacing: 0.1em;
+  color: black;
+}
+
+.webigo-product-cart-actions div.btn-addto-cart-qty {
+  /* font-size: 1.25em; */
+}
+
+input[type="number"].webigo-input-quantity {
+  width: 50px;
+}
+
+.webigo-product-cart-actions input[type="number"]:read-only {
+  border: 0;
+  box-shadow: none;
+  background: none;
+  color: black;
+}
+
+.webigo-product-cart-actions input[type="number"]:-moz-read-only {
+  border: 0;
+  box-shadow: none;
+}
+
+.webigo-product-cart-footer {
+  border-top: 1px solid #00593014;
+  padding-top: 0.5em;
+}
+
+.webigo-product-cart-subtotal {
+  /* font-size: 0.8em; */
+  font-weight: 900;
+  text-align: right;
+  letter-spacing: 0.1em;
+  color: black;
+}
+
+.webigo-product-add-to-cart {
+  display: flex;
+  justify-content: center;
+}
+
+.webigo-product-add-to-cart .add-to-cart-button {
+  height: 1.5em;
+  /* font-size: 1em; */
+  font-weight: 600;
+  /* line-height: 0em; */
+  padding: 1.25em 0em 1.25em 0em;
+  margin-top: 1.5em;
+  width: 90%;
+  background-color: var(--hzbi-light-green);
+  border-radius: 10px !important;
+  color: white;
+  border: none;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0px,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0px;
+  position: relative;
+}
+
+.webigo-product-add-to-cart .add-to-cart-button[disabled="true"] {
+  opacity: 0.1;
+  border: none;
+}
+
+.webigo-product-cart-subtotal-label {
+  flex: 1;
+  text-align: right;
+}
+
+.webigo-product-cart-subtotal-value {
+  flex: 1;
+}
+
+.webigo-cart-notification {
+  position: fixed;
+  top: 40px;
+  right: 0px;
+  padding: 0.25em 1em 0.5em 0em;
+  background-color: greenyellow;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  z-index: 999;
+  width: auto;
+  /* transform: translateX(300px); */
+  max-width: 90%;
+}
+
+.slideIn {
+  animation: slideIn 500ms ease;
+  transform: translateX(0px);
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(300px);
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.webigo-cart-notification .notification-text {
+  /* font-size: 1.2em; */
+  font-weight: 600;
+  color: black;
+  /* line-height: 1em; */
+  padding-left: 1.5em;
+  padding-top: 0.25em;
+  overflow: hidden;
+}
+
+.fadeOut {
+  animation: fadeOut 300ms ease;
+  opacity: 0;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.fadeIn {
+  animation: fadeIn 700ms ease;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.cart-notice-pulse {
+  position: absolute;
+  top: 0%;
+  left: 70%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgb(154, 205, 50);
+  cursor: pointer;
+  box-shadow: 0 0 0 rgba(154, 205, 50, 0.6);
+  animation: pulse 1.5s infinite;
+}
+.cart-notice-pulse:hover {
+  animation: none;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0.6);
+  }
+  70% {
+    -webkit-box-shadow: 0 0 0 25px rgba(204, 169, 44, 0);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0.6);
+    box-shadow: 0 0 0 0 rgba(204, 169, 44, 0.6);
+  }
+  70% {
+    -moz-box-shadow: 0 0 0 25px rgba(204, 169, 44, 0);
+    box-shadow: 0 0 0 25px rgba(204, 169, 44, 0);
+  }
+  100% {
+    -moz-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+    box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+  }
+}
+
+.webigo-card-collapse-container {
+  padding-left: 7em;
+  padding-right: 7em;
+  margin-top: 1em;
+}
+
+.webigo-card-collapse-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0px,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0px;
+  border-radius: 20px;
+  gap: 0.25em;
+  padding: 0.25em;
+}
+
+.webigo-voltar-card-label {
+  /* font-size: 0.85em; */
+  /* line-height: 0.85em; */
+  color: var(--hzbi-green);
+  font-weight: 600;
+}
+
+.arrow-voltar {
+  display: flex;
+}
+
+/* .webigo-product-add-to-cart button.add-to-cart-button:before {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border: solid 1px red;
+
+  content: " ";
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+} */
+
+.pulse-animation {
+  animation: pulseAddToCart 3s infinite 1.5s !important;
+}
+
+@keyframes pulseAddToCart {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.pulse-animation:hover {
+  animation: none;
 }

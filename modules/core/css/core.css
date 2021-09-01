@@ -1,0 +1,60 @@
+:root {
+  --hzbi-white: rgba(255, 255, 255, 1);
+  --hzbi-whitesmoke: rgb(231, 231, 231, 1);
+  --hzbi-light-grey: rgba(224, 224, 224, 1);
+  --hzbi-light-black: rgba(0, 0, 0, 0.6);
+  --hzbi-green: rgba(0, 89, 48, 1);
+  --hzbi-light-green: rgba(0, 89, 48, 0.5);
+}
+
+html {
+  font-size: 100%;
+} /*16px*/
+
+body {
+  background: white;
+  font-family: "Nunito", sans-serif;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 3rem 0 1.38rem;
+  font-family: "Nunito", sans-serif;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.383rem;
+}
+
+h2 {
+  font-size: 1.296rem;
+}
+
+h3 {
+  font-size: 1.215rem;
+}
+
+h4 {
+  font-size: 1.138rem;
+}
+
+h5 {
+  font-size: 1.067rem;
+}
+
+small,
+.text_small {
+  font-size: 0.937rem;
+}

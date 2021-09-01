@@ -160,6 +160,14 @@ class Webigo
 
 	private function add_modules()
 	{
+	
+		$this->modules_register->register(
+			'core',
+			'Webigo_Core',
+			'core',
+			'class-webigo-core.php'
+		);
+
 		$this->modules_register->register(
 			'archive_product',
 			'Webigo_Archive_Product',

@@ -11,6 +11,8 @@
 class Webigo_Module_Style
 {
 
+    private $styles;
+
     /**
      * The name of module who instanciate this class, passed by 
      * the register_public_style or register_admin_style methods
@@ -90,7 +92,7 @@ class Webigo_Module_Style
     }
 
     /**
-     *  Populate the Webigo_Module_Style object with the public-facing style of module
+     *  Populate the Webigo_Module_Style object with the PUBLIC-FACING style of module
      *  
      *  @return void
      *  @param array $style_data
@@ -105,15 +107,19 @@ class Webigo_Module_Style
      */
     public function register_public_style(array $style_data)
     {
-
+        /**
+         *  Do not change the orders of these functions
+         */
+        $this->styles = array();
         $this->action_name = 'wp_enqueue_scripts';
         $this->init_module_info($style_data['module']);
         $this->build_public_css_file_root_path();
-        $this->add($style_data);
+        $this->set_stylesheet_info($style_data);
+        $this->add();
     }
 
     /**
-     *  Populate the Webigo_Module_Style object with the admin style of module
+     *  Populate the Webigo_Module_Style object with the ADMIN style of module
      *  
      *  @return void
      *  @param array $style_data
@@ -129,10 +135,14 @@ class Webigo_Module_Style
     public function register_admin_style(array $style_data)
     {
 
+        /**
+         *  Do not change the orders of these functions
+         */
         $this->action_name = 'admin_enqueue_scripts';
         $this->init_module_info($style_data['module']);
         $this->build_admin_css_file_root_path();
-        $this->add($style_data);
+        $this->set_stylesheet_info($style_data);
+        $this->add();
     }
 
 
@@ -151,18 +161,63 @@ class Webigo_Module_Style
      * 
      */
 
-    public function add($style_data)
+    public function set_stylesheet_info($style_data)
     {
-        $default_dependencies = array();
-        $default_version = '1.0';
 
         $this->src = $this->stylesheet_root_path . $style_data['file_name'];
-        $this->dependencies = isset($style_data['dependencies']) ? $style_data['dependencies'] : $default_dependencies;
-        $this->version = isset($style_data['version']) ? $style_data['version'] : $default_version;
+
+        $default_dependencies = array();
+        $dependencies         = isset($style_data['dependecies']) ? $style_data['dependecies'] : $default_dependencies;
+        $this->set_dependencies($dependencies);
+        
+        $default_version      = '1.0';
+        $this->version        = isset($style_data['version']) ? $style_data['version'] : $default_version;
+
+        
+    }
+
+    public function add() {
+
+        $this->styles[$this->module_name] = array();
+
+        $this->styles[$this->module_name]['src'] = $this->src;
+        $this->styles[$this->module_name]['dependencies'] = $this->dependencies;
+        $this->styles[$this->module_name]['version'] = $this->version;
+        
     }
 
 
-    private function init_module_info($module) {
+    /**
+     * Set the array of dependencies to pass to the wp_enqueue_style function
+     * 
+     * @param array of style dependencies
+     */
+    private function set_dependencies( array $dependencies ) {
+
+        if ( empty( $dependencies ) ) {
+
+            $this->dependencies = $dependencies;
+        }
+
+        if ( !empty( $dependencies ) ) {
+
+            $next_dependencies = array();
+
+            foreach ( $dependencies as $dependency ) {
+                array_push( $next_dependencies,  PLUGIN_NAME . '-' . $dependency );
+            }
+
+            $this->dependencies = $next_dependencies;
+        }
+    }
+
+    /**
+     * Set the name of handle for the css.
+     * The handle name is composed of the NAME_OF_PLUGIN + MODULE_NAME
+     * 
+     * @param string
+     */
+    private function init_module_info(string $module) {
       
         $this->module_name = PLUGIN_NAME . '-' . $module;
       
@@ -203,6 +258,10 @@ class Webigo_Module_Style
      */
     public function enqueue_style()
     {
-        wp_enqueue_style($this->module_name, $this->src, $this->dependencies, $this->version, 'all');
+
+        foreach( $this->styles as $module_name => $style_info ) {
+
+            wp_enqueue_style($module_name, $style_info['src'], $style_info['dependencies'], $style_info['version'], 'all');
+        }
     }
 }

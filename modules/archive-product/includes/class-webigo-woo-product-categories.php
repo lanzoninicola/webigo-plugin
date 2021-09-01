@@ -10,8 +10,11 @@ class Webigo_Woo_Product_Categories
 
     protected $query_params;
 
-    protected $category_object;
-
+    /**
+     * Collection of of Category object
+     * 
+     * @var array Webigo_Woo_Hzbi_Product_Category
+     */
     protected $categories;
 
     public function __construct()
@@ -25,9 +28,6 @@ class Webigo_Woo_Product_Categories
     protected function load_dependencies() {
 
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-product-category.php';
-
-        $this->category_object = new Webigo_Woo_Product_Category();
-
     }
 
     protected function set_query_params() {
@@ -60,22 +60,25 @@ class Webigo_Woo_Product_Categories
 
         foreach ($woo_categories as $woo_category) {
 
-            $id = $woo_category->term_id;
-            $name = $woo_category->name;
-            $description = $woo_category->description;
+            $category_object = new Webigo_Woo_Product_Category();
 
-            $url = get_term_link($woo_category->term_id, $this->taxonomy);
+            $id           = $woo_category->term_id;
+            $name         = $woo_category->name;
+            $slug         = $woo_category->slug;
+            $description  = $woo_category->description;
+            $url          = get_term_link($woo_category->term_id, $this->taxonomy);
+           
             // get the category image
             $thumbnail_id = get_term_meta($woo_category->term_id, 'thumbnail_id', true);
-            $image_url = wp_get_attachment_url($thumbnail_id);
+            $image_url    = wp_get_attachment_url($thumbnail_id);
 
-            $this->category_object->init( $id, $name, $description, $url, $image_url );
+            $category_object->init( $id, $name, $slug, $description, $url, $image_url );
 
-            array_push($this->categories, $this->category_object->get_instance() );
+            array_push($this->categories, $category_object->get_instance() );
 
         }
-    }
 
+    }
 
     public function get_categories() {
 
