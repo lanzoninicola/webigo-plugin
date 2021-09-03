@@ -9,17 +9,12 @@
 
   const d = document;
 
-  const setState = webigoHelper?.stateManager?.setState;
-  const state = { ...webigoHelper?.stateManager?.state };
-  const eventManager = webigoHelper?.eventManager;
+  const setState = webigoHelper?.stateManagement?.setState;
 
   const plusQtyButtons = d.getElementsByClassName("add-to-cart-plus-qty");
   const minusQtyButtons = d.getElementsByClassName("add-to-cart-minus-qty");
-
-  const defaultParams = {
-    addQtyFraction: 1,
-    decreasQtyFraction: 1,
-  };
+  const webigoAddToCart = new WebigoAddToCart();
+  const productQuantity = new ProductQuantity();
 
   if (plusQtyButtons) {
     Object.keys(plusQtyButtons).forEach((plusButton) => {
@@ -33,59 +28,78 @@
     });
   }
 
-  function getProductInfo(eobj) {
-    return {
-      productId: eobj.getAttribute("data-product-id"),
-      productPrice: eobj.getAttribute("data-product-price"),
+  function increaseQtyToCart() {
+    const product = {
+      id: this.getAttribute("data-product-id"),
+      price: this.getAttribute("data-product-price"),
     };
+
+    productQuantity.init(productId);
   }
 
-  function getPrevQuantityState(productId) {
-    const initQtyCartState = 0;
+  function decreaseQtyToCart(e) {}
 
-    const qtyProductState = state["productId_" + productId];
+  writeQuantityValue = (productId) => {
+    const qtyProductInputQuantityArea = d.querySelectorAll(
+      "input[data-product-id='" + productId + "'].webigo-product-input-quantity"
+    )[0];
 
-    if (typeof qtyProductState === "undefined") {
-      state["productId_" + productId] = {};
-      state["productId_" + productId].userQty = initQtyCartState;
+    const userQty = state["productId_" + productId]?.userQty;
+
+    if (qtyProductInputQuantityArea) {
+      qtyProductInputQuantityArea.value = userQty;
     }
+  };
+})(webigoHelper);
 
-    return state["productId_" + productId].userQty;
-  }
+class ProductQuantity {
+  product = null;
+  quantity = 0;
 
-  function increaseQtyToCart(e) {
+  defaultParams = {
+    addQtyFraction: 1,
+    decreasQtyFraction: 1,
+  };
+
+  state = {};
+
+  init = (product) => {
+    this.product = product;
+  };
+
+  increaseQtyToCart = (e) => {
     e.preventDefault();
     const { productId, productPrice } = getProductInfo(this);
 
     const prevQty = getPrevQuantityState(productId);
+    webigoAddToCart.init(productId);
 
     let newQty = prevQty + defaultParams["addQtyFraction"];
 
     if (newQty >= 0) {
+      webigoAddToCart.showBottomBar();
       // enableAddToCartButtonOf(productId);
     } else {
       // disableAddToCartButtonOf(productId);
     }
 
-    setState(state, {
+    const prevState = { ...state };
+
+    console.log(this);
+
+    setState(prevState, {
       ["productId_" + productId]: {
         userQty: newQty,
         price: productPrice,
       },
     });
 
-    eventManager.trigger({
-      event: "showAddToCartContainer",
-      targetQuery:
-        ".webigo-add-to-cart-container[data-product-id='" + productId + "']",
-    });
-
     calculateSubTotal(productId, productPrice);
 
     writeQuantityValue(productId);
-  }
+  };
 
-  function decreaseQtyToCart(e) {
+  decreaseQtyToCart = (e) => {
     e.preventDefault();
     const { productId, productPrice } = getProductInfo(this);
 
@@ -107,16 +121,15 @@
       ["productId_" + productId]: {
         userQty: newQty,
         price: productPrice,
-        showAddToCartContainer: true,
       },
     });
 
     calculateSubTotal(productId);
 
     writeQuantityValue(productId);
-  }
+  };
 
-  function calculateSubTotal(productId) {
+  calculateSubTotal = (productId) => {
     const subtotalNodes = d.querySelectorAll(
       ".webigo-product-cart-subtotal-value[data-product-id='" +
         parseInt(productId, 10) +
@@ -134,47 +147,20 @@
         subtotalNode.innerText = "R$" + subtotal.toFixed(2);
       }
     }
-  }
+  };
 
-  function writeQuantityValue(productId) {
-    const qtyProductInputQuantityArea = d.querySelectorAll(
-      "input[data-product-id='" + productId + "'].webigo-product-input-quantity"
-    )[0];
+  getPrevQuantityState = (productId) => {
+    const initQtyCartState = 0;
 
-    const userQty = state["productId_" + productId]?.userQty;
+    const qtyProductState = state["productId_" + productId];
 
-    if (qtyProductInputQuantityArea) {
-      qtyProductInputQuantityArea.value = userQty;
+    if (typeof qtyProductState === "undefined") {
+      state["productId_" + productId] = {};
+      state["productId_" + productId].userQty = initQtyCartState;
     }
-  }
 
-  function getAddToCartButtonElement(productId) {
-    const addToCartProductButtons = d.querySelectorAll(
-      "form.cart button[type='submit'][data-product-id='" +
-        parseInt(productId, 10) +
-        "'].add_to_cart_button"
-    );
+    return state["productId_" + productId].userQty;
+  };
+}
 
-    if (addToCartProductButtons.length > 0) {
-      return addToCartProductButtons[0];
-    }
-  }
-
-  function enableAddToCartButtonOf(productId) {
-    const addToCartProductButton = getAddToCartButtonElement(productId);
-
-    showNode(addToCartProductButton);
-    addToCartProductButton.classList.add("pulse-animation");
-
-    // if (addToCartProductButton) {
-    //   addToCartProductButton.removeAttribute("disabled");
-    // }
-  }
-
-  function disableAddToCartButtonOf(productId) {
-    const addToCartProductButton = getAddToCartButtonElement(productId);
-
-    hideNode(addToCartProductButton);
-    addToCartProductButton.classList.remove("pulse-animation");
-  }
-})(webigoHelper);
+class ArchiveProductSubtotal {}

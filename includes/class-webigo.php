@@ -92,6 +92,7 @@ class Webigo
 
 		$this->load_dependencies();
 		$this->add_modules();
+		$this->register_module_dependencies();
 		$this->load_modules();
 		$this->set_locale();
 		$this->define_styles();
@@ -134,26 +135,11 @@ class Webigo
 		 * The class responsible for orchestrating the modules
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-modules-register.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-modules-registry.php';
 
-		/**
-		 * The class responsible for register the style of plugin modules
-		 */
-		// require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-styles-register.php';
+		$this->modules_registry = new Webigo_Modules_Registry();
 
-		/**
-		 * The class responsible for register the script of plugin modules
-		 */
-		// require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-scripts-register.php';
-
-		// $this->styles_register = new Webigo_Styles_Register();
-
-		// $this->scripts_register = new Webigo_Styles_Register();
-
-		$this->modules_register = new Webigo_Modules_Register();
-
-
-
+		$this->modules_registry->init();
 
 		$this->loader = new Webigo_Loader();
 	}
@@ -161,25 +147,43 @@ class Webigo
 	private function add_modules()
 	{
 	
-		$this->modules_register->register(
+		$this->modules_registry->register(
 			'core',
 			'Webigo_Core',
 			'core',
 			'class-webigo-core.php'
 		);
 
-		$this->modules_register->register(
-			'archive_product',
+		$this->modules_registry->register(
+			'archive-product',
 			'Webigo_Archive_Product',
 			'archive-product',
 			'class-webigo-archive-product.php'
 		);
+
+		$this->modules_registry->register(
+			'add-to-cart',
+			'Webigo_Add_To_Cart',
+			'add-to-cart',
+			'class-webigo-add-to-cart.php'
+		);
+	}
+
+	private function register_module_dependencies() {
+
+		// TODO: modify - array of each module with its dependencies
+		// module1 => array(dep1, dep2, dep3)
+		// module2 => array(dep1, dep2, dep3)
+		$dependencies = array( 'core', 'archive-product' );
+
+		$this->modules_registry->define_module_dependencies( $dependencies );
+
 	}
 
 	private function load_modules()
 	{
 
-		$this->modules_register->load();
+		$this->modules_registry->load();
 	}
 
 
@@ -204,7 +208,7 @@ class Webigo
 	private function define_styles()
 	{
 
-		$module_registered = $this->modules_register->get_registered_modules();
+		$module_registered = $this->modules_registry->get_registered_modules();
 
 		foreach ($module_registered as $module_name => $module_obj_instance) {
 
@@ -212,6 +216,7 @@ class Webigo
 			$style_object = $module_obj_instance->style;
 			$callback_name = $module_obj_instance->style->callback_name();
 
+			// TODO: if multiple styles is added the code breaks here
 			$this->loader->add_action($action_name, $style_object, $callback_name);
 		}
 	}
@@ -220,7 +225,7 @@ class Webigo
 	private function define_scripts()
 	{
 
-		$module_registered = $this->modules_register->get_registered_modules();
+		$module_registered = $this->modules_registry->get_registered_modules();
 
 		foreach ($module_registered as $module_name => $module_obj_instance) {
 
@@ -242,7 +247,7 @@ class Webigo
 	private function define_hooks()
 	{
 
-		$module_registered = $this->modules_register->get_registered_modules();
+		$module_registered = $this->modules_registry->get_registered_modules();
 		// for each modules I let available the related actions
 
 		foreach ($module_registered as $module_name => $module_obj_instance) {

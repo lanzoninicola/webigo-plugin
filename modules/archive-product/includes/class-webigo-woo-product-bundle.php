@@ -17,12 +17,23 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
     public function __construct($product) {
         parent::__construct( $product );
 
+        /**
+         *  By default the YITH plugin doesn't add this support for the WC_Product_Yith_Bundle
+         */
+        $this->supports[] = 'ajax_add_to_cart';
+        
         $this->type = 'bundle';
         $this->childs = array();
 
         // $this->define_bundle_childs_ids();
 
     }
+
+    public function id() {
+
+        return $this->get_id();
+    }
+
 
     public function type() {
 
@@ -52,10 +63,25 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
 
     }
 
+    public function final_price() {
+
+        return $this->get_price();
+    }
+
+     /**
+     * 
+     * Returns the <img> html tag of image.
+     * The result must be echoing.
+     * 
+     * @return string
+     */
     public function image() {
 
         return $this->get_image();
 
     }
+
+    
+    
 
 }

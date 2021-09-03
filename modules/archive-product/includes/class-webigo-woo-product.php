@@ -23,6 +23,11 @@ class Webigo_Woo_Product extends WC_Product_Simple {
 
     }
 
+    public function id() {
+
+        return $this->get_id();
+    }
+
     public function type() {
 
         return $this->get_type();
@@ -51,6 +56,18 @@ class Webigo_Woo_Product extends WC_Product_Simple {
 
     }
 
+    public function final_price() {
+
+        return $this->get_price();
+    }
+
+    /**
+     * 
+     * Returns the <img> html tag of image.
+     * The result must be echoing.
+     * 
+     * @return string
+     */
     public function image() {
 
         return $this->get_image();

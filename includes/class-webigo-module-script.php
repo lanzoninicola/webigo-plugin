@@ -11,7 +11,15 @@
 class Webigo_Module_Script
 {
 
- /**
+    /**
+     * Contain each scripts added for the module
+     * 
+     * @var array 
+     */
+    private $scripts;
+
+
+    /**
      * The name of module who instanciate this class, passed by 
      * the register_public_style or register_admin_style methods
      * 
@@ -117,7 +125,8 @@ class Webigo_Module_Script
         $this->action_name = 'wp_enqueue_scripts';
         $this->init_module_info($script_data['module']);
         $this->build_public_js_file_root_path();
-        $this->add($script_data);
+        $this->set_scripts_info($script_data);
+        $this->add();
     }
 
     /**
@@ -141,7 +150,8 @@ class Webigo_Module_Script
         $this->action_name = 'admin_enqueue_scripts';
         $this->init_module_info($script_data['module']);
         $this->build_admin_js_file_root_path();
-        $this->add($script_data);
+        $this->set_scripts_info($script_data);
+        $this->add();
     }
 
 
@@ -160,8 +170,10 @@ class Webigo_Module_Script
      * 
      */
 
-    public function add($script_data)
+    private function set_scripts_info($script_data)
     {
+
+        // TODO: refactor building method for each value with single responsibility
 
         $this->src            = $this->script_root_path . $script_data['file_name'];
 
@@ -175,6 +187,23 @@ class Webigo_Module_Script
         $default_in_footer    = true;
         $this->in_footer      = isset($script_data['in_footer']) ? $script_data['in_footer'] : $default_in_footer;
     }
+
+
+    /**
+     * Internal utility function, it adds each script of module inside the scripts array
+     * 
+     */
+    private function add() {
+
+        $this->scripts[$this->module_name]                 = array();
+
+        $this->scripts[$this->module_name]['src']          = $this->src;
+        $this->scripts[$this->module_name]['dependencies'] = $this->dependencies;
+        $this->scripts[$this->module_name]['version']      = $this->version;
+        $this->scripts[$this->module_name]['in_footer']    = $this->in_footer;
+        
+    }
+
 
    /**
      * Set the array of dependencies to pass to the wp_enqueue_style function
@@ -247,6 +276,14 @@ class Webigo_Module_Script
      */
     public function enqueue_script()
     {
-        wp_enqueue_script($this->module_name, $this->src, $this->dependencies, $this->version, $this->in_footer);
+
+        // TODO: this not works with multiple stylesheet
+        // This method is added to the hook, each style might have each enqueue_style method
+
+        foreach( $this->scripts as $module_name => $script_info ) {
+
+            wp_enqueue_script($module_name, $script_info['src'], $script_info['dependencies'], $script_info['version'], $script_info['in_footer']);
+        }
+       
     }
 }

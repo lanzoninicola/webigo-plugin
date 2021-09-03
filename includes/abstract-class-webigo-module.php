@@ -4,6 +4,18 @@ require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-style.php';
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-script.php';
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-hooks.php';
 
+/**
+ * The children classes are responsible to load their:
+ * 
+ * - css styles
+ * - js scripts
+ * - hooks
+ * - shortcodes
+ * 
+ * 
+ * This is instanciated through the load() method of Webigo_Modules_Registry class called in the "class-webigo.php"
+ */
+
 abstract class Webigo_Module
 {
 	/**

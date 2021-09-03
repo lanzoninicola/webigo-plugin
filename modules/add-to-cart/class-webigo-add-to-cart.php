@@ -2,10 +2,13 @@
 
 require_once WEBIGO_PLUGIN_PATH . 'includes/abstract-class-webigo-module.php';
 
-class Webigo_Core extends Webigo_Module
+/**
+* {@inheritdoc}
+*/
+class Webigo_Add_To_Cart extends Webigo_Module
 {
 
-	protected $name = 'core';
+	protected $name = 'add-to-cart';
 
 	private $style_version = '1.0';
 
@@ -13,16 +16,15 @@ class Webigo_Core extends Webigo_Module
 	{
 		parent::__construct();
 
-		$this->add_shortcodes();
 	}
 
 	public function load_dependencies()
 	{
-
 	}
 
-	public function load_views() {}
-
+	public function load_views()
+	{
+	}
 
 	public function module()
 	{
@@ -34,8 +36,9 @@ class Webigo_Core extends Webigo_Module
 	public function add_style()
 	{
 		$style_data = array(
-			'module' => $this->name,
-			'file_name' => 'core.css'
+			'module'      => $this->name,
+			'file_name'   => 'add-to-cart.css',
+			'dependencies' => array('core')
 		);
 
 		$this->style->register_public_style($style_data);
@@ -43,9 +46,11 @@ class Webigo_Core extends Webigo_Module
 
 	public function add_script()
 	{
+
 		$script_data = array(
 			'module'      => $this->name,
-			'file_name'   => 'core.js',
+			'file_name'   => 'add-to-cart.js',
+			'dependencies' => array('core'),
 			'in_footer'   => true
 		);
 
@@ -56,15 +61,5 @@ class Webigo_Core extends Webigo_Module
 	{
 	}
 
-	private function add_shortcodes()
-	{
 
-		
-	}
-
-	public function render()
-	{
-
-	
-	}
 }

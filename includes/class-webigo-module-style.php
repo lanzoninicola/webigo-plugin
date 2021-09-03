@@ -11,6 +11,11 @@
 class Webigo_Module_Style
 {
 
+    /**
+     * Contain each style added for the module
+     * 
+     * @var array 
+     */
     private $styles;
 
     /**
@@ -113,7 +118,7 @@ class Webigo_Module_Style
         $this->styles = array();
         $this->action_name = 'wp_enqueue_scripts';
         $this->init_module_info($style_data['module']);
-        $this->build_public_css_file_root_path();
+        $this->set_public_stylesheet_src_path();
         $this->set_stylesheet_info($style_data);
         $this->add();
     }
@@ -140,7 +145,7 @@ class Webigo_Module_Style
          */
         $this->action_name = 'admin_enqueue_scripts';
         $this->init_module_info($style_data['module']);
-        $this->build_admin_css_file_root_path();
+        $this->set_admin_stylesheet_src_path();
         $this->set_stylesheet_info($style_data);
         $this->add();
     }
@@ -161,10 +166,12 @@ class Webigo_Module_Style
      * 
      */
 
-    public function set_stylesheet_info($style_data)
+    private function set_stylesheet_info($style_data)
     {
 
-        $this->src = $this->stylesheet_root_path . $style_data['file_name'];
+        // TODO: refactor building method for each value with single responsibility
+
+        $this->src            = $this->stylesheet_root_path . $style_data['file_name'];
 
         $default_dependencies = array();
         $dependencies         = isset($style_data['dependecies']) ? $style_data['dependecies'] : $default_dependencies;
@@ -172,17 +179,19 @@ class Webigo_Module_Style
         
         $default_version      = '1.0';
         $this->version        = isset($style_data['version']) ? $style_data['version'] : $default_version;
-
-        
     }
 
-    public function add() {
+    /**
+     * Internal utility function, it adds each style of module inside the styles array
+     * 
+     */
+    private function add() {
 
-        $this->styles[$this->module_name] = array();
+        $this->styles[$this->module_name]                 = array();
 
-        $this->styles[$this->module_name]['src'] = $this->src;
+        $this->styles[$this->module_name]['src']          = $this->src;
         $this->styles[$this->module_name]['dependencies'] = $this->dependencies;
-        $this->styles[$this->module_name]['version'] = $this->version;
+        $this->styles[$this->module_name]['version']      = $this->version;
         
     }
 
@@ -229,7 +238,7 @@ class Webigo_Module_Style
      *  
      *  @return void
      */
-    public function build_public_css_file_root_path()
+    public function set_public_stylesheet_src_path()
     {
 
         $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/css/';
@@ -242,7 +251,7 @@ class Webigo_Module_Style
      *  
      *  @return void
      */
-    public function build_admin_css_file_root_path()
+    public function set_admin_stylesheet_src_path()
     {
 
         $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/admin/css/';
@@ -259,6 +268,8 @@ class Webigo_Module_Style
     public function enqueue_style()
     {
 
+        // TODO: this not works with multiple stylesheet
+        // This method is added to the hook, each style might have each enqueue_style method
         foreach( $this->styles as $module_name => $style_info ) {
 
             wp_enqueue_style($module_name, $style_info['src'], $style_info['dependencies'], $style_info['version'], 'all');

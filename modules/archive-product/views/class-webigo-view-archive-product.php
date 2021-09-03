@@ -1,7 +1,7 @@
 <?php
 
 
-class Webigo_Archive_Product_View {
+class Webigo_View_Archive_Product {
 
 
     /**
@@ -22,6 +22,8 @@ class Webigo_Archive_Product_View {
     private function load_dependencies() {
 
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-product-categories.php';
+
+        
 
         $this->product_cats = new Webigo_Woo_Product_Categories();
 

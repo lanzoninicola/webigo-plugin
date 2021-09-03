@@ -11,7 +11,15 @@
 class Webigo_Module_Script
 {
 
- /**
+    /**
+     * Contain each scripts added for the module
+     * 
+     * @var array 
+     */
+    private $scripts;
+
+
+    /**
      * The name of module who instanciate this class, passed by 
      * the register_public_style or register_admin_style methods
      * 
@@ -34,6 +42,10 @@ class Webigo_Module_Script
      */
     private $script_root_path;
 
+
+
+    private $handle;
+
     /**
      * The full path of css file
      * 
@@ -42,9 +54,9 @@ class Webigo_Module_Script
     private $src;
 
     /**
-     * The array of css dependencies
+     * The array of handles that represents the dependencies. 
      * 
-     * @var array
+     * @var array of string
      */
     private $dependencies;
 
@@ -78,7 +90,6 @@ class Webigo_Module_Script
 
     public function __construct()
     {
-
         $this->callback_name = 'enqueue_script';
     }
 
@@ -111,13 +122,22 @@ class Webigo_Module_Script
      *                 )
      * 
      */
-    public function register_public_script(array $script_data)
+    public function register_public_script(array $user_script_data)
     {
 
         $this->action_name = 'wp_enqueue_scripts';
-        $this->init_module_info($script_data['module']);
-        $this->build_public_js_file_root_path();
-        $this->add($script_data);
+        $visibility = 'public';
+
+        $user_script_data_sanitized = $this->sanitize_input( $user_script_data );
+
+        $this->set_module_info( $user_script_data_sanitized['module'] );
+        $this->set_handle( $user_script_data_sanitized['module'], $user_script_data_sanitized['file_name'] );
+        $this->set_src( $user_script_data_sanitized['file_name'], $visibility );
+        $this->set_dependencies();
+        $this->set_version();
+        $this->set_in_footer();
+
+        $this->add_to_register();
     }
 
     /**
@@ -135,14 +155,118 @@ class Webigo_Module_Script
      *                 )
      * 
      */
-    public function register_admin_script(array $script_data)
+    public function register_admin_script(array $script_data = array())
     {
 
         $this->action_name = 'admin_enqueue_scripts';
-        $this->init_module_info($script_data['module']);
-        $this->build_admin_js_file_root_path();
-        $this->add($script_data);
+        $visibility = 'admin';
+
     }
+
+    private function sanitize_input( $user_script_data ) {
+
+        if ( empty( $user_script_data) ) {
+            return false;
+        }
+
+        if ( ! isset( $user_script_data['module'] ) ) {
+            return false;
+        } else {
+            $module = $user_script_data['module'];
+        }
+
+        if ( ! isset( $user_script_data['file_name'] ) ) {
+            return false;
+        } else {
+            
+            // TODO: manage file_extension
+            // $file_extension = substr($user_script_data['file_name'], strlen($user_script_data['file_name'])-2, 2);
+            // $_file_extension = '';
+           
+            $file_name = $user_script_data['file_name'];
+        }
+
+        if ( ! isset( $user_script_data['version'] ) ) {
+            $version = '1.0';
+        } else {
+            $version = $user_script_data['version'];
+        }
+
+        if ( ! isset( $user_script_data['in_footer'] ) ) {
+            $in_footer = 'true';
+        } else {
+            $in_footer = $user_script_data['in_footer'];
+        }
+
+        return [$module, $file_name, $version, $in_footer];
+
+    }
+
+    private function set_module_info( $module ) {
+
+        $this->module        = $module;
+        $this->module_folder = $module;        
+    }
+
+    private function set_handle( $module, $file_name ) {
+
+        $file_name_no_extension = substr($file_name, 0, -3);
+
+        $this->handle = PLUGIN_NAME . '-' . $module . '-' . $file_name_no_extension;
+
+    }
+
+    private function set_src( $file_name, $visibility ) {
+
+        $plugin_path = plugin_dir_url(dirname(__FILE__));
+        
+        if ( $visibility === 'public' ) {
+
+            $base_path = $plugin_path . 'modules/' . $this->module_folder . '/js/';
+
+            $this->src = $base_path . $file_name;
+        }
+
+        if ( $visibility === 'admin' ) {
+
+            $base_path = $plugin_path . 'modules/' . $this->module_folder . '/admin/js/';
+
+            $this->src = $base_path . $file_name;
+        }
+
+    }
+
+    private function set_dependencies( ) {
+
+        // The dependencies must be an array of handles (no modules name
+        
+
+        $module_register = new Webigo_Modules_Registry();
+
+        // array of modules name
+        $module_dependencies = $module_register->get_module_dependencies();
+
+        $user_module_key = array_search( $module_dependencies , $this->module );
+
+        if ( $user_module_key === 0 ) {
+
+            $this->dependencies = array();
+        }
+
+        if ( $user_module_key > 0 ) {
+
+            $prec_module = $module_dependencies[$user_module_key -1];
+
+            $this->dependencies = array( $prec_module, $this->module );
+
+        }
+
+
+
+    }
+
+
+    
 
 
     /**
@@ -160,8 +284,10 @@ class Webigo_Module_Script
      * 
      */
 
-    public function add($script_data)
+    private function set_scripts_info($script_data)
     {
+
+        // TODO: refactor building method for each value with single responsibility
 
         $this->src            = $this->script_root_path . $script_data['file_name'];
 
@@ -176,43 +302,48 @@ class Webigo_Module_Script
         $this->in_footer      = isset($script_data['in_footer']) ? $script_data['in_footer'] : $default_in_footer;
     }
 
-   /**
-     * Set the array of dependencies to pass to the wp_enqueue_style function
-     * 
-     * @param array of style dependencies
-     */
-    private function set_dependencies( array $dependencies ) {
-
-        if ( empty( $dependencies ) ) {
-
-            $this->dependencies = $dependencies;
-        }
-
-        if ( !empty( $dependencies ) ) {
-
-            $next_dependencies = array();
-
-            foreach ( $dependencies as $dependency ) {
-                array_push( $next_dependencies,  PLUGIN_NAME . '-' . $dependency );
-            }
-
-            $this->dependencies = $next_dependencies;
-        }
-    }
 
     /**
-     * Set the name of handle for the css.
-     * The handle name is composed of the NAME_OF_PLUGIN + MODULE_NAME
+     * Internal utility function, it adds each script of module inside the scripts array
      * 
-     * @param string
      */
-    private function init_module_info(string $module) {
-      
-        $this->module_name = PLUGIN_NAME . '-' . $module;
-      
-        $this->module_folder = $module;
+    private function add() {
+
+        $this->scripts[$this->module_name]                 = array();
+
+        $this->scripts[$this->module_name]['src']          = $this->src;
+        $this->scripts[$this->module_name]['dependencies'] = $this->dependencies;
+        $this->scripts[$this->module_name]['version']      = $this->version;
+        $this->scripts[$this->module_name]['in_footer']    = $this->in_footer;
+        
     }
 
+
+//    /**
+//      * Set the array of dependencies to pass to the wp_enqueue_style function
+//      * 
+//      * @param array of style dependencies
+//      */
+//     private function set_dependencies( array $dependencies ) {
+
+//         if ( empty( $dependencies ) ) {
+
+//             $this->dependencies = $dependencies;
+//         }
+
+//         if ( !empty( $dependencies ) ) {
+
+//             $next_dependencies = array();
+
+//             foreach ( $dependencies as $dependency ) {
+//                 array_push( $next_dependencies,  PLUGIN_NAME . '-' . $dependency );
+//             }
+
+//             $this->dependencies = $next_dependencies;
+//         }
+//     }
+
+   
      /**
      *  Internal utility function to build the full js path of public facing site
      *  
@@ -247,6 +378,14 @@ class Webigo_Module_Script
      */
     public function enqueue_script()
     {
-        wp_enqueue_script($this->module_name, $this->src, $this->dependencies, $this->version, $this->in_footer);
+
+        // TODO: this not works with multiple stylesheet
+        // This method is added to the hook, each style might have each enqueue_style method
+
+        foreach( $this->scripts as $module_name => $script_info ) {
+
+            wp_enqueue_script($module_name, $script_info['src'], $script_info['dependencies'], $script_info['version'], $script_info['in_footer']);
+        }
+       
     }
 }
