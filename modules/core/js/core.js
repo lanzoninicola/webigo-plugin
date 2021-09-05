@@ -29,67 +29,166 @@ class StateManager {
 }
 
 class EventManager {
+  typeManager = null;
   eventCollection = {};
 
-  addEvent = (eventName, callback) => {
+  constructor(typeManager) {
+    this.typeManager = typeManager;
+  }
+
+  addEvent = ({ eventName, callback }) => {
+    if (typeof eventName === "undefined" && eventName === null) {
+      console.error("EventManager.addEvent: eventName parameter is required");
+    }
+
+    if (!this.typeManager.istypeString(eventName)) {
+      console.error("EventManager.addEvent: eventName must be a string");
+      return;
+    }
+
     this.eventCollection[eventName] = {
       cb: (args) => callback(args),
-      target: [],
-      data: null,
+      targets: [],
+      data: {},
     };
   };
 
-  trigger = ({ event, targetQuery }) => {
-    const cbFn = this.eventCollection[event]["cb"];
+  trigger = ({ eventName, targetQuery, data }) => {
+    if (!this.typeManager.istypeString(eventName)) {
+      console.error("EventManager.trigger: eventName must be a string");
+      return;
+    }
 
-    cbFn(document.querySelectorAll(targetQuery)[0]);
+    if (!this.typeManager.istypeString(eventName)) {
+      console.error("EventManager.trigger: eventName must be a string");
+      return;
+    }
+
+    const cbFn = this.eventCollection?.[eventName]?.["cb"];
+
+    if (typeof targetQuery !== "undefined" && targetQuery !== null) {
+      this.defineTarget({ eventName, targetQuery });
+    }
+
+    const targets = this.eventCollection?.[eventName]?.targets;
+
+    targets?.forEach((target) => cbFn(target));
+  };
+
+  defineTarget = ({ eventName, targetQuery }) => {
+    if (!this.typeManager.istypeString(eventName)) {
+      console.error("EventManager.defineTarget: eventName must be a string");
+      return;
+    }
+
+    if (typeof targetQuery !== "undefined" && targetQuery !== null) {
+      if (!this.typeManager.istypeString(targetQuery)) {
+        console.error(
+          "EventManager.defineTarget: targetQuery must be a string"
+        );
+        return;
+      }
+    }
+
+    const elementsCollection = document.querySelectorAll(targetQuery);
+
+    elementsCollection?.forEach((el) => {
+      this.eventCollection?.[eventName]?.targets?.push(el);
+    });
+  };
+}
+
+class SessionManager {
+  typeManager = null;
+
+  constructor(typeManager) {
+    this.typeManager = typeManager;
+  }
+
+  setSession = (key, value) => {
+    if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
+      console.error(
+        "Error to set browser sesssion. The key parameter is undefined"
+      );
+    }
+
+    if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
+      console.error(
+        "Error to set browser sesssion. The value parameter is undefined"
+      );
+    }
+
+    let _value = value;
+
+    if (typeof _value === "object") {
+      _value = JSON.stringify(_value);
+    }
+
+    sessionStorage.setItem(key, _value);
+  };
+  getSession = (key) => {
+    if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
+      console.error(
+        "Error to get the browser sesssion for the key selected. The key parameter is undefined"
+      );
+    }
+
+    sessionStorage.getItem(key);
+  };
+  removeSession = (key) => {
+    if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
+      console.error(
+        "Error to remove from the browser sesssion the key selected. The key parameter is undefined"
+      );
+    }
+
+    sessionStorage.removeItem(key);
+  };
+}
+
+class TypeManager {
+  istypeString = (value) => {
+    return typeof value === "string";
+  };
+
+  istypeArray = (value) => {
+    return Array.isArray(value);
+  };
+
+  isTypeObject = (value) => {
+    if (Array.isArray(value)) {
+      return false;
+    }
+
+    if (value === "function") {
+      return false;
+    }
+
+    if (typeof value !== "object") {
+      return false;
+    }
+
+    return true;
+  };
+
+  isUndefined = (value) => {
+    if (typeof value === "undefined") {
+      return true;
+    }
+  };
+
+  isNull = (value) => {
+    if (typeof value === null) {
+      return true;
+    }
   };
 }
 
 const webigoHelper = {
+  typeManager: new TypeManager(),
   stateManager: new StateManager(),
-  eventManager: new EventManager(),
-  sessionManagement: {
-    setSession: (key, value) => {
-      if (typeof key === "undefined" || key === null) {
-        console.error(
-          "Error to set browser sesssion. The key parameter is undefined"
-        );
-      }
-
-      if (typeof value === "undefined" || value === null) {
-        console.error(
-          "Error to set browser sesssion. The value parameter is undefined"
-        );
-      }
-
-      let _value = value;
-
-      if (typeof _value === "object") {
-        _value = JSON.stringify(_value);
-      }
-
-      sessionStorage.setItem(key, _value);
-    },
-    getSession: (key) => {
-      if (typeof key === "undefined" || key === null) {
-        console.error(
-          "Error to get the browser sesssion for the key selected. The key parameter is undefined"
-        );
-      }
-
-      sessionStorage.getItem(key);
-    },
-    removeSession: (key) => {
-      if (typeof key === "undefined" || key === null) {
-        console.error(
-          "Error to remove from the browser sesssion the key selected. The key parameter is undefined"
-        );
-      }
-
-      sessionStorage.removeItem(key);
-    },
-  },
+  eventManager: new EventManager(new TypeManager()),
+  sessionManager: new SessionManager(new TypeManager()),
   cookieManagement: {
     getCookie: (cname) => {
       let name = cname + "=";

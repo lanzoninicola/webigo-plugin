@@ -1,6 +1,5 @@
 <?php
 
-require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-product.php';
 
 class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
 
@@ -29,59 +28,74 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
 
     }
 
-    public function id() {
-
+     /**
+     * @return string
+     */
+    public function id() : string
+    {
         return $this->get_id();
     }
 
-
-    public function type() {
-
+    /**
+     * @return string 'bundle'
+     */
+    public function type() : string
+    {
         return $this->type;
     }
 
-    public function name() {
-
+    /**
+     * @return string 
+     */
+    public function name() : string
+    {
         return $this->get_name();
-
     }
 
-    public function description() {
-
+     /**
+     * @return string
+     */
+    public function description() : string
+    {
         return $this->get_description();
     }
 
-    public function price() {
-
+     /**
+     * @return string
+     */
+    public function price() : string
+    {
         return $this->get_regular_price();
-
     }
 
-    public function sale_price() {
-
+    /**
+     * @return string
+     */
+    public function sale_price() : string
+    {
         return $this->get_sale_price();
-
     }
 
-    public function final_price() {
-
+    /**
+     * @return string
+     */
+    public function final_price() : string
+    {
         return $this->get_price();
     }
 
      /**
      * 
-     * Returns the <img> html tag of image.
-     * The result must be echoing.
+     * Returns the <img> html tag of image. 
+     * The return value must be echoing.
      * 
      * @return string
      */
-    public function image() {
+    public function image() : string
+    {
 
         return $this->get_image();
-
     }
 
-    
-    
 
 }

@@ -7,11 +7,11 @@ class Webigo_View_Product_Category
 
     /**
      * 
-     * @var Webigo_Woo_Product_Category|Webigo_Woo_Product_Category_With_Custom_Fields
+     * @var Webigo_Woo_Category
      */
     private $category;
 
-    public function __construct($category)
+    public function __construct( $category )
     {
         $this->category = $category;
         $this->load_dependencies();
@@ -20,6 +20,7 @@ class Webigo_View_Product_Category
     private function load_dependencies() {
 
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product.php';
+
     }
 
     public function render()
@@ -126,6 +127,8 @@ class Webigo_View_Product_Category
         echo '<ul class="webigo-product-list" data-category-id="' . $this->category->id() . '">';
 
         $products = $this->category->get_products();
+
+        var_dump( $products );
 
         foreach ( $products as $product ) {
 

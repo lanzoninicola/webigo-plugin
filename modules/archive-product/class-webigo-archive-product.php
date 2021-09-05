@@ -18,17 +18,12 @@ class Webigo_Archive_Product extends Webigo_Module
 
 		$this->load_dependencies();
 		$this->add_shortcodes();
-		
 	}
 
 	public function load_dependencies()
 	{
-		// require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-archive-product-shortcode.php';
-	}
-
-	public function load_views()
-	{
-		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-archive-product.php';
+		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-archive-product-shortcode.php';
+		
 	}
 
 	public function module()
@@ -76,18 +71,9 @@ class Webigo_Archive_Product extends Webigo_Module
 
 	private function add_shortcodes()
 	{
-		// This might work but doesn't
-		// $archive_product_shortcode = new Webigo_Archive_Product_Shortcode();
-		// $archive_product_shortcode->add_shortcodes();
 
-		add_shortcode('webigo_archive_product', array($this, 'render'));
+		new Webigo_Woo_Archive_Product_Shortcode();
 	}
 
-	public function render()
-	{
 
-		$view = new Webigo_View_Archive_Product();
-
-		$view->render_archive_products();
-	}
 }

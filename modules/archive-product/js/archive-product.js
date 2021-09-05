@@ -75,7 +75,7 @@
     });
 
     eventManager.trigger({
-      event: "showAddToCartContainer",
+      eventName: "showAddToCartContainer",
       targetQuery:
         ".webigo-add-to-cart-container[data-product-id='" + productId + "']",
     });

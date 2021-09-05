@@ -167,6 +167,14 @@ class Webigo
 			'add-to-cart',
 			'class-webigo-add-to-cart.php'
 		);
+
+		$this->modules_registry->register(
+			'cart-bundle-products',
+			'Webigo_Cart_Bundle_Products',
+			'cart-bundle-products',
+			'class-webigo-cart-bundle-products.php'
+		);
+		
 	}
 
 	private function register_module_dependencies() {
@@ -250,15 +258,25 @@ class Webigo
 		$module_registered = $this->modules_registry->get_registered_modules();
 		// for each modules I let available the related actions
 
-		foreach ($module_registered as $module_name => $module_obj_instance) {
+		foreach ( $module_registered as $module_name => $module_obj_instance ) {
 
 			$module_hooks = $module_obj_instance->hooks->hooks();
 
-			foreach ($module_hooks as $hook => $callback) {
-				$this->loader->add_action($hook, 'Webigo_' . $module_name, $callback);
-			}
+			foreach ( $module_hooks as $hook => $hook_data ) {
 
+				if ( $hook_data['callback'][0] === false ) {
+					throw new Exception('Class Webigo->define_hooks(). Action callback object is not defined. Check in the module ' . $module_name . ' the registration of ' . $module_hooks . ' hook');
+				}
+
+				if ( $hook_data['callback'][1] === false ) {
+					throw new Exception('Class Webigo->define_hooks(). Action callback method is not defined. Check in the module ' . $module_name . ' the registration of ' . $module_hooks . ' hook');
+				}
+
+				$this->loader->add_action( $hook_data['name'], $hook_data['callback'][0], $hook_data['callback'][1], $hook_data['priority'], $hook_data['accepted_args'] );
+				
+			}
 		}
+
 	}
 
 	/**

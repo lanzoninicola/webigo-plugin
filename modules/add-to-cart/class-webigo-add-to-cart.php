@@ -20,6 +20,8 @@ class Webigo_Add_To_Cart extends Webigo_Module
 
 	public function load_dependencies()
 	{
+		require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/includes/class-webigo-woo-add-to-cart.php';
+
 	}
 
 	public function load_views()
@@ -59,7 +61,31 @@ class Webigo_Add_To_Cart extends Webigo_Module
 
 	public function add_hooks()
 	{
+
+		$this->add_to_cart_hooks();
+
 	}
 
+	private function add_to_cart_hooks() 
+	{
+
+		$webigo_woo_add_to_cart = new Webigo_Woo_Add_To_Cart();
+		$action_name            = $webigo_woo_add_to_cart->action_name();
+
+		$hook_wp_ajax = array(
+			'hook'     => 'wp_ajax_' . $action_name,
+			'callback' => array($webigo_woo_add_to_cart, 'ajax_add_to_cart')
+		);
+
+		$this->hooks->register($hook_wp_ajax);
+
+		// $hook_wp_ajax_nopriv = array(
+		// 	'hook'     => 'wp_ajax_nopriv_' . $action_name,
+		// 	'callback' => array($webigo_woo_add_to_cart, 'ajax_add_to_cart')
+		// );
+
+		// $this->hooks->register($hook_wp_ajax_nopriv);
+
+	}
 
 }

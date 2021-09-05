@@ -97,7 +97,9 @@ abstract class Webigo_Module
 		$this->views_path = plugin_dir_path(dirname(__FILE__)) . 'modules/' . $this->name . '/views/';
 
 		$this->load_dependencies();
-		$this->load_views();
+		// Initially developed to load the view of shortcode
+		// The shortcode was moved in a separeted and dedidcated class
+		// $this->load_views();
 		$this->add_style();
 		$this->add_script();
 		$this->add_hooks();
@@ -127,7 +129,7 @@ abstract class Webigo_Module
 	abstract protected function load_dependencies();
 
 
-	abstract protected function load_views();
+	// abstract protected function load_views();
 	
 	/**
 	 * Method to register the style of module

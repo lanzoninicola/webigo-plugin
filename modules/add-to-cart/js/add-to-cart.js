@@ -4,14 +4,7 @@
   }
 
   const d = document;
-
-  const setState = webigoHelper?.stateManager?.setState;
-  const state = { ...webigoHelper?.stateManager?.state };
   const eventManager = webigoHelper?.eventManager;
-
-  const addToCartContainers = d.querySelectorAll(
-    ".webigo-add-to-cart-container"
-  );
 
   const addToCartButtons = d.querySelectorAll(".webigo-add-to-cart-button");
 
@@ -21,7 +14,10 @@
     });
   }
 
-  eventManager.addEvent("showAddToCartContainer", showAddToCartContainer);
+  eventManager.addEvent({
+    eventName: "showAddToCartContainer",
+    callback: showAddToCartContainer,
+  });
 
   function showAddToCartContainer(el) {
     el.setAttribute("data-visibility", "visible");
@@ -33,17 +29,24 @@
     const productQtyNode = d.getElementById(
       "add-to-cart-quantity-input-" + productId
     );
+    const wpnonceNode = d.querySelectorAll(
+      '.webigo-add-to-cart-container[data-product-id="' +
+        productId +
+        '"] input[name="webigo_woo_add_to_cart_nonce"]'
+    )[0];
+    const wpnonce = wpnonceNode.getAttribute("value");
 
     if (productQtyNode) {
       productQty = productQtyNode.value;
     }
 
     if (productQty > 0) {
-      var data = new URLSearchParams({
-        action: "ql_woocommerce_ajax_add_to_cart",
+      const data = new URLSearchParams({
+        action: "webigo_ajax_add_to_cart",
         product_id: productId,
         product_sku: "",
         quantity: productQty,
+        nonce: wpnonce,
       });
 
       fetch(wc_add_to_cart_params.ajax_url, {

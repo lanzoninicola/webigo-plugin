@@ -89,24 +89,18 @@ class Webigo_Modules_Registry
         $module_not_found = array();
 
         if ( empty( $this->modules ) ) {
-
             throw new Exception('No modules found. Before defining dependencies you have to register modules');
         }
 
         foreach ( $dependencies as $module_name ) {
-
             if ( $this->is_module_exists( $module_name ) ) {
-
                 $this->add_module_dependencies( $module_name );
-
             } else {
-
                 array_push( $module_not_found, $module_name );
             }
         }
 
         if ( !empty( $module_not_found ) ) {
-
             $message = '==========  ';
             $message .= 'Cannot added dependencies for these modules: "' . implode( ',' ,  $module_not_found) . '". Modules not found.' ;
             $message .= '  =========';
@@ -118,7 +112,6 @@ class Webigo_Modules_Registry
     private function add_module_dependencies( string $module_name ) {
 
         array_push( $this->module_dependencies, $module_name );
-
     }
 
     /**

@@ -48,6 +48,11 @@ define( 'WEBIGO_VERSION', '1.0.0' );
 define( 'WEBIGO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
 
+define( 'WEBIGO_SIMPLE_PRODUCT_CLASS_NAME' , 'WC_Product_Simple' );
+
+define( 'WEBIGO_BUNDLE_PRODUCT_CLASS_NAME' , 'WC_Product_Yith_Bundle' );
+
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-webigo-activator.php
@@ -76,6 +81,16 @@ register_deactivation_hook( __FILE__, 'deactivate_webigo' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-webigo.php';
 
 /**
+ * Run in init hook
+ * https://codex.wordpress.org/Plugin_API/Action_Reference
+ *
+ *  Init action: Typically used by plugins to initialize. The current user is already authenticated by this time
+ *
+ * @since 1.0.0
+ */
+add_action('init', 'run_webigo');
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
@@ -90,4 +105,4 @@ function run_webigo() {
 	$plugin->run();
 
 }
-run_webigo();
+// run_webigo();
