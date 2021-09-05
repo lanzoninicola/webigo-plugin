@@ -2,7 +2,7 @@
 
 
 
-class Webigo_View_Product_Category
+class Webigo_View_Category
 {
 
     /**
@@ -11,9 +11,16 @@ class Webigo_View_Product_Category
      */
     private $category;
 
-    public function __construct( $category )
+    /**
+     * 
+     * @var Webigo_Database_Facade
+     */
+    private $database;
+
+    public function __construct( object $category, object $database )
     {
         $this->category = $category;
+        $this->database = $database;
         $this->load_dependencies();
     }
 
@@ -69,7 +76,7 @@ class Webigo_View_Product_Category
         echo '<div class="webigo-category-info">';
 
         echo '<div class="webigo-category-info-details">';
-        foreach ( $this->category->custom_fields() as $custom_field => $custom_field_values ) {
+        foreach ( $this->category->custom_fields() as $custom_field_values ) {
 
             if( ! empty( $custom_field_values['value'] ) ) {
                 echo '<div class="webigo-category-info-detail">';
@@ -126,9 +133,7 @@ class Webigo_View_Product_Category
        
         echo '<ul class="webigo-product-list" data-category-id="' . $this->category->id() . '">';
 
-        $products = $this->category->get_products();
-
-        var_dump( $products );
+        $products = (array) $this->database->get_products_category( $this->category->id() );
 
         foreach ( $products as $product ) {
 

@@ -19,7 +19,7 @@ class Webigo_Woo_Archive_Product_Shortcode
 
 	private function load_dependencies()
 	{
-		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/models/class-webigo-database-facade.php';
+		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/facades/class-webigo-database-facade.php';
         
 		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-archive-product.php';
 	}

@@ -8,10 +8,15 @@ class Webigo_Woo_Categories
     protected $taxonomy = 'product_cat';
 
     /**
-     * Collection of of Category object
-     * 
-     * @var array Webigo_Woo_Category
-     */
+    * Collection of Webigo_Woo_Category
+    * 
+    * $categories = array(
+    *                   'id#1 => Webigo_Woo_Category
+    *                   'id#2 => Webigo_Woo_Category
+    *                   )                
+    * 
+    * @var array
+    */
     protected $categories;
 
     public function __construct()
@@ -50,8 +55,9 @@ class Webigo_Woo_Categories
                 $image_url    = wp_get_attachment_url($thumbnail_id);
     
                 $category_object->init( $id, $name, $slug, $description, $url, $image_url );
+
+                $this->categories[$id] = (object) $category_object->get_instance();
     
-                array_push($this->categories, $category_object->get_instance() );
             }
         }
 
@@ -59,10 +65,19 @@ class Webigo_Woo_Categories
 
     /**
      * 
-     * @return array of Webigo_Woo_Category
+     * @return array of Webigo_Woo_Categories
      */
     public function get_categories() : array
     {
         return $this->categories;
+    }
+
+     /**
+     * @param string The id of category
+     * @return Webigo_Woo_Category
+     */
+    public function get_category( string $id ) : ?object
+    {
+        return isset ( $this->categories[$id] ) ? $this->categories[$id] : null;
     }
 }

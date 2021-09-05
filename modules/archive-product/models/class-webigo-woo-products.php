@@ -23,6 +23,11 @@ class Webigo_Woo_Products {
     /**
      * Merge of arrays: product_collection and product_bundle_collection
      * 
+     * $all_products_collection = array(
+     *                              'id#1 => 'Webigo_Woo_Product|Webigo_Woo_Product_Bundle'
+     *                              'id#2 => 'Webigo_Woo_Product|Webigo_Woo_Product_Bundle'
+     *                             )                
+     * 
      * @var array
      */
     private $all_products_collection;
@@ -152,7 +157,18 @@ class Webigo_Woo_Products {
 
     private function merge_data() : void
     {
-        $this->all_products_collection = array_merge( $this->product_collection, $this->product_bundle_collection );
+
+        foreach ( $this->product_collection as $product_id => $product_object ) {
+
+            $this->all_products_collection[$product_id] = $product_object;
+
+        }
+
+        foreach ( $this->product_bundle_collection as $bundle_id => $bundle_object ) {
+
+            $this->all_products_collection[$bundle_id] = $bundle_object;
+
+        }
 
         unset( $this->product_collection );
         unset( $this->product_bundle_collection );
