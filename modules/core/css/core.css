@@ -1,6 +1,6 @@
 :root {
   --hzbi-white: rgba(255, 255, 255, 1);
-  --hzbi-whitesmoke: rgb(231, 231, 231, 1);
+  --hzbi-whitesmoke: rgba(231, 231, 231, 1);
   --hzbi-light-grey: rgba(224, 224, 224, 1);
   --hzbi-light-black: rgba(0, 0, 0, 0.6);
   --hzbi-green: rgba(0, 89, 48, 1);
