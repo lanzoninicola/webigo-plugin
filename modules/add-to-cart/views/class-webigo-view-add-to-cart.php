@@ -24,8 +24,8 @@ class Webigo_View_Add_To_Cart
 
     private function load_dependencies()
     {
-        require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/includes/class-webigo-woo-add-to-cart.php';
-        $this->add_to_cart = new Webigo_Woo_Add_To_Cart();
+        require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/includes/class-webigo-woo-ajax-add-to-cart.php';
+        $this->add_to_cart = new Webigo_Woo_Ajax_Add_To_Cart();
 		
     }
 
