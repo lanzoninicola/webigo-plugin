@@ -33,7 +33,7 @@ class Webigo_View_Add_To_Cart
     {
         $this->product = $product;
 
-        echo  '<div class="webigo-add-to-cart-container" data-visibility="hidden" data-product-id="' . $this->product->id() . '">';
+        echo  '<div class="webigo-add-to-cart-container" data-visibility="hidden" data-product-id="' . esc_attr( $this->product->id() ) . '">';
 
         $this->render_wp_nonce();
         $this->render_add_to_cart_button();
@@ -76,6 +76,6 @@ class Webigo_View_Add_To_Cart
 
 
     private function render_notification() {
-        echo  '<div class="added-to-cart-notification" data-visibility="hidden" data-product-id="' . esc_html( $this->product->id() ) . '"></div>';
+        echo  '<div class="added-to-cart-notification" data-visibility="hidden" data-product-id="' . esc_attr( $this->product->id() ) . '"></div>';
     }
 }

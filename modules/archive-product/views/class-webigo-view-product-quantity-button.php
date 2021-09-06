@@ -48,16 +48,16 @@ class Webigo_View_Quantity_Button {
             $css_class_final = 'add-to-cart-plus-qty';
         }
 
-        echo '<div class="' . $css_class_final . ' btn-addto-cart-qty" data-product-id="' . $this->product->id() . '" data-product-price="' . $this->product->final_price() . '">';
+        echo '<div class="' . $css_class_final . ' btn-addto-cart-qty" data-product-id="' . esc_attr( $this->product->id() ) . '" data-product-price="' . esc_attr( $this->product->final_price() ) . '">';
 
         echo '<svg
-            width="' . $this->button_user_style['width'] . '"
-            height="' . $this->button_user_style['height'] . '"
+            width="' . esc_attr( $this->button_user_style['width'] ) . '"
+            height="' . esc_attr( $this->button_user_style['height'] ) . '"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            style="' . $this->button_user_style['style'] . '">
-            <circle cx="12.5" cy="12.5" r="12.5" fill="' . $this->button_user_style['background'] . '" />
-            <path stroke="' . $this->button_user_style['stroke'] . '" d="' . $svg_path_final . '" />
+            style="' . esc_attr( $this->button_user_style['style'] ) . '">
+            <circle cx="12.5" cy="12.5" r="12.5" fill="' . esc_attr( $this->button_user_style['background'] ) . '" />
+            <path stroke="' . esc_attr( $this->button_user_style['stroke'] ) . '" d="' . esc_attr( $svg_path_final ) . '" />
         </svg>';
 
         echo '</div>';

@@ -98,23 +98,8 @@ class Webigo_Woo_Product_Quantity_Html_Input {
 
         // The " $_POST['quantity'] " value must have more priority than the value forced by the parameter
 
-        $min_purchase_quantity = ! is_null( $input_value ) ? absint( $input_value ) : $this->product->get_min_purchase_quantity();
+        return ! is_null( $input_value ) ? absint( $input_value ) : $this->product->get_min_purchase_quantity();
 
-
-        /**
-         *  Added this control because when a product is added to cart
-         *  the page is reloaded with the same request that contains values in POST.
-         *  The value of input quantity is override by the values sent in POST.
-         */
-        if( isset( $_POST['add-to-cart'] ) ) {
-
-            if ( absint( $_POST['add-to-cart'] ) === absint( $this->product->id() ) ) {
-
-                return isset( $_POST['quantity'] ) ? wc_stock_amount( wp_unslash( $_POST['quantity'] ) ) : $min_purchase_quantity;    
-            }
-        }
-
-        return $min_purchase_quantity;
     }
 
     /**
@@ -152,6 +137,7 @@ class Webigo_Woo_Product_Quantity_Html_Input {
         $input_id       = isset( $args['input_id'] ) ? $args['input_id'] : uniqid( 'webigo-addtocart-input-quantity-' );
         $input_classes  = isset( $args['input_classes'] ) ? $args['input_classes'] : uniqid( 'webigo-addtocart-input-quantity-' );
         $input_hidden   = isset( $args['hidden'] ) && $args['hidden'] ? true : false ;
+        $input_type     = $input_hidden ? 'hidden': 'number';
 
 
         $input_string = '<input name=%s id=%s class=%s type=%s value=%s data-product-id=%s min=%u max=%u size=%u step=%u readonly style="text-align:center;"/>';
@@ -161,7 +147,7 @@ class Webigo_Woo_Product_Quantity_Html_Input {
             esc_attr( $this->input_name() ),
             esc_attr( $input_id ),
             esc_attr( $input_classes ),
-            $input_hidden ? esc_attr( 'hidden' ) : esc_attr( 'number' ),
+            esc_attr( $input_type ),
             esc_attr( $this->input_value( 0 ) ),
             esc_attr( $this->product->id() ),
             esc_attr( $this->min_value( 0 ) ),

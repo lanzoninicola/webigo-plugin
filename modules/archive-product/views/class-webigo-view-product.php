@@ -54,7 +54,7 @@ class Webigo_View_Product {
 
     private function render_image() {
         echo '<div class="webigo-product-image">';
-        echo $this->product->image();
+        echo esc_html( $this->product->image() );
         echo '</div>';
     }
 
@@ -93,7 +93,7 @@ class Webigo_View_Product {
         echo  '<div class="webigo-product-cart-subtotal">';
         
         echo '<div class="webigo-product-cart-subtotal-label">Subtotal</div>';
-        echo '<div class="webigo-product-cart-subtotal-value" data-product-id="' . $this->product->id() . '">R$0</div>';
+        echo '<div class="webigo-product-cart-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '">R$0</div>';
         
         echo '</div>';
     }

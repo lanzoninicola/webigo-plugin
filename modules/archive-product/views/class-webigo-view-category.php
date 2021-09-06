@@ -131,7 +131,7 @@ class Webigo_View_Category
 
         echo '<div class="webigo-product-list-wrapper" data-visibility="hidden">';
        
-        echo '<ul class="webigo-product-list" data-category-id="' . $this->category->id() . '">';
+        echo '<ul class="webigo-product-list" data-category-id="' . esc_attr( $this->category->id() ) . '">';
 
         $products = (array) $this->database->get_products_category( $this->category->id() );
 

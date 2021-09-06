@@ -32,7 +32,7 @@ class Webigo_View_Product_Price {
         }
 
         // TODO: improve UI when a sale price is available
-        echo '<div class="webigo-product-price">R$' . $this->product->final_price() . '</div>';
+        echo '<div class="webigo-product-price">R$' . esc_html( $this->product->final_price() ) . '</div>';
 
 
     }
