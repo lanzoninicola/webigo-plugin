@@ -1,33 +1,47 @@
 <?php
 
 /**
- * This class must be only responsible for managing the ajax request of add-to-cart
+ * This class must be only responsible for adding products to the cart.
+ * 
+ * This class is referenced in the Wordpress hook
+ * 
  */
 class Webigo_Woo_Ajax_Add_To_Cart
 {
 
     /**
      * Action name used in the WP Hooks to handle the AJAX request.
+     * Do not remove from this class.
      * 
      * @var string
      */
-    private $action_name = 'webigo_ajax_add_to_cart';
+    private $action_name;
 
     /**
-     * Array with sanitized input
+     * Request object that contains data and utilities to handle the AJAX request.
      * 
-     * @var array
+     * @var Webigo_Add_To_Cart_Request
      */
-    private $post_data;
+    private $request;
 
     public function __construct()
     {
 
         $this->action_name = 'webigo_ajax_add_to_cart';
-        $this->request_data = array();
+
+        $this->load_dependencies();
+    }
+
+    private function load_dependencies() : void
+    {
+        require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/includes/class-webigo-add-to-cart-request.php';
+        $this->request = new Webigo_Add_To_Cart_Request( $this->action_name );
     }
 
     /**
+     * This method is called by the Wordpress hook.
+     * This method must be public.
+     * Do not remove from this class
      * 
      * @return string
      */
@@ -38,24 +52,21 @@ class Webigo_Woo_Ajax_Add_To_Cart
 
     /**
      * This method must be public. 
-     * It is called by the wp hook responsible to handle the request to add to cart.
-     * 
-     * 
+     * This method is called by the Wordpress hook
+     * Do not remove from this class
+     *     
      * @return void
      */
     public function ajax_add_to_cart(): void
     {
 
-        $this->sanitize_input();
+        $this->request->sanitize_input();
 
-        if ( $this->is_valid_request() ) {
+        if ( $this->request->is_valid() ) {
 
             try {
-                $_product_id = $this->post_data['product_id'];
-                $_quantity   = $this->post_data['quantity'];
-
-                $product_id        = apply_filters($this->action_name . '_product_id', absint( $_product_id ));
-                $quantity          = empty($_quantity) ? 1 : wc_stock_amount( $_quantity );
+                $product_id        = apply_filters($this->action_name . '_product_id', $this->request->post('product_id') );
+                $quantity          = empty( $this->request->post('quantity') ) ? 1 : wc_stock_amount( $this->request->post('quantity') );
                 $passed_validation = apply_filters($this->action_name . '_validation', true, $product_id, $quantity);
                 $product_status    = get_post_status($product_id);
 
@@ -78,54 +89,6 @@ class Webigo_Woo_Ajax_Add_To_Cart
 
             wp_die();
         }
-    }
-
-    /**
-     * Validation of add to cart request 
-     * @return bool
-     */
-    private function is_valid_request(): bool
-    {
-
-        $_action     = $this->post_data['action'];
-        $_nonce      = $this->post_data['nonce'];
-        $_product_id = $this->post_data['product_id'];
-
-        if (
-            ($_action !== $this->action_name)  ||
-            $_product_id === 0 ||
-            !$_nonce ||
-            !wp_verify_nonce($_nonce, $this->action_name)
-        ) {
-
-            //TODO: Priority 1 add-to-cart: managing this response - Sent an email to dev o record wp_errors
-            wp_send_json_error([
-                'message'     => 'something went wrong',
-                'requestData' => array(
-                    'action'  =>  $this->action_name,
-                    'nonce'   =>  $_nonce
-                ),
-                'nonceResult' => wp_verify_nonce($_nonce, $this->action_name)
-            ]);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Data sent in post are sanitized and saved inside the object ($this->post_data)
-     * 
-     * @return void
-     */
-    private function sanitize_input(): void
-    {
-
-        $this->post_data['action']     = isset( $_POST['action'] )     ? wp_unslash( $_POST['action'] )     : false;
-        $this->post_data['product_id'] = isset( $_POST['product_id'] ) ? wp_unslash( $_POST['product_id'] ) : 0;
-        $this->post_data['nonce']      = isset( $_POST['nonce'] )      ? wp_unslash( $_POST['nonce'] )      : false;
-        $this->post_data['quantity']   = isset( $_POST['quantity'] )   ? wp_unslash( $_POST['quantity'] )   : 1;
     }
 
     /**
