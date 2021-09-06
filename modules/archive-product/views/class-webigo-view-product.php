@@ -53,8 +53,9 @@ class Webigo_View_Product {
     }
 
     private function render_image() {
+
         echo '<div class="webigo-product-image">';
-        echo esc_html( $this->product->image() );
+        echo  $this->product->image();
         echo '</div>';
     }
 

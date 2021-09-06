@@ -48,7 +48,7 @@ class Webigo_View_Quantity_Button {
             $css_class_final = 'add-to-cart-plus-qty';
         }
 
-        echo '<div class="' . $css_class_final . ' btn-addto-cart-qty" data-product-id="' . esc_attr( $this->product->id() ) . '" data-product-price="' . esc_attr( $this->product->final_price() ) . '">';
+        echo '<div class="' . esc_attr( $css_class_final ) . ' btn-addto-cart-qty" data-product-id="' . esc_attr( $this->product->id() ) . '" data-product-price="' . esc_attr( $this->product->final_price() ) . '">';
 
         echo '<svg
             width="' . esc_attr( $this->button_user_style['width'] ) . '"
