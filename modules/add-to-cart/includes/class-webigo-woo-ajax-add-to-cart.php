@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This class must be responsible only for managing the ajax request of add-to-cart
+ * This class must be only responsible for managing the ajax request of add-to-cart
  */
 class Webigo_Woo_Ajax_Add_To_Cart
 {
@@ -38,7 +38,8 @@ class Webigo_Woo_Ajax_Add_To_Cart
 
     /**
      * This method must be public. 
-     * It is called by the wp hook responsible for handle the request to add to cart.
+     * It is called by the wp hook responsible to handle the request to add to cart.
+     * 
      * 
      * @return void
      */
@@ -81,13 +82,13 @@ class Webigo_Woo_Ajax_Add_To_Cart
 
     /**
      * Validation of add to cart request 
-     * @return void
+     * @return bool
      */
     private function is_valid_request(): bool
     {
 
-        $_action = $this->post_data['action'];
-        $_nonce = $this->post_data['nonce'];
+        $_action     = $this->post_data['action'];
+        $_nonce      = $this->post_data['nonce'];
         $_product_id = $this->post_data['product_id'];
 
         if (
@@ -99,10 +100,10 @@ class Webigo_Woo_Ajax_Add_To_Cart
 
             //TODO: Priority 1 add-to-cart: managing this response - Sent an email to dev o record wp_errors
             wp_send_json_error([
-                'message' => 'something went wrong',
+                'message'     => 'something went wrong',
                 'requestData' => array(
-                    'action' =>  $this->action_name,
-                    'nonce'  =>  $_nonce
+                    'action'  =>  $this->action_name,
+                    'nonce'   =>  $_nonce
                 ),
                 'nonceResult' => wp_verify_nonce($_nonce, $this->action_name)
             ]);
