@@ -41,7 +41,7 @@ class Webigo_View_Product_Quantity
     public function render()
     {
 
-        echo '<div class="webigo-product-cart-actions">';
+        echo '<div class="wbg-product-cart-actions">';
 
         $this->render_quantity_label();
 
@@ -62,7 +62,7 @@ class Webigo_View_Product_Quantity
         );
 
 
-        echo '<div class="webigo-product-cart-qty-actions">';
+        echo '<div class="wbg-product-cart-qty-actions">';
 
         $quantity_button = new Webigo_View_Quantity_Button( $this->product, $this->category );
 
