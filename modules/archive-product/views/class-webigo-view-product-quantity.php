@@ -10,15 +10,19 @@ class Webigo_View_Product_Quantity
     private $product;
 
     /**
-     * 
      * @var Webigo_Woo_Category
      */
     private $category;
 
     /**
-     * @var Webigo_Woo_Product_Quantity_Html_Input
+     * @var Webigo_Woo_View_Product_Quantity_Input
      */
-    private $html_product_quantity;
+    private $product_quantity_input;
+
+    /**
+     * @var Webigo_View_Quantity_Button
+     */
+    private $quantity_button;
 
     public function __construct( $product , $category )
     {
@@ -33,15 +37,17 @@ class Webigo_View_Product_Quantity
 
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-quantity-button.php';
 
-        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-product-quantity-html-input.php';
+        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-quantity-input.php';
 
-        $this->html_product_quantity = new Webigo_Woo_Product_Quantity_Html_Input( $this->product, $this->category );
+        $this->product_quantity_input = new Webigo_Woo_View_Product_Quantity_Input( $this->product, $this->category );
+
+        $this->quantity_button = new Webigo_View_Quantity_Button( $this->product, $this->category );
     }
 
     public function render()
     {
 
-        echo '<div class="wbg-product-cart-actions">';
+        echo '<div class="wbg-product-quantity">';
 
         $this->render_quantity_label();
 
@@ -62,37 +68,25 @@ class Webigo_View_Product_Quantity
         );
 
 
-        echo '<div class="wbg-product-cart-qty-actions">';
+        echo '<div class="wbg-product-quantity-actions">';
 
-        $quantity_button = new Webigo_View_Quantity_Button( $this->product, $this->category );
-
-        $quantity_button->render( 'decrease', $button_style );
+        $this->quantity_button->render( 'decrease', $button_style );
 
         $this->render_quantity_input();
 
-        $quantity_button->render( 'increase', $button_style );
+        $this->quantity_button->render( 'increase', $button_style );
 
         echo '</div>';
     }
 
     private function render_quantity_label()
     {
-
-        $args = array( 
-            'label_for' => 'add-to-cart-quantity-input-' . $this->product->id(),
-        );
-
-        $this->html_product_quantity->render_html_input_label( $args );
+        $this->product_quantity_input->render_html_input_label( );
     }
 
     private function render_quantity_input()
     {
-        
-        $args = array( 
-            'input_classes' => 'webigo-product-input-quantity'
-        );
-       
-        $this->html_product_quantity->render_html_input_field( $args );
+        $this->product_quantity_input->render_html_input_field( );
 
     }
 }

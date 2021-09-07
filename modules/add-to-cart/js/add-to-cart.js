@@ -6,7 +6,7 @@
   const d = document;
   const eventManager = webigoHelper?.eventManager;
 
-  const addToCartButtons = d.querySelectorAll(".webigo-add-to-cart-button");
+  const addToCartButtons = d.querySelectorAll(".wbg-add-to-cart-button");
 
   if (addToCartButtons) {
     Object.keys(addToCartButtons).forEach((item) => {
@@ -19,14 +19,14 @@
     const productId = this.getAttribute("data-product-id");
     const categoryId = this.getAttribute("data-category-id");
     const productQtyNode = d.querySelectorAll(
-      '.webigo-product-input-quantity[data-product-id="' +
+      '.wbg-product-input-quantity[data-product-id="' +
         productId +
         '"][data-category-id="' +
         categoryId +
         '"]'
     )[0];
     const wpnonceNode = d.querySelectorAll(
-      '.webigo-add-to-cart-container[data-product-id="' +
+      '.wbg-add-to-cart-container[data-product-id="' +
         productId +
         '"][data-category-id="' +
         categoryId +

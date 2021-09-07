@@ -15,6 +15,27 @@ class Webigo_View_Product {
     private $category;
 
     /**
+     * Dependency
+     * 
+     * @var Webigo_View_Product_Info
+     */
+    private $product_info;
+
+    /**
+     * Dependency
+     * 
+     * @var Webigo_View_Product_Quantity
+     */
+    private $product_quantity;
+
+    /**
+     * Dependency
+     * 
+     * @var Webigo_View_Add_To_Cart
+     */
+    private $add_to_cart;
+
+    /**
      * 
      * @param Webigo_Woo_Product|Webigo_Woo_Product_Bundle
      */
@@ -29,14 +50,15 @@ class Webigo_View_Product {
 
     private function load_dependencies() {
 
-        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-price.php';
-
+        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-info.php';
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-quantity.php';
-
         // TODO Future feature Below is a module dependency, so i might to query the registry to load this module
         // Because I can unregister the module. The app must work but the specific funcionality no
         require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/views/class-webigo-view-add-to-cart.php';
 
+        $this->product_info = new Webigo_View_Product_Info( $this->product );
+        $this->product_quantity = new Webigo_View_Product_Quantity( $this->product, $this->category );
+        $this->add_to_cart = new Webigo_View_Add_To_Cart();
     }
 
     public function render_product() {
@@ -44,14 +66,14 @@ class Webigo_View_Product {
         echo '<li class="wbg-product" data-product-id="' . esc_html( $this->product->id() ) . '">';
             echo '<div class="wbg-product-container">';
 
-                $this->render_image();
+                $this->product_info->render_image();
             
                 echo '<div class="wbg-product-inner-details">';
-                $this->render_product_info();
-                $this->render_quantity_action_area();
-                    echo  '<div class="wbg-product-cart-footer">';
+                $this->product_info->render();
+                $this->product_quantity->render();
+                    echo  '<div class="wbg-product-footer">';
                     $this->render_subtotal();
-                    $this->render_add_to_cart();
+                    $this->add_to_cart->render( $this->product, $this->category );
                     echo '</div>';
                 echo '</div>';
 
@@ -60,59 +82,15 @@ class Webigo_View_Product {
         echo '</li>';
     }
 
-    private function render_image() {
-
-        echo '<div class="wbg-product-image">';
-        echo  $this->product->image();
-        echo '</div>';
-    }
-
-    private function render_product_info() {
-
-        echo '<div class="wbg-product-info">';
-
-        $this->render_name();
-
-        $this->render_price();
-
-        echo '</div>';
-    }
-
-    private function render_name() {
-
-        echo '<h3 class="wbg-product-name">' . esc_html( $this->product->name() ) . '</h3>';
-    }
-
-    private function render_price() {
-
-        $price = new Webigo_View_Product_Price( $this->product );
-
-        $price->render();
-    }
-
-    private function render_quantity_action_area() {
-
-        $quantity = new Webigo_View_Product_Quantity( $this->product, $this->category );
-
-        $quantity->render();
-    }
-
     private function render_subtotal() {
         
-        echo  '<div class="wbg-product-cart-subtotal">';
+        echo  '<div class="wbg-product-subtotal">';
         
-        echo '<div class="wbg-product-cart-subtotal-label">Subtotal</div>';
-        echo '<div class="wbg-product-cart-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">R$0</div>';
+        echo '<div class="wbg-product-subtotal-label">Subtotal</div>';
+        echo '<div class="wbg-product-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">R$0</div>';
         
         echo '</div>';
     }
-
-    private function render_add_to_cart() {
-
-        $add_to_cart = new Webigo_View_Add_To_Cart(  );
-
-        $add_to_cart->render( $this->product, $this->category );
-
-    }
+    
 
 }

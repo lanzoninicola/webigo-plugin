@@ -36,7 +36,7 @@ class Webigo_View_Add_To_Cart
         $this->product = $product;
         $this->category = $category;
 
-        echo  '<div class="webigo-add-to-cart-container" data-visibility="hidden" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">';
+        echo  '<div class="wbg-add-to-cart-container" data-visibility="hidden" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">';
 
         $this->render_wp_nonce();
         $this->render_add_to_cart_button();
@@ -60,12 +60,12 @@ class Webigo_View_Add_To_Cart
 
     private function render_add_to_cart_button() {
 
-        echo  '<div class="webigo-add-to-cart-button-wrapper">';
+        echo  '<div class="wbg-add-to-cart-button-wrapper">';
         
         $button_label = 'Adicionar ao carrinho';
         
         $html = sprintf(
-            '<button class="webigo-add-to-cart-button" data-product-id=%s data-category-id=%s data-state=%s>%s</button>',
+            '<button class="wbg-add-to-cart-button" data-product-id=%s data-category-id=%s data-state=%s>%s</button>',
             esc_attr( $this->product->id() ),
             esc_attr( $this->category->id() ),
             esc_attr('idle'),

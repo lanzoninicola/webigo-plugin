@@ -8,7 +8,7 @@
  *  That function is used to output the quantity input in the cart form on the product single page
  */
 
-class Webigo_Woo_Product_Quantity_Html_Input {
+class Webigo_Woo_View_Product_Quantity_Input {
 
     
     /**
@@ -22,9 +22,23 @@ class Webigo_Woo_Product_Quantity_Html_Input {
      */
     private $category;
 
+    /**
+     * @var int|string
+     */
     private $min_value;
 
+    /**
+     * @var int|string
+     */
     private $max_value;
+
+
+    /**
+     * Random generation of an ID to apply to label and input field
+     * 
+     * @var int
+     */
+    private $random_html_id;
 
 
     /**
@@ -36,14 +50,15 @@ class Webigo_Woo_Product_Quantity_Html_Input {
 
         $this->product = $product;
         $this->category = $category;
+        $this->random_html_id = rand(5000, 9999);
     }
 
     /**
      * 
      * @param int $min_value - Optional - If passed it will be the min value of input field with type number
      */
-    private function min_value( int $min_value = null ) {
-
+    private function min_value( int $min_value = null )
+    {
         if ( ! is_null( $min_value ) ) {
             return absint( $min_value );
         }
@@ -89,6 +104,7 @@ class Webigo_Woo_Product_Quantity_Html_Input {
 
     }
 
+    /*
     private function pattern() {
 
         return apply_filters( 'woocommerce_quantity_input_pattern', has_filter( 'woocommerce_stock_amount', 'intval' ) ? '[0-9]*' : '' );
@@ -98,6 +114,7 @@ class Webigo_Woo_Product_Quantity_Html_Input {
 
         return apply_filters( 'woocommerce_quantity_input_inputmode', has_filter( 'woocommerce_stock_amount', 'intval' ) ? 'numeric' : '' );
     }
+    */
 
      /**
      * 
@@ -113,15 +130,13 @@ class Webigo_Woo_Product_Quantity_Html_Input {
      * 
      * @param array $args - At the moment it handles the "for" attribute of label (label_for)
      */
-    public function render_html_input_label( array $args  ) {
-
-        $label_for = isset( $args['label_for'] ) ? $args['label_for'] : '';
+    public function render_html_input_label( array $args = array()  ) {
 
         $input_label_text = 'Quantitade';
 
         $html = sprintf(
-            '<label for="%s" class="webigo-product-qty-label">%s</label>',
-            esc_attr( $label_for ),
+            '<label for="%s" class="wbg-product-qty-label">%s</label>',
+            esc_attr( $this->html_input_id() ),
             esc_html( $input_label_text )
         );
         echo wp_kses_post( $html );
@@ -139,19 +154,20 @@ class Webigo_Woo_Product_Quantity_Html_Input {
      *      * 
      * 
      */
-    public function render_html_input_field( array $args ) {
+    public function render_html_input_field( array $args = array() ) {
 
-        $input_classes  = isset( $args['input_classes'] ) ? $args['input_classes'] : uniqid( 'wbg-addtocart-input-quantity-' );
+        $input_id       = $this->html_input_id();
         $input_hidden   = isset( $args['hidden'] ) && $args['hidden'] ? true : false ;
         $input_type     = $input_hidden ? 'hidden': 'number';
 
 
-        $input_string = '<input name=%s class=%s type=%s value=%s data-product-id=%s data-category-id=%s min=%u max=%u size=%u step=%u readonly style="text-align:center;"/>';
+        $input_string = '<input id=%s name=%s class=%s type=%s value=%s data-product-id=%s data-category-id=%s min=%u max=%u size=%u step=%u readonly style="text-align:center;"/>';
         
         echo sprintf(
-            $input_string,    
+            $input_string,
+            esc_attr( $input_id ),    
             esc_attr( $this->input_name() ),
-            esc_attr( $input_classes ),
+            esc_attr( 'wbg-product-input-quantity' ),
             esc_attr( $input_type ),
             esc_attr( $this->input_value( 0 ) ),
             esc_attr( $this->product->id() ),
@@ -161,5 +177,9 @@ class Webigo_Woo_Product_Quantity_Html_Input {
             esc_attr( $this->size() ),
             esc_attr( $this->input_step() ),
         );
+    }
+
+    private function html_input_id() {
+        return 'product-quantity-' . $this->random_html_id;
     }
 }

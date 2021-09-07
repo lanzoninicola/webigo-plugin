@@ -8,12 +8,6 @@ class Webigo_View_Product_Price {
     public function __construct($product) {
 
         $this->product = $product;
-        $this->load_dependencies();
-    }
-
-    private function load_dependencies() {
-
-
     }
 
     public function render() {
