@@ -24,9 +24,9 @@ class Webigo_View_Archive_Product {
     public function render_archive_products( object $database ) : void
     {
 
-        echo '<div class="webigo-archive-product-container">';
+        echo '<div class="wbg-archive-product-container">';
 
-        echo '<ul class="webigo-archive-product-wrapper">';
+        echo '<ul class="wbg-archive-product-wrapper">';
 
         $categories = (array) $database->get_categories();
 

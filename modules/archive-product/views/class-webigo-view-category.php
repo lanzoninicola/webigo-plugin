@@ -32,9 +32,9 @@ class Webigo_View_Category
 
     public function render()
     {
-        echo '<li class="webigo-category-card">';
+        echo '<li class="wbg-category-card">';
         
-        echo '<div class="webigo-category-inner-card">';
+        echo '<div class="wbg-category-inner-card">';
 
         $this->render_image();
 
@@ -49,7 +49,7 @@ class Webigo_View_Category
 
     private function render_image()
     {
-        echo '<div class="webigo-category-inner-image">';
+        echo '<div class="wbg-category-inner-image">';
         echo '<img src="' . esc_url( $this->category->image_url() ) . '" width="100px" alt loading="lazy" />';
         echo '</div>';
     }
@@ -57,9 +57,9 @@ class Webigo_View_Category
     private function render_category_content() 
     {
 
-        echo '<div class="webigo-category-content">';
-        echo '<h2 class="webigo-category-name">' . esc_html( $this->category->name() ) . '</h2>';
-        echo '<p class="webigo-category-description">' . esc_html( $this->category->description() ) . '</p>';
+        echo '<div class="wbg-category-content">';
+        echo '<h2 class="wbg-category-name">' . esc_html( $this->category->name() ) . '</h2>';
+        echo '<p class="wbg-category-description">' . esc_html( $this->category->description() ) . '</p>';
 
         $this->render_category_info();
 
@@ -73,16 +73,16 @@ class Webigo_View_Category
     {
 
         // TODO: custom fields description open on click
-        echo '<div class="webigo-category-info">';
+        echo '<div class="wbg-category-info">';
 
-        echo '<div class="webigo-category-info-details">';
+        echo '<div class="wbg-category-info-details">';
         foreach ( $this->category->custom_fields() as $custom_field_values ) {
 
             if( ! empty( $custom_field_values['value'] ) ) {
-                echo '<div class="webigo-category-info-detail">';
+                echo '<div class="wbg-category-info-detail">';
                 
                 echo '<span>' . esc_html($custom_field_values['label']) . ' ' . esc_html($custom_field_values['value']) . '</span>';
-                echo '<div class="webigo-category-info-detail-description" data-visibility="hidden">' . esc_html($custom_field_values['description']) . '</div>';
+                echo '<div class="wbg-category-info-detail-description" data-visibility="hidden">' . esc_html($custom_field_values['description']) . '</div>';
                 
                 echo '</div>';
             }
@@ -129,9 +129,9 @@ class Webigo_View_Category
 
     private function render_products() {
 
-        echo '<div class="webigo-product-list-wrapper" data-visibility="hidden">';
+        echo '<div class="wbg-product-list-wrapper" data-visibility="hidden">';
        
-        echo '<ul class="webigo-product-list" data-category-id="' . esc_attr( $this->category->id() ) . '">';
+        echo '<ul class="wbg-product-list" data-category-id="' . esc_attr( $this->category->id() ) . '">';
 
         $products = (array) $this->database->get_products_category( $this->category->id() );
 

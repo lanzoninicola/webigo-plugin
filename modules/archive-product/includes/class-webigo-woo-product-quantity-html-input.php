@@ -141,7 +141,7 @@ class Webigo_Woo_Product_Quantity_Html_Input {
      */
     public function render_html_input_field( array $args ) {
 
-        $input_classes  = isset( $args['input_classes'] ) ? $args['input_classes'] : uniqid( 'webigo-addtocart-input-quantity-' );
+        $input_classes  = isset( $args['input_classes'] ) ? $args['input_classes'] : uniqid( 'wbg-addtocart-input-quantity-' );
         $input_hidden   = isset( $args['hidden'] ) && $args['hidden'] ? true : false ;
         $input_type     = $input_hidden ? 'hidden': 'number';
 
