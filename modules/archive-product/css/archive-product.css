@@ -1,5 +1,10 @@
-.wbg-archive-product-container {
+/* This class is used inside Bricks for the page foreground */
+.wbg-archive-product {
   background-color: var(--hzbi-whitesmoke);
+}
+
+.wbg-archive-product-container {
+  padding: 0rem 1rem;
 }
 
 .wbg-archive-product-container > ul,
@@ -25,6 +30,16 @@
 .arrow-toggle-expand-collapse {
   width: 34px;
   height: 34px;
+}
+
+.arrow-toggle-expand-collapse[data-visibility="hidden"] {
+  display: none;
+}
+
+.arrow-toggle-expand-collapse[data-visibility="shown"] {
+}
+
+.action-buttons {
   border-radius: 50%;
   box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0px,
     rgb(255 255 255 / 80%) -6px -2px 16px 0px;
@@ -33,13 +48,6 @@
   align-content: center;
   justify-content: center;
   align-items: center;
-}
-
-.arrow-toggle-expand-collapse[data-visibility="hidden"] {
-  display: none;
-}
-
-.arrow-toggle-expand-collapse[data-visibility="shown"] {
 }
 
 .expanded {
@@ -113,18 +121,22 @@
 }
 */
 
-.wbg-category-info-details {
+.wbg-category-attributes {
+  position: relative;
+}
+
+.wbg-category-attributes-values {
   display: flex;
   flex-direction: row;
   gap: 0.5em;
   margin-top: 0.5rem;
 }
 
-.wbg-category-info-detail {
+.wbg-category-attribute-value {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #d6b184;
+  background: var(--hzbi-gold);
   text-align: center;
   font-size: 0.8em;
   font-weight: 900;
@@ -135,12 +147,31 @@
   padding: 1em;
 }
 
-.wbg-category-info-detail-description[data-visibility="hidden"] {
-  display: none;
+.wbg-category-attributes-descriptions {
+  position: absolute;
+  z-index: 1;
+  transform: translateY(100%);
+  background-color: var(--hzbi-gold);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
 }
 
-.wbg-category-info-detail-description[data-visibility="shown"] {
-  display: none;
+.wbg-category-attributes-descriptions[data-visibility="hidden"] {
+  transform: translateY(0%);
+  opacity: 0;
+  transition: all 700ms;
+}
+
+.wbg-category-attributes-descriptions[data-visibility="visible"] {
+  animation: slideInUp 500ms ease-in;
+}
+
+.wbg-category-attribute-description {
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--hzbi-black);
 }
 
 .product-category-explode {

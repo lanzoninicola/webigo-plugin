@@ -13,8 +13,9 @@
   const state = { ...webigoHelper?.stateManager?.state };
   const eventManager = webigoHelper?.eventManager;
 
-  const plusQtyButtons = d.getElementsByClassName("add-to-cart-plus-qty");
-  const minusQtyButtons = d.getElementsByClassName("add-to-cart-minus-qty");
+  const plusQtyButtons = d.getElementsByClassName("btn-quantity-plus");
+  const minusQtyButtons = d.getElementsByClassName("btn-quantity-minus");
+  const catAttributes = d.querySelectorAll(".wbg-category-attributes");
 
   const defaultParams = {
     addQtyFraction: 1,
@@ -33,11 +34,45 @@
     });
   }
 
-  function getProductData(eobj) {
+  if (catAttributes) {
+    Object.keys(catAttributes).forEach((catAttribute) => {
+      catAttributes[catAttribute].addEventListener(
+        "click",
+        showHideCatAttributes
+      );
+    });
+  }
+
+  function showHideCatAttributes() {
+    const { catId } = getElementAttribute(this);
+
+    console.log(catId);
+
+    const catAttrDescriptions = d.querySelectorAll(
+      ".wbg-category-attributes[data-category-id='" +
+        catId +
+        "'] .wbg-category-attributes-descriptions"
+    )[0];
+
+    if (catAttrDescriptions) {
+      const { visibility } = getElementAttribute(catAttrDescriptions);
+
+      if (visibility === "hidden") {
+        catAttrDescriptions.setAttribute("data-visibility", "visible");
+      }
+
+      if (visibility === "visible") {
+        catAttrDescriptions.setAttribute("data-visibility", "hidden");
+      }
+    }
+  }
+
+  function getElementAttribute(eobj) {
     return {
       prodId: eobj.getAttribute("data-product-id"),
       productPrice: eobj.getAttribute("data-product-price"),
       catId: eobj.getAttribute("data-category-id"),
+      visibility: eobj.getAttribute("data-visibility"),
     };
   }
 
@@ -56,7 +91,7 @@
 
   function increaseQtyToCart(e) {
     e.preventDefault();
-    const { prodId, catId, productPrice } = getProductData(this);
+    const { prodId, catId, productPrice } = getElementAttribute(this);
 
     const prevQty = getPrevQuantityState(prodId, catId);
 
@@ -66,7 +101,7 @@
       eventManager.trigger({
         eventName: "showAddToCartContainer",
         targetQuery:
-          ".webigo-add-to-cart-container[data-product-id='" +
+          ".wbg-add-to-cart-container[data-product-id='" +
           prodId +
           "'][data-category-id='" +
           catId +
@@ -88,7 +123,7 @@
 
   function decreaseQtyToCart(e) {
     e.preventDefault();
-    const { prodId, catId, productPrice } = getProductData(this);
+    const { prodId, catId, productPrice } = getElementAttribute(this);
 
     const prevQty = getPrevQuantityState(prodId, catId);
 
@@ -101,7 +136,7 @@
       eventManager.trigger({
         eventName: "hideAddToCartContainer",
         targetQuery:
-          ".webigo-add-to-cart-container[data-product-id='" +
+          ".wbg-add-to-cart-container[data-product-id='" +
           prodId +
           "'][data-category-id='" +
           catId +
@@ -113,7 +148,6 @@
       ["prodId_" + prodId + "_catId_" + catId]: {
         userQty: newQty,
         price: productPrice,
-        showAddToCartContainer: true,
       },
     });
 
@@ -124,7 +158,7 @@
 
   function calculateSubTotal(prodId, catId) {
     const subtotalNode = d.querySelectorAll(
-      ".webigo-product-cart-subtotal-value[data-product-id='" +
+      ".wbg-product-cart-subtotal-value[data-product-id='" +
         parseInt(prodId, 10) +
         "'][data-category-id='" +
         catId +
@@ -146,9 +180,8 @@
         prodId +
         "'][data-category-id='" +
         catId +
-        "'].webigo-product-input-quantity"
+        "'].wbg-product-input-quantity"
     )[0];
-
     const userQty = state["prodId_" + prodId + "_catId_" + catId]?.userQty;
 
     if (qtyProductInputQuantityArea) {

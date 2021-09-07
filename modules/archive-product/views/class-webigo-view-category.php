@@ -75,18 +75,29 @@ class Webigo_View_Category
         // TODO: custom fields description open on click
         echo '<div class="wbg-category-info">';
 
-        echo '<div class="wbg-category-info-details">';
+        echo '<div class="wbg-category-attributes" data-category-id="' . esc_attr( $this->category->id() ) . '">';
+        
+        // TODO: create a Webigo_Woo_Category_Custom_Fields to encapsulate the attributes.
+        echo '<div class="wbg-category-attributes-descriptions" data-visibility="hidden">';
         foreach ( $this->category->custom_fields() as $custom_field_values ) {
 
             if( ! empty( $custom_field_values['value'] ) ) {
-                echo '<div class="wbg-category-info-detail">';
-                
-                echo '<span>' . esc_html($custom_field_values['label']) . ' ' . esc_html($custom_field_values['value']) . '</span>';
-                echo '<div class="wbg-category-info-detail-description" data-visibility="hidden">' . esc_html($custom_field_values['description']) . '</div>';
-                
-                echo '</div>';
+                echo '<p class="wbg-category-attribute-description">' . esc_html($custom_field_values['description']) . '</p>';
             }
         }
+
+        echo '</div>';
+        
+        echo '<div class="wbg-category-attributes-values">';
+        foreach ( $this->category->custom_fields() as $custom_field_values ) {
+
+            if( ! empty( $custom_field_values['value'] ) ) {
+                echo '<span class="wbg-category-attribute-value">' . esc_html($custom_field_values['label']) . ' ' . esc_html($custom_field_values['value']) . '</span>';
+            }
+        }
+        echo '</div>';
+
+
         echo '</div>';
 
         echo '</div>';
@@ -94,9 +105,9 @@ class Webigo_View_Category
 
     private function render_expande_collapse_products() {
 
-        echo '<div class="product-category-explode" data-category-id="' . esc_html( $this->category->id() ) . '">';
+        echo '<div class="product-category-explode" data-category-id="' . esc_attr( $this->category->id() ) . '">';
                 
-        echo '<div class="toggleExpandLabel" data-category-id="' . esc_html( $this->category->id() ) . '">';
+        echo '<div class="toggleExpandLabel" data-category-id="' . esc_attr( $this->category->id() ) . '">';
         
                 $this->arrow_expand_collapse();
         
@@ -108,7 +119,7 @@ class Webigo_View_Category
 
     private function arrow_expand_collapse() {
 
-        echo '<div class="arrow-expand arrow-toggle-expand-collapse" data-visibility="hidden" data-category-id="' . esc_html( $this->category->id() ) . '">
+        echo '<div class="action-buttons arrow-expand arrow-toggle-expand-collapse" data-visibility="visible" data-category-id="' . esc_html( $this->category->id() ) . '">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23ZM12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21ZM7 13H13.5858L11.2929 15.2929L12.7071 16.7071L17.4142 12L12.7071 7.29289L11.2929 8.70711L13.5858 11H7V13Z" 
                     fill="#005930"/>
