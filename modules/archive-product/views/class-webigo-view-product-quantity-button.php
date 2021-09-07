@@ -3,14 +3,24 @@
 
 
 class Webigo_View_Quantity_Button {
-
+   
+    /**
+     * @var Webigo_Woo_Product|Webigo_Woo_Product_Bundle
+     */
     private $product;
+
+    /**
+     * 
+     * @var Webigo_Woo_Category
+     */
+    private $category;
 
     private $button_user_style;
 
-    public function __construct( $product ) {
+    public function __construct( $product, $category) {
 
         $this->product = $product;
+        $this->category = $category;
         $this->button_user_style = array();
     }
 
@@ -48,7 +58,7 @@ class Webigo_View_Quantity_Button {
             $css_class_final = 'add-to-cart-plus-qty';
         }
 
-        echo '<div class="' . esc_attr( $css_class_final ) . ' btn-addto-cart-qty" data-product-id="' . esc_attr( $this->product->id() ) . '" data-product-price="' . esc_attr( $this->product->final_price() ) . '">';
+        echo '<div class="' . esc_attr( $css_class_final ) . ' btn-addto-cart-qty" data-product-id="' . esc_attr( $this->product->id() ) . '" data-product-price="' . esc_attr( $this->product->final_price() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '"">';
 
         echo '<svg
             width="' . esc_attr( $this->button_user_style['width'] ) . '"

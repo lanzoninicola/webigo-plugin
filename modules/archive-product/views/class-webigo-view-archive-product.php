@@ -41,9 +41,6 @@ class Webigo_View_Archive_Product {
         echo '</ul>';
 
         echo '</div>';
-    
         
     }
-
-
 }

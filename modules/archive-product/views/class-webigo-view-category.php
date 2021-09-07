@@ -137,7 +137,7 @@ class Webigo_View_Category
 
         foreach ( $products as $product ) {
 
-            $view_product = new Webigo_View_Product( $product );
+            $view_product = new Webigo_View_Product( $product, $this->category );
 
             $view_product->render_product();
         }

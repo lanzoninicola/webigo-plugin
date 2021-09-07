@@ -14,24 +14,22 @@
     });
   }
 
-  eventManager.addEvent({
-    eventName: "showAddToCartContainer",
-    callback: showAddToCartContainer,
-  });
-
-  function showAddToCartContainer(el) {
-    el.setAttribute("data-visibility", "visible");
-  }
-
   function sendToCart(e) {
     e.preventDefault();
     const productId = this.getAttribute("data-product-id");
-    const productQtyNode = d.getElementById(
-      "add-to-cart-quantity-input-" + productId
-    );
+    const categoryId = this.getAttribute("data-category-id");
+    const productQtyNode = d.querySelectorAll(
+      '.webigo-product-input-quantity[data-product-id="' +
+        productId +
+        '"][data-category-id="' +
+        categoryId +
+        '"]'
+    )[0];
     const wpnonceNode = d.querySelectorAll(
       '.webigo-add-to-cart-container[data-product-id="' +
         productId +
+        '"][data-category-id="' +
+        categoryId +
         '"] input[name="webigo_woo_add_to_cart_nonce"]'
     )[0];
     const wpnonce = wpnonceNode.getAttribute("value");
@@ -73,15 +71,19 @@
             return;
           }
 
-          showTopNotification();
+          // TODO: show notification
+          //showTopNotification();
 
           // showAddedToCartNotification(product_id);
 
-          itemsInCartCheck();
+          //itemsInCartCheck();
 
           setTimeout(hideNotification, 1500);
 
-          const addToCartProductButton = getAddToCartButtonElement(productId);
+          const addToCartProductButton = getAddToCartButtonElement(
+            productId,
+            categoryId
+          );
           addToCartProductButton.classList.remove("pulse-animation");
         })
         .catch((err) => {
@@ -90,18 +92,68 @@
         });
     }
   }
+
+  eventManager.addEvent({
+    eventName: "showAddToCartContainer",
+    callback: showAddToCartContainer,
+  });
+
+  function showAddToCartContainer(el) {
+    el.setAttribute("data-visibility", "visible");
+  }
+
+  eventManager.addEvent({
+    eventName: "hideAddToCartContainer",
+    callback: hideAddToCartContainer,
+  });
+
+  function hideAddToCartContainer(el) {
+    el.setAttribute("data-visibility", "hidden");
+  }
+
+  // function getAddToCartButtonElement(prodId, catId) {
+  //   const addToCartProductButtons = d.querySelectorAll(
+  //     "form.cart button[type='submit'][data-product-id='" +
+  //       parseInt(prodId, 10) +
+  //       "'][data-category-id='" +
+  //       parseInt(catId, 10) +
+  //       "'].add_to_cart_button"
+  //   );
+
+  //   if (addToCartProductButtons.length > 0) {
+  //     return addToCartProductButtons[0];
+  //   }
+  // }
+
+  // function enableAddToCartButtonOf(prodId) {
+  //   const addToCartProductButton = getAddToCartButtonElement(prodId);
+
+  //   showNode(addToCartProductButton);
+  //   addToCartProductButton.classList.add("pulse-animation");
+
+  //   // if (addToCartProductButton) {
+  //   //   addToCartProductButton.removeAttribute("disabled");
+  //   // }
+  // }
+
+  // function disableAddToCartButtonOf(prodId) {
+  //   const addToCartProductButton = getAddToCartButtonElement(prodId);
+
+  //   hideNode(addToCartProductButton);
+  //   addToCartProductButton.classList.remove("pulse-animation");
+  // }
 })(webigoHelper);
 
-class WebigoAddToCart {
-  showBottomBar = () => {
-    // this.setState(
-    //   this.state,
-    //   { containerElementVisible: true },
-    //   { context: this }
-    // );
+// class WebigoAddToCart {
+//   showBottomBar = () => {
+//     // this.setState(
+//     //   this.state,
+//     //   { containerElementVisible: true },
+//     //   { context: this }
+//     // );
 
-    this.containerElement.setAttribute("data-visibility", "visible");
-  };
+//     this.containerElement.setAttribute("data-visibility", "visible");
+//   };
 
-  hideBottomBar = () => {};
-}
+//   hideBottomBar = () => {};
+// }

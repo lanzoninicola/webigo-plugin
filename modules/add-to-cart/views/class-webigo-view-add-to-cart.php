@@ -10,6 +10,8 @@ class Webigo_View_Add_To_Cart
 
     private $product;
 
+    private $category;
+
     /**
      * 
      * @var Webigo_Woo_Add_To_Cart
@@ -29,11 +31,12 @@ class Webigo_View_Add_To_Cart
 		
     }
 
-    public function render($product)
+    public function render( $product, $category)
     {
         $this->product = $product;
+        $this->category = $category;
 
-        echo  '<div class="webigo-add-to-cart-container" data-visibility="hidden" data-product-id="' . esc_attr( $this->product->id() ) . '">';
+        echo  '<div class="webigo-add-to-cart-container" data-visibility="hidden" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">';
 
         $this->render_wp_nonce();
         $this->render_add_to_cart_button();
@@ -62,8 +65,9 @@ class Webigo_View_Add_To_Cart
         $button_label = 'Adicionar ao carrinho';
         
         $html = sprintf(
-            '<button class="webigo-add-to-cart-button" data-product-id=%s data-state=%s>%s</button>',
+            '<button class="webigo-add-to-cart-button" data-product-id=%s data-category-id=%s data-state=%s>%s</button>',
             esc_attr( $this->product->id() ),
+            esc_attr( $this->category->id() ),
             esc_attr('idle'),
             esc_html( $button_label )
             

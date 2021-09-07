@@ -155,43 +155,43 @@ class Webigo_Woo_Category {
         return $this->custom_fields;
     }
 
-    /**
-     * 
-     * @return array of products
-     */
-    public function get_products() : array
-    {
+    // /**
+    //  * 
+    //  * @return array of products
+    //  */
+    // public function get_products() : array
+    // {
 
-        // This method to retrieve the product is the same of wc_get_products() function
-        $query = new WC_Product_Query( array(
-            'status' => 'publish',
-            'category' => array( $this->slug ),
-            'return' => 'objects',
-        ) );
+    //     // This method to retrieve the product is the same of wc_get_products() function
+    //     $query = new WC_Product_Query( array(
+    //         'status' => 'publish',
+    //         'category' => array( $this->slug ),
+    //         'return' => 'objects',
+    //     ) );
 
-        $wc_products = (array) $query->get_products();
+    //     $wc_products = (array) $query->get_products();
 
-        foreach ( $wc_products as $wc_product ) {
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // son qua
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            $wc_product_id = (string) $wc_product->get_id();
+    //     foreach ( $wc_products as $wc_product ) {
+    //         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //         // son qua
+    //         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //         $wc_product_id = (string) $wc_product->get_id();
 
-            // dovrei interrogare il database per retrieve dei prodotti
-            // in quanto l'oggetto prodotto contiene anche i parent che dovrei 
-            // aggiungere all'array dei prodotti di categoria che ritornerebbe questa funzione
+    //         // dovrei interrogare il database per retrieve dei prodotti
+    //         // in quanto l'oggetto prodotto contiene anche i parent che dovrei 
+    //         // aggiungere all'array dei prodotti di categoria che ritornerebbe questa funzione
 
-            // 1. fare array dei solo prodotti della categoria
-            // 2. fare array dei prodotti combo che
-            // 3. merge array e returns
-            // 
-            // o pensare di estendere questa classe per gestire la specificità del cliente
-            // questa classe ritorna il risultato standard (servirà una category facade?)
+    //         // 1. fare array dei solo prodotti della categoria
+    //         // 2. fare array dei prodotti combo che
+    //         // 3. merge array e returns
+    //         // 
+    //         // o pensare di estendere questa classe per gestire la specificità del cliente
+    //         // questa classe ritorna il risultato standard (servirà una category facade?)
 
-        }
+    //     }
          
        
-        return array();
-    }
+    //     return array();
+    // }
 
 }

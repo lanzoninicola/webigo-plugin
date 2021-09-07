@@ -4,14 +4,27 @@
 class Webigo_View_Product_Quantity
 {
 
+    /**
+     * @var Webigo_Woo_Product|Webigo_Woo_Product_Bundle
+     */
     private $product;
 
+    /**
+     * 
+     * @var Webigo_Woo_Category
+     */
+    private $category;
+
+    /**
+     * @var Webigo_Woo_Product_Quantity_Html_Input
+     */
     private $html_product_quantity;
 
-    public function __construct($product)
+    public function __construct( $product , $category )
     {
 
         $this->product = $product;
+        $this->category = $category;
         $this->load_dependencies();
     }
 
@@ -22,7 +35,7 @@ class Webigo_View_Product_Quantity
 
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-product-quantity-html-input.php';
 
-        $this->html_product_quantity = new Webigo_Woo_Product_Quantity_Html_Input( $this->product );
+        $this->html_product_quantity = new Webigo_Woo_Product_Quantity_Html_Input( $this->product, $this->category );
     }
 
     public function render()
@@ -51,7 +64,7 @@ class Webigo_View_Product_Quantity
 
         echo '<div class="webigo-product-cart-qty-actions">';
 
-        $quantity_button = new Webigo_View_Quantity_Button($this->product);
+        $quantity_button = new Webigo_View_Quantity_Button( $this->product, $this->category );
 
         $quantity_button->render( 'decrease', $button_style );
 
@@ -76,7 +89,6 @@ class Webigo_View_Product_Quantity
     {
         
         $args = array( 
-            'input_id'      => 'add-to-cart-quantity-input-'  . $this->product->id(),
             'input_classes' => 'webigo-product-input-quantity'
         );
        

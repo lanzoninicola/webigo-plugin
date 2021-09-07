@@ -3,17 +3,25 @@
 
 class Webigo_View_Product {
 
+    /**
+     * @var Webigo_Woo_Product|Webigo_Woo_Product_Bundle
+     */
     private $product;
 
-    private $render_price;
+    /**
+     * 
+     * @var Webigo_Woo_Category
+     */
+    private $category;
 
     /**
      * 
      * @param Webigo_Woo_Product|Webigo_Woo_Product_Bundle
      */
-    public function __construct($product) {
+    public function __construct( $product , $category ) {
 
         $this->product = $product;
+        $this->category = $category;
 
         $this->load_dependencies();
 
@@ -84,7 +92,7 @@ class Webigo_View_Product {
 
     private function render_quantity_action_area() {
 
-        $quantity = new Webigo_View_Product_Quantity( $this->product );
+        $quantity = new Webigo_View_Product_Quantity( $this->product, $this->category );
 
         $quantity->render();
     }
@@ -94,7 +102,7 @@ class Webigo_View_Product {
         echo  '<div class="webigo-product-cart-subtotal">';
         
         echo '<div class="webigo-product-cart-subtotal-label">Subtotal</div>';
-        echo '<div class="webigo-product-cart-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '">R$0</div>';
+        echo '<div class="webigo-product-cart-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">R$0</div>';
         
         echo '</div>';
     }
@@ -103,7 +111,7 @@ class Webigo_View_Product {
 
         $add_to_cart = new Webigo_View_Add_To_Cart(  );
 
-        $add_to_cart->render($this->product);
+        $add_to_cart->render( $this->product, $this->category );
 
     }
 

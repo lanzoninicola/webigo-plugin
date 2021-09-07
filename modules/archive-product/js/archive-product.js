@@ -33,148 +33,126 @@
     });
   }
 
-  function getProductInfo(eobj) {
+  function getProductData(eobj) {
     return {
-      productId: eobj.getAttribute("data-product-id"),
+      prodId: eobj.getAttribute("data-product-id"),
       productPrice: eobj.getAttribute("data-product-price"),
+      catId: eobj.getAttribute("data-category-id"),
     };
   }
 
-  function getPrevQuantityState(productId) {
+  function getPrevQuantityState(prodId, catId) {
     const initQtyCartState = 0;
 
-    const qtyProductState = state["productId_" + productId];
+    const qtyProductState = state["prodId_" + prodId + "_catId_" + catId];
 
     if (typeof qtyProductState === "undefined") {
-      state["productId_" + productId] = {};
-      state["productId_" + productId].userQty = initQtyCartState;
+      state["prodId_" + prodId + "_catId_" + catId] = {};
+      state["prodId_" + prodId + "_catId_" + catId].userQty = initQtyCartState;
     }
 
-    return state["productId_" + productId].userQty;
+    return state["prodId_" + prodId + "_catId_" + catId].userQty;
   }
 
   function increaseQtyToCart(e) {
     e.preventDefault();
-    const { productId, productPrice } = getProductInfo(this);
+    const { prodId, catId, productPrice } = getProductData(this);
 
-    const prevQty = getPrevQuantityState(productId);
+    const prevQty = getPrevQuantityState(prodId, catId);
 
     let newQty = prevQty + defaultParams["addQtyFraction"];
 
-    if (newQty >= 0) {
-      // enableAddToCartButtonOf(productId);
-    } else {
-      // disableAddToCartButtonOf(productId);
+    if (newQty > 0) {
+      eventManager.trigger({
+        eventName: "showAddToCartContainer",
+        targetQuery:
+          ".webigo-add-to-cart-container[data-product-id='" +
+          prodId +
+          "'][data-category-id='" +
+          catId +
+          "']",
+      });
     }
 
     setState(state, {
-      ["productId_" + productId]: {
+      ["prodId_" + prodId + "_catId_" + catId]: {
         userQty: newQty,
         price: productPrice,
       },
     });
 
-    eventManager.trigger({
-      eventName: "showAddToCartContainer",
-      targetQuery:
-        ".webigo-add-to-cart-container[data-product-id='" + productId + "']",
-    });
+    calculateSubTotal(prodId, catId);
 
-    calculateSubTotal(productId, productPrice);
-
-    writeQuantityValue(productId);
+    writeQuantityValue(prodId, catId);
   }
 
   function decreaseQtyToCart(e) {
     e.preventDefault();
-    const { productId, productPrice } = getProductInfo(this);
+    const { prodId, catId, productPrice } = getProductData(this);
 
-    const prevQty = getPrevQuantityState(productId);
+    const prevQty = getPrevQuantityState(prodId, catId);
 
     let newQty = prevQty - defaultParams["decreasQtyFraction"];
 
     if (newQty <= 0) {
       // TODO: disabling minus button
       newQty = 0;
-      // disableAddToCartButtonOf(productId);
-    } else {
-      // enableAddToCartButtonOf(productId);
+
+      eventManager.trigger({
+        eventName: "hideAddToCartContainer",
+        targetQuery:
+          ".webigo-add-to-cart-container[data-product-id='" +
+          prodId +
+          "'][data-category-id='" +
+          catId +
+          "']",
+      });
     }
 
-    console.log(state);
-
     setState(state, {
-      ["productId_" + productId]: {
+      ["prodId_" + prodId + "_catId_" + catId]: {
         userQty: newQty,
         price: productPrice,
         showAddToCartContainer: true,
       },
     });
 
-    calculateSubTotal(productId);
+    calculateSubTotal(prodId, catId);
 
-    writeQuantityValue(productId);
+    writeQuantityValue(prodId, catId);
   }
 
-  function calculateSubTotal(productId) {
-    const subtotalNodes = d.querySelectorAll(
+  function calculateSubTotal(prodId, catId) {
+    const subtotalNode = d.querySelectorAll(
       ".webigo-product-cart-subtotal-value[data-product-id='" +
-        parseInt(productId, 10) +
+        parseInt(prodId, 10) +
+        "'][data-category-id='" +
+        catId +
         "']"
-    );
+    )[0];
 
-    const userQty = state["productId_" + productId]?.userQty;
-    const price = state["productId_" + productId]?.price;
+    const userQty = state["prodId_" + prodId + "_catId_" + catId]?.userQty;
+    const price = state["prodId_" + prodId + "_catId_" + catId]?.price;
 
-    if (subtotalNodes.length > 0) {
-      const subtotalNode = subtotalNodes[0];
-
-      if (subtotalNode) {
-        const subtotal = userQty * price;
-        subtotalNode.innerText = "R$" + subtotal.toFixed(2);
-      }
+    if (subtotalNode) {
+      const subtotal = userQty * price;
+      subtotalNode.innerText = "R$" + subtotal.toFixed(2);
     }
   }
 
-  function writeQuantityValue(productId) {
+  function writeQuantityValue(prodId, catId) {
     const qtyProductInputQuantityArea = d.querySelectorAll(
-      "input[data-product-id='" + productId + "'].webigo-product-input-quantity"
+      "input[data-product-id='" +
+        prodId +
+        "'][data-category-id='" +
+        catId +
+        "'].webigo-product-input-quantity"
     )[0];
 
-    const userQty = state["productId_" + productId]?.userQty;
+    const userQty = state["prodId_" + prodId + "_catId_" + catId]?.userQty;
 
     if (qtyProductInputQuantityArea) {
       qtyProductInputQuantityArea.value = userQty;
     }
-  }
-
-  function getAddToCartButtonElement(productId) {
-    const addToCartProductButtons = d.querySelectorAll(
-      "form.cart button[type='submit'][data-product-id='" +
-        parseInt(productId, 10) +
-        "'].add_to_cart_button"
-    );
-
-    if (addToCartProductButtons.length > 0) {
-      return addToCartProductButtons[0];
-    }
-  }
-
-  function enableAddToCartButtonOf(productId) {
-    const addToCartProductButton = getAddToCartButtonElement(productId);
-
-    showNode(addToCartProductButton);
-    addToCartProductButton.classList.add("pulse-animation");
-
-    // if (addToCartProductButton) {
-    //   addToCartProductButton.removeAttribute("disabled");
-    // }
-  }
-
-  function disableAddToCartButtonOf(productId) {
-    const addToCartProductButton = getAddToCartButtonElement(productId);
-
-    hideNode(addToCartProductButton);
-    addToCartProductButton.classList.remove("pulse-animation");
   }
 })(webigoHelper);

@@ -11,7 +11,16 @@
 class Webigo_Woo_Product_Quantity_Html_Input {
 
     
+    /**
+     * @var Webigo_Woo_Product|Webigo_Woo_Product_Bundle
+     */
     private $product;
+
+    /**
+     * 
+     * @var Webigo_Woo_Category
+     */
+    private $category;
 
     private $min_value;
 
@@ -23,10 +32,10 @@ class Webigo_Woo_Product_Quantity_Html_Input {
      * @param Webigo_Woo_Product|Webigo_Woo_Product_Bundle|WC_Product
      */
        
-    public function __construct( $product ) {
+    public function __construct( $product, $category ) {
 
         $this->product = $product;
-
+        $this->category = $category;
     }
 
     /**
@@ -96,8 +105,6 @@ class Webigo_Woo_Product_Quantity_Html_Input {
      */
     private function input_value( int $input_value = null ) {
 
-        // The " $_POST['quantity'] " value must have more priority than the value forced by the parameter
-
         return ! is_null( $input_value ) ? absint( $input_value ) : $this->product->get_min_purchase_quantity();
 
     }
@@ -134,22 +141,21 @@ class Webigo_Woo_Product_Quantity_Html_Input {
      */
     public function render_html_input_field( array $args ) {
 
-        $input_id       = isset( $args['input_id'] ) ? $args['input_id'] : uniqid( 'webigo-addtocart-input-quantity-' );
         $input_classes  = isset( $args['input_classes'] ) ? $args['input_classes'] : uniqid( 'webigo-addtocart-input-quantity-' );
         $input_hidden   = isset( $args['hidden'] ) && $args['hidden'] ? true : false ;
         $input_type     = $input_hidden ? 'hidden': 'number';
 
 
-        $input_string = '<input name=%s id=%s class=%s type=%s value=%s data-product-id=%s min=%u max=%u size=%u step=%u readonly style="text-align:center;"/>';
+        $input_string = '<input name=%s class=%s type=%s value=%s data-product-id=%s data-category-id=%s min=%u max=%u size=%u step=%u readonly style="text-align:center;"/>';
         
         echo sprintf(
             $input_string,    
             esc_attr( $this->input_name() ),
-            esc_attr( $input_id ),
             esc_attr( $input_classes ),
             esc_attr( $input_type ),
             esc_attr( $this->input_value( 0 ) ),
             esc_attr( $this->product->id() ),
+            esc_attr( $this->category->id() ),
             esc_attr( $this->min_value( 0 ) ),
             esc_attr( $this->max_value( 999 ) ),
             esc_attr( $this->size() ),
