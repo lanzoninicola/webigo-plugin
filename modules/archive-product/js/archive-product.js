@@ -1,3 +1,6 @@
+/* global webigoHelper */
+/* jshint latedef:nofunc */
+
 (function (webigoHelper) {
   if (typeof webigoHelper === "undefined") {
     console.error("Issues with the javascript of core module");
@@ -18,17 +21,21 @@
     decreasQtyFraction: 1,
   };
 
-  _dom.bulkAttachEvent({
-    elements: plusQtyButtons,
-    ev: _dom.events.click,
-    cb: increaseQtyToCart,
-  });
+  init();
 
-  _dom.bulkAttachEvent({
-    elements: minusQtyButtons,
-    ev: _dom.events.click,
-    cb: decreaseQtyToCart,
-  });
+  function init() {
+    _dom.bulkAttachEvent({
+      elements: plusQtyButtons,
+      ev: _dom.events.click,
+      cb: increaseQtyToCart,
+    });
+
+    _dom.bulkAttachEvent({
+      elements: minusQtyButtons,
+      ev: _dom.events.click,
+      cb: decreaseQtyToCart,
+    });
+  }
 
   function getPrevQuantityState(prodId, catId) {
     const initQtyCartState = 0;
@@ -112,7 +119,7 @@
 
   function calculateSubTotal(prodId, catId) {
     const subtotalNode = d.querySelectorAll(
-      ".wbg-product-cart-subtotal-value[data-product-id='" +
+      ".wbg-product-subtotal-value[data-product-id='" +
         parseInt(prodId, 10) +
         "'][data-category-id='" +
         catId +
@@ -151,11 +158,15 @@
   const _dom = webigoHelper?.domManager;
   const catAttributes = d.querySelectorAll(".wbg-category-attributes");
 
-  _dom.bulkAttachEvent({
-    elements: catAttributes,
-    ev: _dom.events.click,
-    cb: showHideCatAttributes,
-  });
+  init();
+
+  function init() {
+    _dom.bulkAttachEvent({
+      elements: catAttributes,
+      ev: _dom.events.click,
+      cb: showHideCatAttributes,
+    });
+  }
 
   function showHideCatAttributes() {
     const { catId } = _dom.getElementAttribute(this);
@@ -188,11 +199,15 @@
     ".wbg-product-list .wbg-product .info-description"
   );
 
-  _dom.bulkAttachEvent({
-    elements: infoProdDescriptionButtons,
-    ev: _dom.events.click,
-    cb: showHideFullProductDescription,
-  });
+  init();
+
+  function init() {
+    _dom.bulkAttachEvent({
+      elements: infoProdDescriptionButtons,
+      ev: _dom.events.click,
+      cb: showHideFullProductDescription,
+    });
+  }
 
   function showHideFullProductDescription() {
     const { prodId, catId } = _dom.getElementAttribute(this);
