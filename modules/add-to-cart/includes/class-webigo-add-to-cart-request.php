@@ -14,6 +14,13 @@ class Webigo_Add_To_Cart_Request {
      */
     private $action_name;
 
+    /**
+     * Woocommerce Logger object
+     * 
+     * @var WC_Logger
+     */
+    private $logger;
+
      /**
      * Array with sanitized input
      * 
@@ -21,10 +28,20 @@ class Webigo_Add_To_Cart_Request {
      */
     private $post_data_sanitized;
 
-
-    public function __construct( string $wp_action_name)
+    public function __construct( string $wp_action_name )
     {
         $this->action_name = $wp_action_name;
+        $this->load_error_logger();
+    }
+
+    private function load_error_logger() : void
+    {
+        if ( function_exists( 'wc_get_logger' ) ) {
+            $this->logger = wc_get_logger();
+        } else {
+            $this->logger = new WC_Logger();
+        }
+
     }
 
     /**
@@ -45,16 +62,26 @@ class Webigo_Add_To_Cart_Request {
             !wp_verify_nonce($_nonce, $this->action_name)
         ) {
 
-            //TODO: Priority 1 add-to-cart: managing this response - Send an email to dev o record wp_errors
-            wp_send_json_error([
+            $log_error = array(
+                'plugin'      => 'Webigo',
+                'class'       => 'Class: ' . __CLASS__,
+                'function'    => 'Method: is_valid',
+                'message'     => 'Message: Nonce verification failed'  
+            );
+
+            $this->record_error_log( $log_error );
+
+            $http_error_response = array(
                 'message'     => 'The request is not valid.',
                 'requestData' => array(
                     'action'     =>  $this->action_name,
                     'nonce'      =>  $_nonce,
-                    'product_id' =>  $_product_id
+                    'product_id' => $_product_id,
                 ),
                 'nonceResult' => wp_verify_nonce($_nonce, $this->action_name)
-            ]);
+            );
+
+            $this->send_error_response( $http_error_response );
 
             return false;
         }
@@ -93,6 +120,64 @@ class Webigo_Add_To_Cart_Request {
     private function trimmer( $value ) : string
     {
         return trim( $value );
+    }
+
+    
+     /**
+     * 
+     * Responds to client with success data
+     * 
+     * @param array $successData
+     * @return void JSON response with success data
+     * 
+     */
+    public function send_success_response( array $successData ) : void
+    {
+
+        wp_send_json_success( $successData );
+
+    }
+
+    /**
+     * Responds to client with error data
+     * 
+     * @param  array $errorData
+     * @return void
+     */
+    public function send_error_response( array $errorData ): void
+    {
+
+        $_http_response = array_merge( array(
+            'error' => true,
+        ), $errorData);
+
+         wp_send_json_error( $_http_response );
+    }
+
+    /**
+     * Records the errors inside the WC logs Woocommerce->Status->Logs
+     * 
+     * @param array $errorData
+     * @return void 
+     */
+    public function record_error_log( array $errorData ) : void
+    {
+        if ( !isset( $this->logger ) ) {
+            return;
+        }
+
+        date_default_timezone_set(wp_timezone_string());
+
+        $message = ', ';
+
+        $_log_error = array_merge( array(
+            'date'        =>  date("Y-m-d"),
+            'hour'        =>  date("H:i:s"),
+        ), $errorData );
+
+        $message .= implode(', ', $_log_error);
+
+        $this->logger->log('error', $message);
     }
 
     /**

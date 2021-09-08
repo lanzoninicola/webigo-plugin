@@ -24,6 +24,7 @@ class Webigo_Woo_Ajax_Add_To_Cart
      */
     private $request;
 
+
     public function __construct()
     {
 
@@ -80,10 +81,13 @@ class Webigo_Woo_Ajax_Add_To_Cart
                     }
                     */
 
+                   $this->send_success_response( $product_id, $quantity );
+
                     WC_AJAX::get_refreshed_fragments();
 
                 }
             } catch (Exception $e) {
+                $this->record_error_log( $e, $product_id );
                 $this->send_error_response( $e, $product_id );
             }
 
@@ -91,20 +95,70 @@ class Webigo_Woo_Ajax_Add_To_Cart
         }
     }
 
+     /**
+     * 
+     * @param string $product_id
+     * @param int    $quantity
+     * @return void  JSON response with success data
+     * 
+     */
+    private function send_success_response(string $product_id, int $quantity) : void
+    {
+        $product = (object) wc_get_product( $product_id );
+
+        $data = array(
+            'product_id'   => $product_id,
+            'product_name' => $product->get_name(),
+            'quantity'     => $quantity
+        );
+        
+        $this->request->send_success_response( $data );
+
+    }
+
     /**
      * 
-     * @param string product_id
+     * @param object $e Exception object
+     * @param string $product_id The id of the product
      * @return void JSON response with error
      * 
      */
     private function send_error_response(object $e, string $product_id): void
     {
-        wp_send_json_error(
-            array(
-                'error' => $e->getMessage(),
-                'product_id' => $product_id,
+        
+        $data = array(
+                'error'       => true,
+                'message'     => $e->getMessage(),
+                'product_id'  => $product_id,
                 'product_url' => apply_filters($this->action_name .  '_redirect_after_error', get_permalink($product_id), $product_id)
-            )
         );
+
+        $this->request->send_error_response( $data );
+        
     }
+
+    /**
+     * Records the errors inside the WC logs Woocommerce->Status->Logs
+     * 
+     * @param object $e Exception object
+     * @param string $product_id The id of the product
+     * @return void JSON response with error
+     * 
+     */
+    private function record_error_log(object $e, string $product_id) : void
+    {
+        $data = array(
+            'plugin'      => 'Webigo',
+            'class'       => __CLASS__,
+            'function'    => 'ajax_add_to_cart',
+            'product_id'  => $product_id,
+            'message'     => $e->getMessage(),
+        );
+
+        $this->request->record_error_log( $data );
+    }
+
+
+
+    
 }
