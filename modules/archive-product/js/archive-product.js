@@ -1,8 +1,4 @@
 (function (webigoHelper) {
-  //   if (typeof wc_add_to_cart_params === "undefined") {
-  //     console.error("wc_add_to_cart_params from Woocommerce is not available");
-  //   }
-
   if (typeof webigoHelper === "undefined") {
     console.error("Issues with the javascript of core module");
   }
@@ -11,70 +7,28 @@
 
   const setState = webigoHelper?.stateManager?.setState;
   const state = { ...webigoHelper?.stateManager?.state };
-  const eventManager = webigoHelper?.eventManager;
+  const _event = webigoHelper?.eventManager;
+  const _dom = webigoHelper?.domManager;
 
   const plusQtyButtons = d.getElementsByClassName("btn-quantity-plus");
   const minusQtyButtons = d.getElementsByClassName("btn-quantity-minus");
-  const catAttributes = d.querySelectorAll(".wbg-category-attributes");
 
   const defaultParams = {
     addQtyFraction: 1,
     decreasQtyFraction: 1,
   };
 
-  if (plusQtyButtons) {
-    Object.keys(plusQtyButtons).forEach((plusButton) => {
-      plusQtyButtons[plusButton].addEventListener("click", increaseQtyToCart);
-    });
-  }
+  _dom.bulkAttachEvent({
+    elements: plusQtyButtons,
+    ev: _dom.events.click,
+    cb: increaseQtyToCart,
+  });
 
-  if (minusQtyButtons) {
-    Object.keys(minusQtyButtons).forEach((minusButton) => {
-      minusQtyButtons[minusButton].addEventListener("click", decreaseQtyToCart);
-    });
-  }
-
-  if (catAttributes) {
-    Object.keys(catAttributes).forEach((catAttribute) => {
-      catAttributes[catAttribute].addEventListener(
-        "click",
-        showHideCatAttributes
-      );
-    });
-  }
-
-  function showHideCatAttributes() {
-    const { catId } = getElementAttribute(this);
-
-    console.log(catId);
-
-    const catAttrDescriptions = d.querySelectorAll(
-      ".wbg-category-attributes[data-category-id='" +
-        catId +
-        "'] .wbg-category-attributes-descriptions"
-    )[0];
-
-    if (catAttrDescriptions) {
-      const { visibility } = getElementAttribute(catAttrDescriptions);
-
-      if (visibility === "hidden") {
-        catAttrDescriptions.setAttribute("data-visibility", "visible");
-      }
-
-      if (visibility === "visible") {
-        catAttrDescriptions.setAttribute("data-visibility", "hidden");
-      }
-    }
-  }
-
-  function getElementAttribute(eobj) {
-    return {
-      prodId: eobj.getAttribute("data-product-id"),
-      productPrice: eobj.getAttribute("data-product-price"),
-      catId: eobj.getAttribute("data-category-id"),
-      visibility: eobj.getAttribute("data-visibility"),
-    };
-  }
+  _dom.bulkAttachEvent({
+    elements: minusQtyButtons,
+    ev: _dom.events.click,
+    cb: decreaseQtyToCart,
+  });
 
   function getPrevQuantityState(prodId, catId) {
     const initQtyCartState = 0;
@@ -91,14 +45,14 @@
 
   function increaseQtyToCart(e) {
     e.preventDefault();
-    const { prodId, catId, productPrice } = getElementAttribute(this);
+    const { prodId, catId, productPrice } = _dom.getElementAttribute(this);
 
     const prevQty = getPrevQuantityState(prodId, catId);
 
     let newQty = prevQty + defaultParams["addQtyFraction"];
 
     if (newQty > 0) {
-      eventManager.trigger({
+      _event.trigger({
         eventName: "showAddToCartContainer",
         targetQuery:
           ".wbg-add-to-cart-container[data-product-id='" +
@@ -123,7 +77,7 @@
 
   function decreaseQtyToCart(e) {
     e.preventDefault();
-    const { prodId, catId, productPrice } = getElementAttribute(this);
+    const { prodId, catId, productPrice } = _dom.getElementAttribute(this);
 
     const prevQty = getPrevQuantityState(prodId, catId);
 
@@ -133,7 +87,7 @@
       // TODO: disabling minus button
       newQty = 0;
 
-      eventManager.trigger({
+      _event.trigger({
         eventName: "hideAddToCartContainer",
         targetQuery:
           ".wbg-add-to-cart-container[data-product-id='" +
@@ -189,3 +143,76 @@
     }
   }
 })(webigoHelper);
+
+/**
+ * Categories Attributes
+ */
+(function (webigoHelper, d) {
+  const _dom = webigoHelper?.domManager;
+  const catAttributes = d.querySelectorAll(".wbg-category-attributes");
+
+  _dom.bulkAttachEvent({
+    elements: catAttributes,
+    ev: _dom.events.click,
+    cb: showHideCatAttributes,
+  });
+
+  function showHideCatAttributes() {
+    const { catId } = _dom.getElementAttribute(this);
+
+    const catAttrDescription = d.querySelectorAll(
+      ".wbg-category-attributes[data-category-id='" +
+        catId +
+        "'] .wbg-category-attributes-descriptions"
+    )[0];
+
+    if (_dom.shouldHidden(catAttrDescription)) {
+      _dom.show(catAttrDescription);
+      return;
+    }
+
+    if (_dom.shouldVisible(catAttrDescription)) {
+      _dom.hide(catAttrDescription);
+      return;
+    }
+  }
+})(webigoHelper, document);
+
+/**
+ * Expand the product description
+ */
+(function (webigoHelper, d) {
+  const _dom = webigoHelper?.domManager;
+
+  const infoProdDescriptionButtons = d.querySelectorAll(
+    ".wbg-product-list .wbg-product .info-description"
+  );
+
+  _dom.bulkAttachEvent({
+    elements: infoProdDescriptionButtons,
+    ev: _dom.events.click,
+    cb: showHideFullProductDescription,
+  });
+
+  function showHideFullProductDescription() {
+    const { prodId, catId } = _dom.getElementAttribute(this);
+
+    const productDescription = d.querySelectorAll(
+      ".wbg-product-list[data-category-id='" +
+        catId +
+        "'] .wbg-product[data-product-id='" +
+        prodId +
+        "'] .wbg-product-description"
+    )[0];
+
+    if (_dom.shouldClamped(productDescription)) {
+      _dom.show(productDescription);
+      return;
+    }
+
+    if (_dom.shouldVisible(productDescription)) {
+      _dom.clamp(productDescription);
+      return;
+    }
+  }
+})(webigoHelper, document);
