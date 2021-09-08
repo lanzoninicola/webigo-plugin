@@ -231,8 +231,32 @@
   /* line-height: 1em; */
 }
 
+.wbg-product-description-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
 .wbg-product-description {
   line-height: 1;
+}
+
+.wbg-product-description[data-visibility="clamped"] {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wbg-product-description[data-visibility="visible"] {
+  display: inherit;
+  animation: fadeInText 400ms ease-in;
+}
+
+.wbg-product-description-container .info-description {
+  height: 20px;
+  width: 20px;
 }
 
 .wbg-product-price {

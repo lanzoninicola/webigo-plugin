@@ -146,6 +146,29 @@ class SessionManager {
   };
 }
 
+class CookieManager {
+  typeManager = null;
+
+  constructor(typeManager) {
+    this.typeManager = typeManager;
+  }
+
+  getCookie = (cname) => {
+    let name = cname + "=";
+    let ca = document.cookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == " ") {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  };
+}
+
 class TypeManager {
   istypeString = (value) => {
     return typeof value === "string";
@@ -184,28 +207,83 @@ class TypeManager {
   };
 }
 
+class DomManager {
+  events = {
+    click: "click",
+  };
+
+  domAttributes = {
+    productId: "data-product-id",
+    productPrice: "data-product-price",
+    categoryId: "data-category-id",
+    dataVisibility: "data-visibility",
+  };
+
+  visibilityState = {
+    visible: "visible",
+    hidden: "hidden",
+    clamped: "clamped",
+  };
+
+  getElementAttribute = (el) => {
+    return {
+      prodId: el?.getAttribute(this.domAttributes.productId),
+      productPrice: el?.getAttribute(this.domAttributes.productPrice),
+      catId: el?.getAttribute(this.domAttributes.categoryId),
+      visibility: el?.getAttribute(this.domAttributes.dataVisibility),
+    };
+  };
+
+  bulkAttachEvent = ({ elements, ev, cb }) => {
+    if (elements) {
+      Object.keys(elements).forEach((item) => {
+        elements[item].addEventListener(ev, cb);
+      });
+    }
+  };
+
+  show = (el) => {
+    el?.setAttribute(
+      this.domAttributes.dataVisibility,
+      this.visibilityState.visible
+    );
+  };
+
+  hide = (el) => {
+    el?.setAttribute(
+      this.domAttributes.dataVisibility,
+      this.visibilityState.hidden
+    );
+  };
+
+  clamp = (el) => {
+    el?.setAttribute(
+      this.domAttributes.dataVisibility,
+      this.visibilityState.clamped
+    );
+  };
+
+  shouldVisible = (el) => {
+    const { visibility } = this.getElementAttribute(el);
+    return visibility === this.visibilityState.visible ? true : false;
+  };
+
+  shouldHidden = (el) => {
+    const { visibility } = this.getElementAttribute(el);
+    return visibility === this.visibilityState.hidden ? true : false;
+  };
+
+  shouldClamped = (el) => {
+    const { visibility } = this.getElementAttribute(el);
+    return visibility === this.visibilityState.clamped ? true : false;
+  };
+}
+
 const webigoHelper = {
   typeManager: new TypeManager(),
   stateManager: new StateManager(),
   eventManager: new EventManager(new TypeManager()),
   sessionManager: new SessionManager(new TypeManager()),
-  cookieManagement: {
-    getCookie: (cname) => {
-      let name = cname + "=";
-      let ca = document.cookie.split(";");
-      for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == " ") {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    },
-  },
-  sayHello: () => {
-    alert("Hello World!");
-  },
+  cookieManager: new CookieManager(new TypeManager()),
+  domManager: new DomManager(),
 };
