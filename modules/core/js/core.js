@@ -236,8 +236,8 @@ class DomManager {
 
   bulkAttachEvent = ({ elements, ev, cb }) => {
     if (elements) {
-      Object.keys(elements).forEach((item) => {
-        elements[item].addEventListener(ev, cb);
+      Object.keys(elements).forEach((idx) => {
+        elements[parseInt(idx)].addEventListener(ev, cb);
       });
     }
   };
