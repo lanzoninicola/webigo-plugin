@@ -1,159 +1,285 @@
-(function (webigoHelper) {
+/* global webigoHelper */
+/* jshint latedef:nofunc */
+
+(function (webigoHelper, d) {
   if (typeof webigoHelper === "undefined") {
     console.error("Issues with the javascript of core module");
   }
 
-  const d = document;
-  const eventManager = webigoHelper?.eventManager;
+  const _event = webigoHelper?.eventManager;
+  const _dom = webigoHelper?.domManager;
 
-  const addToCartButtons = d.querySelectorAll(".wbg-add-to-cart-button");
+  init();
 
-  if (addToCartButtons) {
-    Object.keys(addToCartButtons).forEach((item) => {
-      addToCartButtons[item].addEventListener("click", sendToCart);
+  function init() {
+    const addToCartButtons = d.querySelectorAll(".wbg-add-to-cart-button");
+
+    _dom.bulkAttachEvent({
+      elements: addToCartButtons,
+      ev: _dom.events.click,
+      cb: addToCart,
+    });
+
+    _event.listen({
+      ev: "showAddToCartContainer",
+      cb: showAddToCartContainer,
+    });
+
+    _event.listen({
+      ev: "hideAddToCartContainer",
+      cb: hideAddToCartContainer,
     });
   }
 
-  function sendToCart(e) {
+  async function addToCart(e) {
     e.preventDefault();
-    const productId = this.getAttribute("data-product-id");
-    const categoryId = this.getAttribute("data-category-id");
-    const productQtyNode = d.querySelectorAll(
-      '.wbg-product-input-quantity[data-product-id="' +
-        productId +
-        '"][data-category-id="' +
-        categoryId +
-        '"]'
-    )[0];
-    const wpnonceNode = d.querySelectorAll(
-      '.wbg-add-to-cart-container[data-product-id="' +
-        productId +
-        '"][data-category-id="' +
-        categoryId +
-        '"] input[name="webigo_woo_add_to_cart_nonce"]'
-    )[0];
-    const wpnonce = wpnonceNode.getAttribute("value");
+    const { prodId, catId } = _dom.getElementAttribute(this);
+    const addToCartNotification = new WbgAddToCartNotification(prodId, catId);
+    const addToCartActions = new WbgAddToCartActions(prodId, catId);
+    const requestOptions = new WbgAddToCartRequestOptions(prodId, catId);
 
-    if (productQtyNode) {
-      productQty = productQtyNode.value;
+    handleRequestInit();
+
+    const url = wc_add_to_cart_params.ajax_url;
+    const httpResponse = await fetch(url, requestOptions.get());
+
+    if (!httpResponse.ok) {
+      handleResponseFailed();
+    }
+    const wcResponse = await httpResponse.json();
+
+    if (wcResponse.success) {
+      handleResponseSuccess();
     }
 
-    if (productQty > 0) {
-      const data = new URLSearchParams({
-        action: "webigo_ajax_add_to_cart",
-        product_id: productId,
-        product_sku: "",
-        quantity: productQty,
-        nonce: wpnonce,
-      });
+    if (wcResponse.error) {
+      handleResponseFailed();
+    }
 
-      fetch(wc_add_to_cart_params.ajax_url, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-          "Cache-Control": "no-cache",
-        },
-        body: data,
-      })
-        .then((res) => {
-          // setLoadingState({ status: "success" });
-          return res.json();
-        })
-        .then((res) => {
-          // setCookie("cepChecked", "yes", 90);
-          console.log(res);
+    function handleRequestInit() {
+      addToCartActions.pending();
+      addToCartNotification.hide();
+    }
 
-          // TODO: managing error in response of wp_ajax call
-          const resError = res["error"];
-          if (resError) {
-            console.log("some error occured");
-            return;
-          }
+    function handleResponseFailed() {
+      addToCartActions.idle();
+      addToCartNotification.showFailed();
+    }
 
-          // TODO: show notification
-          //showTopNotification();
-
-          // showAddedToCartNotification(product_id);
-
-          //itemsInCartCheck();
-
-          setTimeout(hideNotification, 1500);
-
-          const addToCartProductButton = getAddToCartButtonElement(
-            productId,
-            categoryId
-          );
-          addToCartProductButton.classList.remove("pulse-animation");
-        })
-        .catch((err) => {
-          // setLoadingState({ status: "error" });
-          console.log("error", err);
-        });
+    function handleResponseSuccess() {
+      addToCartActions.completed();
+      addToCartNotification.showSuccess();
     }
   }
-
-  eventManager.addEvent({
-    eventName: "showAddToCartContainer",
-    callback: showAddToCartContainer,
-  });
 
   function showAddToCartContainer(el) {
-    el.setAttribute("data-visibility", "visible");
+    _dom.show(el);
   }
-
-  eventManager.addEvent({
-    eventName: "hideAddToCartContainer",
-    callback: hideAddToCartContainer,
-  });
 
   function hideAddToCartContainer(el) {
-    el.setAttribute("data-visibility", "hidden");
+    console.log("son qu<a");
+    _dom.hide(el);
+  }
+})(webigoHelper, document);
+
+/**
+ * Class to handle the notifications
+ */
+class WbgAddToCartNotification {
+  successElement = false;
+  failedElement = false;
+
+  constructor(prodId, catId) {
+    this.prodId = prodId;
+    this.catId = catId;
+    this._dom = webigoHelper?.domManager;
+
+    this.init();
   }
 
-  // function getAddToCartButtonElement(prodId, catId) {
-  //   const addToCartProductButtons = d.querySelectorAll(
-  //     "form.cart button[type='submit'][data-product-id='" +
-  //       parseInt(prodId, 10) +
-  //       "'][data-category-id='" +
-  //       parseInt(catId, 10) +
-  //       "'].add_to_cart_button"
-  //   );
+  init = () => {
+    this.getSuccessElement();
+    this.getFailedElement();
+  };
 
-  //   if (addToCartProductButtons.length > 0) {
-  //     return addToCartProductButtons[0];
-  //   }
-  // }
+  getSuccessElement = () => {
+    this.successElement = document.querySelectorAll(
+      ".wbg-add-to-cart[data-product-id='" +
+        this.prodId +
+        "'][data-category-id='" +
+        this.catId +
+        "'] .wbg-add-to-cart-notification-success"
+    )[0];
+  };
 
-  // function enableAddToCartButtonOf(prodId) {
-  //   const addToCartProductButton = getAddToCartButtonElement(prodId);
+  getFailedElement = () => {
+    this.failedElement = document.querySelectorAll(
+      ".wbg-add-to-cart[data-product-id='" +
+        this.prodId +
+        "'][data-category-id='" +
+        this.catId +
+        "'] .wbg-add-to-cart-notification-failed"
+    )[0];
+  };
 
-  //   showNode(addToCartProductButton);
-  //   addToCartProductButton.classList.add("pulse-animation");
+  showFailed = () => {
+    this._dom.show(this.failedElement);
+  };
 
-  //   // if (addToCartProductButton) {
-  //   //   addToCartProductButton.removeAttribute("disabled");
-  //   // }
-  // }
+  showSuccess = () => {
+    this._dom.show(this.successElement);
+  };
 
-  // function disableAddToCartButtonOf(prodId) {
-  //   const addToCartProductButton = getAddToCartButtonElement(prodId);
+  hide = () => {
+    if (this.successElement) {
+      this._dom.hide(this.successElement);
+    }
 
-  //   hideNode(addToCartProductButton);
-  //   addToCartProductButton.classList.remove("pulse-animation");
-  // }
-})(webigoHelper);
+    if (this.failedElement) {
+      this._dom.hide(this.failedElement);
+    }
+  };
+}
 
-// class WebigoAddToCart {
-//   showBottomBar = () => {
-//     // this.setState(
-//     //   this.state,
-//     //   { containerElementVisible: true },
-//     //   { context: this }
-//     // );
+/**
+ * Class to handle add to cart area
+ */
 
-//     this.containerElement.setAttribute("data-visibility", "visible");
-//   };
+class WbgAddToCartActions {
+  element = false;
+  _dom = false;
 
-//   hideBottomBar = () => {};
-// }
+  constructor(prodId, catId) {
+    this.prodId = prodId;
+    this.catId = catId;
+    this._dom = webigoHelper?.domManager;
+
+    this.init();
+  }
+
+  init = () => {
+    this.getElement();
+  };
+
+  getElement = () => {
+    this.element = document.querySelectorAll(
+      ".wbg-add-to-cart[data-product-id='" +
+        this.prodId +
+        "'][data-category-id='" +
+        this.catId +
+        "']"
+    )[0];
+  };
+
+  showArea = () => {
+    this._dom.show(this.element);
+  };
+
+  hideArea = () => {
+    this._dom.hide(this.element);
+  };
+
+  idle = () => {
+    this.element.setAttribute("data-action-state", "idle");
+  };
+
+  pending = () => {
+    this.element.setAttribute("data-action-state", "pending");
+  };
+
+  completed = () => {
+    this.element.setAttribute("data-action-state", "completed");
+  };
+}
+
+class WbgAddToCartRequestData {
+  action = "webigo_ajax_add_to_cart";
+
+  constructor(prodId, catId) {
+    this.prodId = prodId;
+    this.catId = catId;
+
+    this.init();
+  }
+
+  init = () => {
+    this.getProductQuantityElement();
+    this.getProductQuantity();
+    this.getNonceElement();
+    this.getNonce();
+  };
+
+  getProductQuantityElement = () => {
+    this.productQuantity = document.querySelectorAll(
+      '.wbg-product-input-quantity[data-product-id="' +
+        this.prodId +
+        '"][data-category-id="' +
+        this.catId +
+        '"]'
+    )[0];
+  };
+
+  getProductQuantity = () => {
+    this.productQuantityValue = this.productQuantityElement
+      ? this.productQuantityElement.value
+      : false;
+  };
+
+  getNonceElement = () => {
+    this.wpNonceElement = document.querySelectorAll(
+      '.wbg-add-to-cart[data-product-id="' +
+        this.prodId +
+        '"][data-category-id="' +
+        this.catId +
+        '"] input[name="webigo_woo_add_to_cart_nonce"]'
+    )[0];
+  };
+
+  getNonce = () => {
+    this.wpNonceValue = this.wpNonceElement
+      ? this.wpNonceElement.getAttribute("value")
+      : false;
+  };
+
+  getPostData = () => {
+    return new URLSearchParams({
+      action: this.action,
+      product_id: this.prodId,
+      product_sku: "",
+      quantity: this.productQuantityValue,
+      nonce: this.wpNonceValue,
+    });
+  };
+}
+
+class WbgAddToCartRequestOptions {
+  method = "POST";
+  credentials = "same-origin";
+  headers = {
+    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "Cache-Control": "no-cache",
+  };
+
+  constructor(prodId, catId) {
+    this.prodId = prodId;
+    this.catId = catId;
+
+    this.init();
+  }
+
+  init = () => {
+    this.requestData = new WbgAddToCartRequestData(
+      this.prodId,
+      this.catId
+    ).getPostData();
+  };
+
+  get = () => {
+    return {
+      method: this.method,
+      credentials: this.credentials,
+      headers: this.headers,
+      body: this.requestData,
+    };
+  };
+}
