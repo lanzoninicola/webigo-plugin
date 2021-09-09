@@ -59,7 +59,7 @@ class Webigo_Woo_View_Product_Quantity_Input {
      */
     private function min_value( int $min_value = null )
     {
-        if ( ! is_null( $min_value ) ) {
+        if ( ! $min_value === null ) {
             return absint( $min_value );
         }
 
@@ -74,7 +74,7 @@ class Webigo_Woo_View_Product_Quantity_Input {
      */
     private function max_value( int $max_value = null ) {
 
-        if ( ! is_null( $max_value ) ) {
+        if ( ! $max_value === null ) {
             return absint( $max_value );
         }
 
@@ -122,7 +122,7 @@ class Webigo_Woo_View_Product_Quantity_Input {
      */
     private function input_value( int $input_value = null ) {
 
-        return ! is_null( $input_value ) ? absint( $input_value ) : $this->product->get_min_purchase_quantity();
+        return !($input_value === null) ? absint( $input_value ) : $this->product->get_min_purchase_quantity();
 
     }
 
