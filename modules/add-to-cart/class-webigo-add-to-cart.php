@@ -73,6 +73,7 @@ class Webigo_Add_To_Cart extends Webigo_Module
 		$webigo_woo_ajax_add_to_cart = new Webigo_Woo_Ajax_Add_To_Cart();
 		$action_name            = $webigo_woo_ajax_add_to_cart->action_name();
 
+		// Below hook is used for Authenticated Users
 		$hook_wp_ajax = array(
 			'hook'     => 'wp_ajax_' . $action_name,
 			'callback' => array($webigo_woo_ajax_add_to_cart, 'ajax_add_to_cart')
@@ -80,12 +81,13 @@ class Webigo_Add_To_Cart extends Webigo_Module
 
 		$this->hooks->register($hook_wp_ajax);
 
-		// $hook_wp_ajax_nopriv = array(
-		// 	'hook'     => 'wp_ajax_nopriv_' . $action_name,
-		// 	'callback' => array($webigo_woo_ajax_add_to_cart, 'ajax_add_to_cart')
-		// );
+		// Below hook is used for NO-Authenticated Users
+		$hook_wp_ajax_nopriv = array(
+			'hook'     => 'wp_ajax_nopriv_' . $action_name,
+			'callback' => array($webigo_woo_ajax_add_to_cart, 'ajax_add_to_cart')
+		);
 
-		// $this->hooks->register($hook_wp_ajax_nopriv);
+		$this->hooks->register($hook_wp_ajax_nopriv);
 
 	}
 
