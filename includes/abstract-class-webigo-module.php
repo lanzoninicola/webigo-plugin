@@ -90,11 +90,11 @@ abstract class Webigo_Module
 
 		$this->hooks = new Webigo_Module_Hooks();
 
-		$this->module_path = plugin_dir_path(dirname(__FILE__)) . 'modules/' . $this->name;
+		$this->module_path = plugin_dir_path(__DIR__) . 'modules/' . $this->name;
 		
-		$this->dependecies_path = plugin_dir_path(dirname(__FILE__)) . 'modules/' . $this->name . '/includes/';
+		$this->dependecies_path = plugin_dir_path(__DIR__) . 'modules/' . $this->name . '/includes/';
 
-		$this->views_path = plugin_dir_path(dirname(__FILE__)) . 'modules/' . $this->name . '/views/';
+		$this->views_path = plugin_dir_path(__DIR__) . 'modules/' . $this->name . '/views/';
 
 		$this->load_dependencies();
 		// Initially developed to load the view of shortcode

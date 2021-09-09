@@ -218,7 +218,7 @@ class Webigo_Module_Script
 
     private function set_src( $file_name, $visibility ) {
 
-        $plugin_path = plugin_dir_url(dirname(__FILE__));
+        $plugin_path = plugin_dir_url(__DIR__);
         
         if ( $visibility === 'public' ) {
 
@@ -352,7 +352,7 @@ class Webigo_Module_Script
     public function build_public_js_file_root_path()
     {
 
-        $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/js/';
+        $path = plugin_dir_url(__DIR__) . 'modules/' . $this->module_folder . '/js/';
 
         $this->script_root_path = $path;
     }
@@ -365,7 +365,7 @@ class Webigo_Module_Script
     public function build_admin_js_file_root_path()
     {
 
-        $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/admin/js/';
+        $path = plugin_dir_url(__DIR__) . 'modules/' . $this->module_folder . '/admin/js/';
 
         $this->script_root_path = $path;
     }

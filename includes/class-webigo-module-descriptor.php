@@ -15,7 +15,7 @@ class Webigo_Module_Descriptor {
 
     public function __construct(string $name, string $class_name, string $folder_name, string $bootstrap_class_file) {
     
-        $this->module_root_path = plugin_dir_path(dirname(__FILE__)) . 'modules/';
+        $this->module_root_path = plugin_dir_path(__DIR__) . 'modules/';
         
         $this->name = $name;
         $this->class_name = $class_name;

@@ -123,19 +123,19 @@ class Webigo
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-loader.php';
+		require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-i18n.php';
+		require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-i18n.php';
 
 		/**
 		 * The class responsible for orchestrating the modules
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-modules-registry.php';
+		require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-modules-registry.php';
 
 		$this->modules_registry = new Webigo_Modules_Registry();
 

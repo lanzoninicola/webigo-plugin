@@ -48,7 +48,7 @@ class Webigo_Modules_Registry
          * The class responsible for describing the plugin module
          * 
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-webigo-module-descriptor.php';
+        require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-module-descriptor.php';
     }
 
 

@@ -241,7 +241,7 @@ class Webigo_Module_Style
     public function set_public_stylesheet_src_path()
     {
 
-        $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/css/';
+        $path = plugin_dir_url(__DIR__) . 'modules/' . $this->module_folder . '/css/';
 
         $this->stylesheet_root_path = $path;
     }
@@ -254,7 +254,7 @@ class Webigo_Module_Style
     public function set_admin_stylesheet_src_path()
     {
 
-        $path = plugin_dir_url(dirname(__FILE__)) . 'modules/' . $this->module_folder . '/admin/css/';
+        $path = plugin_dir_url(__DIR__) . 'modules/' . $this->module_folder . '/admin/css/';
 
         $this->stylesheet_root_path = $path;
     }
