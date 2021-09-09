@@ -21,12 +21,12 @@ class Webigo_View_Archive_Product {
      * 
      * @param object Webigo_Database_Facade
      */
-    public function render_archive_products( object $database ) : void
+    public function render_archive_products( object $database ) : string
     {
 
-        echo '<div class="wbg-archive-product-container">';
+        $output = '<div class="wbg-archive-product-container">';
 
-        echo '<ul class="wbg-archive-product-wrapper">';
+        $output .= '<ul class="wbg-archive-product-wrapper">';
 
         $categories = (array) $database->get_categories();
 
@@ -34,13 +34,15 @@ class Webigo_View_Archive_Product {
 
             $product_cat_view = new Webigo_View_Category( $category, $database );
 
-            $product_cat_view->render();
+            $output .= $product_cat_view->render();
 
         }
         
-        echo '</ul>';
+        $output .= '</ul>';
 
-        echo '</div>';
+        $output .= '</div>';
+
+        return $output;
         
     }
 }

@@ -44,19 +44,21 @@ class Webigo_View_Product_Quantity
         $this->quantity_button = new Webigo_View_Quantity_Button( $this->product, $this->category );
     }
 
-    public function render()
+    public function render() : string
     {
 
-        echo '<div class="wbg-product-quantity">';
+        $output = '<div class="wbg-product-quantity">';
 
-        $this->render_quantity_label();
+        $output .= $this->render_quantity_label();
 
-        $this->render_quantity_actions();
+        $output .= $this->render_quantity_actions();
 
-        echo '</div>';
+        $output .= '</div>';
+
+        return $output;
     }
 
-    private function render_quantity_actions()
+    private function render_quantity_actions() : string
     {
 
         $button_style = array(
@@ -68,25 +70,27 @@ class Webigo_View_Product_Quantity
         );
 
 
-        echo '<div class="wbg-product-quantity-actions">';
+        $output = '<div class="wbg-product-quantity-actions">';
 
-        $this->quantity_button->render( 'decrease', $button_style );
+        $output .= $this->quantity_button->render( 'decrease', $button_style );
 
-        $this->render_quantity_input();
+        $output .= $this->render_quantity_input();
 
-        $this->quantity_button->render( 'increase', $button_style );
+        $output .= $this->quantity_button->render( 'increase', $button_style );
 
-        echo '</div>';
+        $output .= '</div>';
+
+        return $output;
     }
 
     private function render_quantity_label()
     {
-        $this->product_quantity_input->render_html_input_label( );
+        return $this->product_quantity_input->render_html_input_label( );
     }
 
     private function render_quantity_input()
     {
-        $this->product_quantity_input->render_html_input_field( );
+        return $this->product_quantity_input->render_html_input_field( );
 
     }
 }

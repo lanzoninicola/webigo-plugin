@@ -61,35 +61,41 @@ class Webigo_View_Product {
         $this->add_to_cart = new Webigo_View_Add_To_Cart();
     }
 
-    public function render_product() {
+    public function render() : string
+    {
 
-        echo '<li class="wbg-product" data-product-id="' . esc_html( $this->product->id() ) . '">';
-            echo '<div class="wbg-product-container">';
+        $output = '<li class="wbg-product" data-product-id="' . esc_html( $this->product->id() ) . '">';
+            $output .= '<div class="wbg-product-container">';
 
-                $this->product_info->render_image();
+                $output .= $this->product_info->render_image();
             
-                echo '<div class="wbg-product-inner-details">';
-                $this->product_info->render();
-                $this->product_quantity->render();
-                    echo  '<div class="wbg-product-footer">';
-                    $this->render_subtotal();
-                    $this->add_to_cart->render( $this->product, $this->category );
-                    echo '</div>';
-                echo '</div>';
+                $output .= '<div class="wbg-product-inner-details">';
+                $output .= $this->product_info->render();
+                $output .= $this->product_quantity->render();
+                    $output .=  '<div class="wbg-product-footer">';
+                    $output .= $this->render_subtotal();
+                    $output .= $this->add_to_cart->render( $this->product, $this->category );
+                    $output .= '</div>';
+                $output .= '</div>';
 
                 
-            echo '</div>';
-        echo '</li>';
+            $output .= '</div>';
+        $output .= '</li>';
+
+        return $output;
     }
 
-    private function render_subtotal() {
+    private function render_subtotal() : string
+    {
         
-        echo  '<div class="wbg-product-subtotal">';
+        $output =  '<div class="wbg-product-subtotal">';
         
-        echo '<div class="wbg-product-subtotal-label">Subtotal</div>';
-        echo '<div class="wbg-product-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">R$0</div>';
+        $output .= '<div class="wbg-product-subtotal-label">Subtotal</div>';
+        $output .= '<div class="wbg-product-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">R$0</div>';
         
-        echo '</div>';
+        $output .= '</div>';
+
+        return $output;
     }
     
 

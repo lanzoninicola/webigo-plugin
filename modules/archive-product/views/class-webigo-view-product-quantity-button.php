@@ -39,11 +39,12 @@ class Webigo_View_Quantity_Button {
         $this->button_user_style['background'] = isset( $style['background'] ) ? $style['background'] : 'red';
         $this->button_user_style['stroke'] = isset( $style['stroke'] ) ? $style['stroke'] : '#000';
 
-        $this->render_svg_button( $action );
+        return $this->render_svg_button( $action );
     }
 
 
-    private function render_svg_button( $action ) {
+    private function render_svg_button(string $action ) : string
+    {
 
         $svg_path_final = '';
         $css_class_final = '';
@@ -58,9 +59,9 @@ class Webigo_View_Quantity_Button {
             $css_class_final = 'btn-quantity-plus';
         }
 
-        echo '<div class="' . esc_attr( $css_class_final ) . ' btn-quantity-actions" data-product-id="' . esc_attr( $this->product->id() ) . '" data-product-price="' . esc_attr( $this->product->final_price() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '"">';
+        $output = '<div class="' . esc_attr( $css_class_final ) . ' btn-quantity-actions" data-product-id="' . esc_attr( $this->product->id() ) . '" data-product-price="' . esc_attr( $this->product->final_price() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '"">';
 
-        echo '<svg
+        $output .= '<svg
             width="' . esc_attr( $this->button_user_style['width'] ) . '"
             height="' . esc_attr( $this->button_user_style['height'] ) . '"
             fill="none"
@@ -70,7 +71,9 @@ class Webigo_View_Quantity_Button {
             <path stroke="' . esc_attr( $this->button_user_style['stroke'] ) . '" d="' . esc_attr( $svg_path_final ) . '" />
         </svg>';
 
-        echo '</div>';
+        $output .= '</div>';
+
+        return $output;
 
     }
     

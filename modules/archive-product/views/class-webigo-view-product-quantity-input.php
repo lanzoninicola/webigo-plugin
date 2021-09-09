@@ -139,7 +139,7 @@ class Webigo_Woo_View_Product_Quantity_Input {
             esc_attr( $this->html_input_id() ),
             esc_html( $input_label_text )
         );
-        echo wp_kses_post( $html );
+        return wp_kses_post( $html );
     }
 
 
@@ -163,7 +163,7 @@ class Webigo_Woo_View_Product_Quantity_Input {
 
         $input_string = '<input id=%s name=%s class=%s type=%s value=%s data-product-id=%s data-category-id=%s min=%u max=%u size=%u step=%u readonly style="text-align:center;"/>';
         
-        echo sprintf(
+        return sprintf(
             $input_string,
             esc_attr( $input_id ),    
             esc_attr( $this->input_name() ),

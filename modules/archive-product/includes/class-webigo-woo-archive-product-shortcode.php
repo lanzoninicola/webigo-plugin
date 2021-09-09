@@ -41,6 +41,9 @@ class Webigo_Woo_Archive_Product_Shortcode
 
 		$view = new Webigo_View_Archive_Product( );
 
-		$view->render_archive_products( $this->database );
+		$output = $view->render_archive_products( $this->database );
+
+		return $output;
+
 	}
 }
