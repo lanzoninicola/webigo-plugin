@@ -56,7 +56,7 @@ class Webigo_View_Product {
         // Because I can unregister the module. The app must work but the specific funcionality no
         require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/views/class-webigo-view-add-to-cart.php';
 
-        $this->product_info = new Webigo_View_Product_Info( $this->product );
+        $this->product_info = new Webigo_View_Product_Info( $this->product, $this->category );
         $this->product_quantity = new Webigo_View_Product_Quantity( $this->product, $this->category );
         $this->add_to_cart = new Webigo_View_Add_To_Cart();
     }

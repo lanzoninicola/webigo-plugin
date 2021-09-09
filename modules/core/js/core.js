@@ -36,47 +36,47 @@ class EventManager {
     this.typeManager = typeManager;
   }
 
-  addEvent = ({ eventName, callback }) => {
-    if (typeof eventName === "undefined" && eventName === null) {
-      console.error("EventManager.addEvent: eventName parameter is required");
+  listen = ({ ev, cb }) => {
+    if (typeof ev === "undefined" && ev === null) {
+      console.error("EventManager.listen: eventName parameter is required");
     }
 
-    if (!this.typeManager.istypeString(eventName)) {
-      console.error("EventManager.addEvent: eventName must be a string");
+    if (!this.typeManager.istypeString(ev)) {
+      console.error("EventManager.listen: eventName must be a string");
       return;
     }
 
-    this.eventCollection[eventName] = {
-      cb: (args) => callback(args),
+    this.eventCollection[ev] = {
+      cbFn: (args) => cb(args),
       targets: [],
       data: {},
     };
   };
 
-  trigger = ({ eventName, targetQuery, data }) => {
-    if (!this.typeManager.istypeString(eventName)) {
+  trigger = ({ ev, targetQuery, data }) => {
+    if (!this.typeManager.istypeString(ev)) {
       console.error("EventManager.trigger: eventName must be a string");
       return;
     }
 
-    if (!this.typeManager.istypeString(eventName)) {
-      console.error("EventManager.trigger: eventName must be a string");
+    if (!this.typeManager.istypeString(targetQuery)) {
+      console.error("EventManager.trigger: targetQuery must be a string");
       return;
     }
 
-    const cbFn = this.eventCollection?.[eventName]?.["cb"];
+    const cbFn = this.eventCollection?.[ev]?.["cbFn"];
 
     if (typeof targetQuery !== "undefined" && targetQuery !== null) {
-      this.defineTarget({ eventName, targetQuery });
+      this.defineTarget({ ev, targetQuery });
     }
 
-    const targets = this.eventCollection?.[eventName]?.targets;
+    const targets = this.eventCollection?.[ev]?.targets;
 
     targets?.forEach((target) => cbFn(target));
   };
 
-  defineTarget = ({ eventName, targetQuery }) => {
-    if (!this.typeManager.istypeString(eventName)) {
+  defineTarget = ({ ev, targetQuery }) => {
+    if (!this.typeManager.istypeString(ev)) {
       console.error("EventManager.defineTarget: eventName must be a string");
       return;
     }
@@ -93,7 +93,7 @@ class EventManager {
     const elementsCollection = document.querySelectorAll(targetQuery);
 
     elementsCollection?.forEach((el) => {
-      this.eventCollection?.[eventName]?.targets?.push(el);
+      this.eventCollection?.[ev]?.targets?.push(el);
     });
   };
 }
@@ -243,21 +243,27 @@ class DomManager {
   };
 
   show = (el) => {
-    el?.setAttribute(
+    if (!el) return;
+
+    el.setAttribute(
       this.domAttributes.dataVisibility,
       this.visibilityState.visible
     );
   };
 
   hide = (el) => {
-    el?.setAttribute(
+    if (!el) return;
+
+    el.setAttribute(
       this.domAttributes.dataVisibility,
       this.visibilityState.hidden
     );
   };
 
   clamp = (el) => {
-    el?.setAttribute(
+    if (!el) return;
+
+    el.setAttribute(
       this.domAttributes.dataVisibility,
       this.visibilityState.clamped
     );

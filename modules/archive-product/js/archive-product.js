@@ -1,20 +1,15 @@
 /* global webigoHelper */
 /* jshint latedef:nofunc */
 
-(function (webigoHelper) {
+(function (webigoHelper, d) {
   if (typeof webigoHelper === "undefined") {
     console.error("Issues with the javascript of core module");
   }
-
-  const d = document;
 
   const setState = webigoHelper?.stateManager?.setState;
   const state = { ...webigoHelper?.stateManager?.state };
   const _event = webigoHelper?.eventManager;
   const _dom = webigoHelper?.domManager;
-
-  const plusQtyButtons = d.getElementsByClassName("btn-quantity-plus");
-  const minusQtyButtons = d.getElementsByClassName("btn-quantity-minus");
 
   const defaultParams = {
     addQtyFraction: 1,
@@ -24,6 +19,9 @@
   init();
 
   function init() {
+    const plusQtyButtons = d.getElementsByClassName("btn-quantity-plus");
+    const minusQtyButtons = d.getElementsByClassName("btn-quantity-minus");
+
     _dom.bulkAttachEvent({
       elements: plusQtyButtons,
       ev: _dom.events.click,
@@ -60,9 +58,9 @@
 
     if (newQty > 0) {
       _event.trigger({
-        eventName: "showAddToCartContainer",
+        ev: "showAddToCartContainer",
         targetQuery:
-          ".wbg-add-to-cart-container[data-product-id='" +
+          ".wbg-add-to-cart[data-product-id='" +
           prodId +
           "'][data-category-id='" +
           catId +
@@ -91,13 +89,12 @@
     let newQty = prevQty - defaultParams["decreasQtyFraction"];
 
     if (newQty <= 0) {
-      // TODO: disabling minus button
       newQty = 0;
 
       _event.trigger({
-        eventName: "hideAddToCartContainer",
+        ev: "hideAddToCartContainer",
         targetQuery:
-          ".wbg-add-to-cart-container[data-product-id='" +
+          ".wbg-add-to-cart[data-product-id='" +
           prodId +
           "'][data-category-id='" +
           catId +
@@ -149,7 +146,7 @@
       qtyProductInputQuantityArea.value = userQty;
     }
   }
-})(webigoHelper);
+})(webigoHelper, document);
 
 /**
  * Categories Attributes
