@@ -48,11 +48,11 @@
     }
     const wcResponse = await httpResponse.json();
 
-    if (wcResponse.success) {
+    if (wcResponse.success === true) {
       handleResponseSuccess();
     }
 
-    if (wcResponse.error) {
+    if (wcResponse.error || wcResponse.success === false) {
       handleResponseFailed();
     }
 
