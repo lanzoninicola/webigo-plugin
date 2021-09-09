@@ -218,7 +218,7 @@ class Webigo
 
 		$module_registered = $this->modules_registry->get_registered_modules();
 
-		foreach ($module_registered as $module_name => $module_obj_instance) {
+		foreach ($module_registered as $module_obj_instance) {
 
 			$action_name = $module_obj_instance->style->action_name();
 			$style_object = $module_obj_instance->style;
@@ -235,7 +235,7 @@ class Webigo
 
 		$module_registered = $this->modules_registry->get_registered_modules();
 
-		foreach ($module_registered as $module_name => $module_obj_instance) {
+		foreach ($module_registered as $module_obj_instance) {
 
 			$action_name = $module_obj_instance->script->action_name();
 			$style_object = $module_obj_instance->script;

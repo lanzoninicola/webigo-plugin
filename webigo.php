@@ -27,7 +27,11 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-	die;
+	return;
+}
+
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
 }
 
 define( 'PLUGIN_NAME', 'webigo' );

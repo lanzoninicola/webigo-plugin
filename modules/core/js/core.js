@@ -7,15 +7,15 @@ class StateManager {
 
     // manage upto 2 levels of state object
     Object.keys(newState).forEach((stateItem) => {
-      if (_newState[stateItem]) {
-        Object.keys(newState[stateItem]).forEach((subStateItem) => {
-          _newState[stateItem][subStateItem] =
-            newState[stateItem][subStateItem];
+      if (_newState[stateItem.toString()]) {
+        Object.keys(newState[stateItem.toString()]).forEach((subStateItem) => {
+          _newState[stateItem.toString()][subStateItem.toString()] =
+            newState[stateItem.toString()][subStateItem.toString()];
         });
       } else {
         _newState = {
           ..._newState,
-          [stateItem]: newState[stateItem],
+          [stateItem.toString()]: newState[stateItem.toString()],
         };
       }
     });
@@ -142,11 +142,11 @@ class CookieManager {
     let name = cname + "=";
     let ca = document.cookie.split(";");
     for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == " ") {
+      let c = ca[parseInt(i, 10)];
+      while (c.charAt(0) === " ") {
         c = c.substring(1);
       }
-      if (c.indexOf(name) == 0) {
+      if (c.indexOf(name) === 0) {
         return c.substring(name.length, c.length);
       }
     }
