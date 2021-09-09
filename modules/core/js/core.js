@@ -38,15 +38,14 @@ class EventManager {
 
   listen = ({ ev, cb }) => {
     if (typeof ev === "undefined" && ev === null) {
-      console.error("EventManager.listen: eventName parameter is required");
+      throw "EventManager.listen: eventName parameter is required";
     }
 
     if (!this.typeManager.istypeString(ev)) {
-      console.error("EventManager.listen: eventName must be a string");
-      return;
+      throw "EventManager.listen: eventName must be a string";
     }
 
-    this.eventCollection[ev] = {
+    this.eventCollection[ev.toString()] = {
       cbFn: (args) => cb(args),
       targets: [],
       data: {},
@@ -55,45 +54,39 @@ class EventManager {
 
   trigger = ({ ev, targetQuery, data }) => {
     if (!this.typeManager.istypeString(ev)) {
-      console.error("EventManager.trigger: eventName must be a string");
-      return;
+      throw "EventManager.trigger: eventName must be a string";
     }
 
     if (!this.typeManager.istypeString(targetQuery)) {
-      console.error("EventManager.trigger: targetQuery must be a string");
-      return;
+      throw "EventManager.trigger: targetQuery must be a string";
     }
 
-    const cbFn = this.eventCollection?.[ev]?.["cbFn"];
+    const cbFn = this.eventCollection?.[ev.toString()]?.["cbFn"];
 
     if (typeof targetQuery !== "undefined" && targetQuery !== null) {
       this.defineTarget({ ev, targetQuery });
     }
 
-    const targets = this.eventCollection?.[ev]?.targets;
+    const targets = this.eventCollection?.[ev.toString()]?.targets;
 
     targets?.forEach((target) => cbFn(target));
   };
 
   defineTarget = ({ ev, targetQuery }) => {
     if (!this.typeManager.istypeString(ev)) {
-      console.error("EventManager.defineTarget: eventName must be a string");
-      return;
+      throw "EventManager.defineTarget: eventName must be a string";
     }
 
     if (typeof targetQuery !== "undefined" && targetQuery !== null) {
       if (!this.typeManager.istypeString(targetQuery)) {
-        console.error(
-          "EventManager.defineTarget: targetQuery must be a string"
-        );
-        return;
+        throw "EventManager.defineTarget: targetQuery must be a string";
       }
     }
 
     const elementsCollection = document.querySelectorAll(targetQuery);
 
     elementsCollection?.forEach((el) => {
-      this.eventCollection?.[ev]?.targets?.push(el);
+      this.eventCollection?.[ev.toString()]?.targets?.push(el);
     });
   };
 }
@@ -107,15 +100,11 @@ class SessionManager {
 
   setSession = (key, value) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
-      console.error(
-        "Error to set browser sesssion. The key parameter is undefined"
-      );
+      throw "Error to set browser sesssion. The key parameter is undefined";
     }
 
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
-      console.error(
-        "Error to set browser sesssion. The value parameter is undefined"
-      );
+      throw "Error to set browser sesssion. The value parameter is undefined";
     }
 
     let _value = value;
@@ -128,18 +117,14 @@ class SessionManager {
   };
   getSession = (key) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
-      console.error(
-        "Error to get the browser sesssion for the key selected. The key parameter is undefined"
-      );
+      throw "Error to get the browser sesssion for the key selected. The key parameter is undefined";
     }
 
     sessionStorage.getItem(key);
   };
   removeSession = (key) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
-      console.error(
-        "Error to remove from the browser sesssion the key selected. The key parameter is undefined"
-      );
+      throw "Error to remove from the browser sesssion the key selected. The key parameter is undefined";
     }
 
     sessionStorage.removeItem(key);
@@ -237,13 +222,15 @@ class DomManager {
   bulkAttachEvent = ({ elements, ev, cb }) => {
     if (elements) {
       Object.keys(elements).forEach((idx) => {
-        elements[parseInt(idx)].addEventListener(ev, cb);
+        elements[parseInt(idx, 10)].addEventListener(ev, cb);
       });
     }
   };
 
   show = (el) => {
-    if (!el) return;
+    if (!el) {
+      return;
+    }
 
     el.setAttribute(
       this.domAttributes.dataVisibility,
@@ -252,7 +239,9 @@ class DomManager {
   };
 
   hide = (el) => {
-    if (!el) return;
+    if (!el) {
+      return;
+    }
 
     el.setAttribute(
       this.domAttributes.dataVisibility,
@@ -261,7 +250,9 @@ class DomManager {
   };
 
   clamp = (el) => {
-    if (!el) return;
+    if (!el) {
+      return;
+    }
 
     el.setAttribute(
       this.domAttributes.dataVisibility,

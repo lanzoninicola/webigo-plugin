@@ -77,7 +77,6 @@
   }
 
   function hideAddToCartContainer(el) {
-    console.log("son qu<a");
     _dom.hide(el);
   }
 })(webigoHelper, document);
@@ -211,11 +210,11 @@ class WbgAddToCartRequestData {
 
   getProductQuantityElement = () => {
     this.productQuantity = document.querySelectorAll(
-      '.wbg-product-input-quantity[data-product-id="' +
+      ".wbg-product-input-quantity[data-product-id='" +
         this.prodId +
-        '"][data-category-id="' +
+        "'][data-category-id='" +
         this.catId +
-        '"]'
+        "']"
     )[0];
   };
 
@@ -227,11 +226,11 @@ class WbgAddToCartRequestData {
 
   getNonceElement = () => {
     this.wpNonceElement = document.querySelectorAll(
-      '.wbg-add-to-cart[data-product-id="' +
+      ".wbg-add-to-cart[data-product-id='" +
         this.prodId +
-        '"][data-category-id="' +
+        "'][data-category-id='" +
         this.catId +
-        '"] input[name="webigo_woo_add_to_cart_nonce"]'
+        "'] input[name='webigo_woo_add_to_cart_nonce']"
     )[0];
   };
 

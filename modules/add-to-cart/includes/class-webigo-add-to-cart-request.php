@@ -38,10 +38,10 @@ class Webigo_Add_To_Cart_Request {
     {
         if ( function_exists( 'wc_get_logger' ) ) {
             $this->logger = wc_get_logger();
-        } else {
-            $this->logger = new WC_Logger();
-        }
-
+            return;
+        } 
+        
+        $this->logger = new WC_Logger();
     }
 
     /**
