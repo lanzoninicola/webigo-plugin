@@ -186,7 +186,7 @@ class TypeManager {
   };
 
   isNull = (value) => {
-    if (typeof value === null) {
+    if (value === null) {
       return true;
     }
   };

@@ -2,10 +2,6 @@
 /* jshint latedef:nofunc */
 
 (function (webigoHelper, d) {
-  if (typeof webigoHelper === "undefined") {
-    console.error("Issues with the javascript of core module");
-  }
-
   const _event = webigoHelper?.eventManager;
   const _dom = webigoHelper?.domManager;
 

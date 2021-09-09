@@ -124,7 +124,7 @@
 /* .wbg-product-add-to-cart .add-to-cart-button[disabled="true"] {
   opacity: 0.1;
   border: none;
-} */
+} 
 
 .wbg-cart-notification {
   position: fixed;
@@ -136,6 +136,6 @@
   border-bottom-left-radius: 15px;
   z-index: 999;
   width: auto;
-  /* transform: translateX(300px); */
   max-width: 90%;
 }
+*/

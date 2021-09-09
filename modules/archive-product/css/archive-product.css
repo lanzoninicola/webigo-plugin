@@ -41,8 +41,8 @@
 
 .action-buttons {
   border-radius: 50%;
-  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0px,
-    rgb(255 255 255 / 80%) -6px -2px 16px 0px;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0;
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -62,7 +62,6 @@
 
   100% {
     height: auto;
-    /*transform: scaleY(1);*/
     opacity: 1;
   }
 }
@@ -78,7 +77,6 @@
   }
 
   100% {
-    /*transform: scaleY(1);*/
     opacity: 1;
   }
 }
@@ -273,7 +271,7 @@
 
 .wbg-product-quantity .wbg-product-qty-label {
   font-size: 0.75em;
-  font-weight: 400;
+  font-weight: 600;
   text-align: right;
   letter-spacing: 0.1em;
   color: black;
@@ -317,7 +315,6 @@
 .wbg-product-subtotal {
   display: flex;
   flex-direction: row;
-  /* font-size: 0.8em; */
   font-weight: 900;
   text-align: right;
   letter-spacing: 0.1em;
@@ -336,7 +333,7 @@
 
 .slideIn {
   animation: slideIn 500ms ease;
-  transform: translateX(0px);
+  transform: translateX(0);
 }
 
 @keyframes slideIn {
@@ -441,8 +438,8 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0px,
-    rgb(255 255 255 / 80%) -6px -2px 16px 0px;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0;
   border-radius: 20px;
   gap: 0.25em;
   padding: 0.25em;
@@ -461,8 +458,8 @@
 
 /* .wbg-product-add-to-cart button.add-to-cart-button:before {
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   border: solid 1px red;
 
   content: " ";

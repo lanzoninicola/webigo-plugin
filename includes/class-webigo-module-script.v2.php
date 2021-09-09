@@ -134,10 +134,10 @@ class Webigo_Module_Script
         $this->set_handle( $user_script_data_sanitized['module'], $user_script_data_sanitized['file_name'] );
         $this->set_src( $user_script_data_sanitized['file_name'], $visibility );
         $this->set_dependencies();
-        $this->set_version();
-        $this->set_in_footer();
+        // $this->set_version();
+        // $this->set_in_footer();
 
-        $this->add_to_register();
+        // $this->add_to_register();
     }
 
     /**

@@ -2,10 +2,6 @@
 /* jshint latedef:nofunc */
 
 (function (webigoHelper, d) {
-  if (typeof webigoHelper === "undefined") {
-    console.error("Issues with the javascript of core module");
-  }
-
   const setState = webigoHelper?.stateManager?.setState;
   const state = { ...webigoHelper?.stateManager?.state };
   const _event = webigoHelper?.eventManager;
