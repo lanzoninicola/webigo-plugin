@@ -1,9 +1,10 @@
 <?php
 
 /**
- * This class must be only responsible for adding products to the cart.
+ * This class must be only responsible to handle 
+ * the respective action hooked in the main module class.
  * 
- * This class is referenced in the Wordpress hook
+ * IMPORTANT: Only this class contains the action name passed to the Wordpress hook
  * 
  */
 class Webigo_Woo_Ajax_Add_To_Cart
@@ -63,17 +64,19 @@ class Webigo_Woo_Ajax_Add_To_Cart
 
         $this->request->sanitize_input();
 
-        if ( $this->request->is_valid() ) {
+        if ( !$this->request->is_valid() ) {
+            return;
+        }
 
-            try {
-                $product_id        = apply_filters($this->action_name . '_product_id', $this->request->post('product_id') );
-                $quantity          = empty( $this->request->post('quantity') ) ? 1 : wc_stock_amount( $this->request->post('quantity') );
-                $passed_validation = apply_filters($this->action_name . '_validation', true, $product_id, $quantity);
-                $product_status    = get_post_status($product_id);
+        try {
+            $product_id        = apply_filters($this->action_name . '_product_id', $this->request->post('product_id') );
+            $quantity          = empty( $this->request->post('quantity') ) ? 1 : wc_stock_amount( $this->request->post('quantity') );
+            $passed_validation = apply_filters($this->action_name . '_validation', true, $product_id, $quantity);
+            $product_status    = get_post_status($product_id);
 
-                if ($passed_validation && WC()->cart->add_to_cart($product_id, $quantity) && 'publish' === $product_status) {
+            if ($passed_validation && WC()->cart->add_to_cart($product_id, $quantity) && 'publish' === $product_status) {
 
-                    do_action($this->action_name . '_added_to_cart', $product_id);
+                do_action($this->action_name . '_added_to_cart', $product_id);
 
                     /* Handle the redirection to cart after adding product
                     if ( 'yes' === get_option( $this->action_name .  '_redirect_after_add' ) ) {
@@ -81,21 +84,22 @@ class Webigo_Woo_Ajax_Add_To_Cart
                     }
                     */
 
-                   $this->send_success_response( $product_id, $quantity );
+                $this->send_success_response( $product_id, $quantity );
 
-                    WC_AJAX::get_refreshed_fragments();
+                WC_AJAX::get_refreshed_fragments();
 
                 }
-            } catch (Exception $e) {
-                $this->record_error_log( $e, $product_id );
-                $this->send_error_response( $e, $product_id );
-            }
-
-            wp_die();
+        } catch (Exception $e) {
+            $this->record_error_log( $e, $product_id );
+            $this->send_error_response( $e, $product_id );
         }
+
+        wp_die();
+        
     }
 
      /**
+     * This method uses the request class Webigo_Add_To_Cart_Request to handle the response
      * 
      * @param string $product_id
      * @param int    $quantity
@@ -117,6 +121,7 @@ class Webigo_Woo_Ajax_Add_To_Cart
     }
 
     /**
+     * This method uses the request class Webigo_Add_To_Cart_Request to handle the response
      * 
      * @param object $e Exception object
      * @param string $product_id The id of the product
@@ -138,7 +143,8 @@ class Webigo_Woo_Ajax_Add_To_Cart
     }
 
     /**
-     * Records the errors inside the WC logs Woocommerce->Status->Logs
+     * Records the errors inside the WC logs Woocommerce->Status->Logs using
+     * the WC_Logger class inside the Webigo_Add_To_Cart_Request class
      * 
      * @param object $e Exception object
      * @param string $product_id The id of the product
