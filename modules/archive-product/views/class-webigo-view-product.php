@@ -153,9 +153,9 @@ class Webigo_View_Product {
 
     private function render_whatsapp_button() {
 
-        // TODO: complete
+        // TODO: complete when returns
         return sprintf(
-            '<div>%s</div>',
+            '<div class="wbg-product-whatsapp-contact">%s</div>',
             esc_html( $this->whatsapp_number() )
         );
         
