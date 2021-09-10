@@ -67,11 +67,9 @@ class Webigo_Pod_Custom_Fields extends Webigo_Pod_Fields {
      */
     private function load_custom_fields() : void
     {
-
         $this->custom_fields = array_merge( $this->custom_fields, $this->pod_fields );
 
         unset( $this->pod_fields );
-
     }
 
     /**
@@ -119,6 +117,27 @@ class Webigo_Pod_Custom_Fields extends Webigo_Pod_Fields {
         return isset( $this->entity_type ) && ($this->entity_type === 'post');
     }
 
+     /**
+     * Check if the field exists in the custom fields array.
+     * 
+     * @return bool 
+     */
+    public function is_field_exists( string $field_name ) : bool
+    {
+        return isset( $this->custom_fields[$field_name] ) ? true : false;
+    }
+
+
+     /**
+     * Returns the list of custom fields
+     * 
+     * @return array of fields 
+     */
+    public function fields() : array
+    {
+        return array_keys($this->custom_fields);
+    }
+
     /**
      * Returns the list of entity custom fields with the data
      * 
@@ -128,5 +147,15 @@ class Webigo_Pod_Custom_Fields extends Webigo_Pod_Fields {
     {
 
         return !empty( $this->custom_fields ) ? $this->custom_fields : array();
+    }
+
+    /**
+     * Returns the value of field passed as parameter
+     * 
+     * @param string|bool $field_name|false
+     */
+    public function value_of( string $field_name ) : string 
+    {
+        return $this->custom_fields[$field_name]['value'];
     }
 }

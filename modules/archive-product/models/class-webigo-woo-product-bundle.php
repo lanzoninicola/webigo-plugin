@@ -5,14 +5,6 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
 
     protected $type;
 
-
-    /**
-     * Contains only the IDs of products that builds the bundle
-     * 
-     *  @var array of product_id
-     */
-    // protected $childs;
-
     public function __construct($product) {
         parent::__construct( $product );
 
@@ -20,12 +12,8 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
          *  By default the YITH plugin doesn't add this support for the WC_Product_Yith_Bundle
          */
         $this->supports[] = 'ajax_add_to_cart';
-        
+
         $this->type = 'bundle';
-        $this->childs = array();
-
-        // $this->define_bundle_childs_ids();
-
     }
 
      /**

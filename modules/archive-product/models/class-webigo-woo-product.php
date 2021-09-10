@@ -23,48 +23,59 @@ class Webigo_Woo_Product extends WC_Product_Simple {
         $this->is_bundled_item = false;
     }
 
+    /**
+    * @return string
+    */
     public function id() : string
     {
-
         return $this->get_id();
     }
 
+    /**
+    * @return string
+    */
     public function type() : string
     {
-
         return $this->get_type();
     }
 
+    /**
+    * @return string
+    */
     public function name() : string
     {
-
         return $this->get_name();
-
     }
 
+    /**
+    * @return string
+    */
     public function description() : string
     {
-
         return $this->get_description();
     }
 
+    /**
+    * @return string
+    */
     public function price() : string
     {
-
         return $this->get_regular_price();
-
     }
 
+    /**
+    * @return string
+    */
     public function sale_price() : string
     {
-
         return $this->get_sale_price();
-
     }
 
+    /**
+    * @return string
+    */
     public function final_price() : string
     {
-
         return $this->get_price();
     }
 
@@ -77,7 +88,6 @@ class Webigo_Woo_Product extends WC_Product_Simple {
      */
     public function image() : string
     {
-
         return $this->get_image();
     }
 
