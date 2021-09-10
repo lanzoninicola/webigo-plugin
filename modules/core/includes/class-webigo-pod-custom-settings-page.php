@@ -70,6 +70,16 @@ class Webigo_Pod_Custom_Settings_Page extends Webigo_Pod_Fields {
     }
 
     /**
+     * Check if the field exists in the custom settings page.
+     * 
+     * @return bool 
+     */
+    public function is_field_exists( string $field_name ) : bool
+    {
+        return isset( $this->settings_page[$field_name] ) ? true : false;
+    }
+
+    /**
      * Returns the list of fields of the Custom Settings Page
      * 
      * @return array of fields 
@@ -80,17 +90,23 @@ class Webigo_Pod_Custom_Settings_Page extends Webigo_Pod_Fields {
     }
 
     /**
+     * Returns the list of custom setting page fields with the data
      * 
-     * @param string $field_name
+     * @return array
      */
-    public function value_of( string $field_name )
+    public function get() : array
     {
+        return !empty( $this->settings_page ) ? $this->settings_page : array();
+    }
 
-        if ( array_keys( $this->settings_page, $field_name ) ) {
-            return $this->settings_page[$field_name]['value'];
-        }
-
-        return false;
+    /**
+     * Returns the value of field passed as parameter
+     * 
+     * @param string|bool $field_name|false
+     */
+    public function value_of( string $field_name ) : string 
+    {
+        return $this->settings_page[$field_name]['value'];
     }
 
 }
