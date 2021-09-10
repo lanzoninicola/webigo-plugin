@@ -1,7 +1,7 @@
 <?php
 
 
-class Webigo_Woo_Delivery_Shortcode
+class Webigo_Woo_Shipping_Shortcode
 {
 
 
@@ -15,7 +15,7 @@ class Webigo_Woo_Delivery_Shortcode
 	private function load_dependencies()
 	{
         
-		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-archive-product.php';
+		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/views/class-webigo-view-shipping.php';
 	}
 
 	public function add_shortcodes()
@@ -26,9 +26,9 @@ class Webigo_Woo_Delivery_Shortcode
 	public function render()
 	{
 
-		$view = new Webigo_View_Delivery( );
+		$view = new Webigo_View_Shipping( );
 
-		$output = $view->render_delivery(  );
+		$output = $view->render_shipping(  );
 
 		return $output;
 

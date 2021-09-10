@@ -5,7 +5,7 @@ require_once WEBIGO_PLUGIN_PATH . 'includes/abstract-class-webigo-module.php';
 /**
 * {@inheritdoc}
 */
-class Webigo_Delivery extends Webigo_Module
+class Webigo_Shipping extends Webigo_Module
 {
 
 	protected $name = 'delivery';
@@ -22,7 +22,7 @@ class Webigo_Delivery extends Webigo_Module
 
 	public function load_dependencies()
 	{
-		require_once WEBIGO_PLUGIN_PATH . '/modules/delivery/includes/class-webigo-woo-delivery-shortcode.php';
+		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-woo-shipping-shortcode.php';
 		
 	}
 
@@ -37,7 +37,7 @@ class Webigo_Delivery extends Webigo_Module
 	{
 		$style_data = array(
 			'module'      => $this->name,
-			'file_name'   => 'delivery.css',
+			'file_name'   => 'shipping.css',
 			'dependencies' => array('core')
 		);
 
@@ -57,7 +57,7 @@ class Webigo_Delivery extends Webigo_Module
 
 		$script_data = array(
 			'module'      => $this->name,
-			'file_name'   => 'delivery.js',
+			'file_name'   => 'shipping.js',
 			'dependencies' => array('core', 'add-to-cart'),
 			'in_footer'   => true
 		);
@@ -72,7 +72,7 @@ class Webigo_Delivery extends Webigo_Module
 	private function add_shortcodes()
 	{
 
-		new Webigo_Woo_Delivery_Shortcode();
+		new Webigo_Woo_Shipping_Shortcode();
 	}
 
 
