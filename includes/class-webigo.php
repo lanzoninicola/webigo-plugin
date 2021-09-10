@@ -174,6 +174,13 @@ class Webigo
 			'cart-bundle-products',
 			'class-webigo-cart-bundle-products.php'
 		);
+
+		$this->modules_registry->register(
+			'delivery',
+			'Webigo_Delivery',
+			'delivery',
+			'class-webigo-delivery.php'
+		);
 		
 	}
 
