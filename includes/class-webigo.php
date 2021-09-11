@@ -176,10 +176,10 @@ class Webigo
 		);
 
 		$this->modules_registry->register(
-			'delivery',
-			'Webigo_Delivery',
-			'delivery',
-			'class-webigo-delivery.php'
+			'shipping',
+			'Webigo_Shipping',
+			'shipping',
+			'class-webigo-shipping.php'
 		);
 		
 	}
