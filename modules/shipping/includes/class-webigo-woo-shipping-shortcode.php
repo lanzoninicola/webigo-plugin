@@ -20,7 +20,7 @@ class Webigo_Woo_Shipping_Shortcode
 
 	public function add_shortcodes()
 	{
-        add_shortcode('delivery', array($this, 'render'));
+        add_shortcode('webigo_shipping', array($this, 'render'));
 	}
 
 	public function render()
@@ -28,9 +28,8 @@ class Webigo_Woo_Shipping_Shortcode
 
 		$view = new Webigo_View_Shipping( );
 
-		$output = $view->render_shipping(  );
+		$view->render( );
 
-		return $output;
 
 	}
 }

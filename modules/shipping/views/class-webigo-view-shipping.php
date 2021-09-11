@@ -4,6 +4,17 @@
 class Webigo_View_Shipping {
 
 
+    /**
+     * @var Webigo_View_Shipping_Options
+     */
+    private $view_shipping_options;
+
+    /**
+     * @var Webigo_View_Check_Cep
+     */
+    private $view_check_cep;
+
+
     public function __construct(  ) {
 
         $this->load_dependencies();
@@ -12,26 +23,31 @@ class Webigo_View_Shipping {
 
 
     private function load_dependencies() {
+
+        require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-shipping-settings.php';
         
+        require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/views/class-webigo-view-shipping-options.php';
+        $this->view_shipping_options = new Webigo_View_Shipping_Options();
+
+        require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/views/class-webigo-view-cep-verification.php';
+        $this->view_check_cep = new Webigo_View_Cep_Verification();
     }
-
-
-    public function render_shipping( ) : string
+    
+    public function render( ) 
     {
+        ?>
 
-        $output = '<div class="wbg-delivery-container">';
+        <div class="wbg-shipping-container">
 
-        $output = '<div class="wbg-delivery-delivery">';
+            <?php $this->view_shipping_options->render(); ?>
 
-        $output .= '</div>';
+            <?php $this->view_check_cep->render(); ?>
+      
+    </div>
 
-        $output = '<div class="wbg-delivery-container">';
-
-        $output .= '</div>';
-
-        $output .= '</div>';
-     
-        return '';
-        
+        <?php
     }
+
+  
+
 }

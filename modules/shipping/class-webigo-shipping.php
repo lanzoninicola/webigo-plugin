@@ -8,7 +8,7 @@ require_once WEBIGO_PLUGIN_PATH . 'includes/abstract-class-webigo-module.php';
 class Webigo_Shipping extends Webigo_Module
 {
 
-	protected $name = 'delivery';
+	protected $name = 'shipping';
 
 	private $style_version = '1.0';
 
@@ -43,13 +43,6 @@ class Webigo_Shipping extends Webigo_Module
 
 		$this->style->register_public_style($style_data);
 
-		// $style_data = array(
-		// 	'module' => $this->name,
-		// 	'file_name' => 'view-product.css',
-		// 	'dependecies' => array('core')
-		// );
-
-		// $this->style->register_public_style($style_data);
 	}
 
 	public function add_script()
