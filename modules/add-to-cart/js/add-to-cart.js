@@ -10,9 +10,9 @@
   function init() {
     const addToCartButtons = d.querySelectorAll(".wbg-add-to-cart-button");
 
-    _dom.bulkAttachEvent({
+    _event.bulkAttachEvent({
       elements: addToCartButtons,
-      ev: _dom.events.click,
+      ev: _event.type.click,
       cb: addToCart,
     });
 

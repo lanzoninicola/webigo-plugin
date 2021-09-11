@@ -18,15 +18,15 @@
     const plusQtyButtons = d.getElementsByClassName("btn-quantity-plus");
     const minusQtyButtons = d.getElementsByClassName("btn-quantity-minus");
 
-    _dom.bulkAttachEvent({
+    _event.bulkAttachEvent({
       elements: plusQtyButtons,
-      ev: _dom.events.click,
+      ev: _event.type.click,
       cb: increaseQtyToCart,
     });
 
-    _dom.bulkAttachEvent({
+    _event.bulkAttachEvent({
       elements: minusQtyButtons,
-      ev: _dom.events.click,
+      ev: _event.type.click,
       cb: decreaseQtyToCart,
     });
   }
@@ -148,15 +148,16 @@
  * Categories Attributes
  */
 (function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
   const _dom = webigoHelper?.domManager;
   const catAttributes = d.querySelectorAll(".wbg-category-attributes");
 
   init();
 
   function init() {
-    _dom.bulkAttachEvent({
+    _event.bulkAttachEvent({
       elements: catAttributes,
-      ev: _dom.events.click,
+      ev: _event.type.click,
       cb: showHideCatAttributes,
     });
   }
@@ -187,6 +188,7 @@
  */
 (function (webigoHelper, d) {
   const _dom = webigoHelper?.domManager;
+  const _event = webigoHelper?.eventManager;
 
   const infoProdDescriptionButtons = d.querySelectorAll(
     ".wbg-product-list .wbg-product .info-description"
@@ -195,9 +197,9 @@
   init();
 
   function init() {
-    _dom.bulkAttachEvent({
+    _event.bulkAttachEvent({
       elements: infoProdDescriptionButtons,
-      ev: _dom.events.click,
+      ev: _event.type.click,
       cb: showHideFullProductDescription,
     });
   }
