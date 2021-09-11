@@ -30,13 +30,16 @@ class StateManager {
 
 class EventManager {
   typeManager = null;
+  type = {
+    click: "click",
+  };
   eventCollection = {};
 
   constructor(typeManager) {
     this.typeManager = typeManager;
   }
 
-  listen = ({ ev, cb }) => {
+  listen = ({ ev, targetQuery = null, cb }) => {
     if (typeof ev === "undefined" && ev === null) {
       throw "EventManager.listen: eventName parameter is required";
     }
@@ -50,9 +53,13 @@ class EventManager {
       targets: [],
       data: {},
     };
+
+    if (typeof targetQuery !== "undefined" && targetQuery !== null) {
+      this.defineTarget({ ev, targetQuery });
+    }
   };
 
-  trigger = ({ ev, targetQuery, data }) => {
+  trigger = ({ ev, targetQuery = null, data }) => {
     if (!this.typeManager.istypeString(ev)) {
       throw "EventManager.trigger: eventName must be a string";
     }
@@ -88,6 +95,26 @@ class EventManager {
     elementsCollection?.forEach((el) => {
       this.eventCollection?.[ev.toString()]?.targets?.push(el);
     });
+  };
+
+  bulkAttachEvent = ({ elements, el, ev, cb }) => {
+    const _el = elements || el; // manage retroactive calls
+
+    if (!_el) {
+      return;
+    }
+
+    Object.keys(_el).forEach((idx) => {
+      _el[parseInt(idx, 10)].addEventListener(ev, cb);
+    });
+  };
+
+  attachEvent = ({ el, ev, cb }) => {
+    if (!el) {
+      return;
+    }
+
+    el.addEventListener(ev, cb);
   };
 }
 
@@ -193,10 +220,6 @@ class TypeManager {
 }
 
 class DomManager {
-  events = {
-    click: "click",
-  };
-
   domAttributes = {
     productId: "data-product-id",
     productPrice: "data-product-price",
@@ -217,14 +240,6 @@ class DomManager {
       catId: el?.getAttribute(this.domAttributes.categoryId),
       visibility: el?.getAttribute(this.domAttributes.dataVisibility),
     };
-  };
-
-  bulkAttachEvent = ({ elements, ev, cb }) => {
-    if (elements) {
-      Object.keys(elements).forEach((idx) => {
-        elements[parseInt(idx, 10)].addEventListener(ev, cb);
-      });
-    }
   };
 
   show = (el) => {
@@ -284,3 +299,29 @@ const webigoHelper = {
   cookieManager: new CookieManager(new TypeManager()),
   domManager: new DomManager(),
 };
+
+(function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
+
+  const buttons = document.querySelectorAll(".wbg-button");
+
+  _event.bulkAttachEvent({
+    el: buttons,
+    ev: _event.type.click,
+    cb: animateButtons,
+  });
+
+  function animateButtons(e) {
+    let x = e.clientX - e.target.offsetLeft;
+    let y = e.clientY - e.target.offsetTop;
+
+    let ripples = d.createElement("span");
+    ripples.style.left = x + "px";
+    ripples.style.top = y + "px";
+    this.appendChild(ripples);
+
+    setTimeout(() => {
+      ripples.remove();
+    }, 700);
+  }
+})(webigoHelper, document);
