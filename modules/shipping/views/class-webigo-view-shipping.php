@@ -24,8 +24,6 @@ class Webigo_View_Shipping {
 
     private function load_dependencies() {
 
-        require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-shipping-settings.php';
-        
         require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/views/class-webigo-view-shipping-options.php';
         $this->view_shipping_options = new Webigo_View_Shipping_Options();
 
@@ -43,7 +41,7 @@ class Webigo_View_Shipping {
 
             <?php $this->view_check_cep->render(); ?>
       
-    </div>
+        </div>
 
         <?php
     }
