@@ -4,71 +4,24 @@ require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/interface-webigo-http-
 
 class Webigo_HTTP_Request {
 
-    /**
-     * The Wordpress action handled by the request.
-     * This must be passed as input of object
-     * 
-     * @var string
-     */
-    private $wp_action_name;
-
-    /**
-     * The nonce sent with the request data
-     * 
-     * @var string 
-     */
-    private $request_nonce;
-
-    /**
-     * The action related sent with the request data
-     * 
-     * @var string 
-     */
-    private $request_action;
-
      /**
      * Object implements IWebigo_Http_Request_Data
      * 
      * @var object
      */
-    private $http_data;
+    protected $http_data;
 
     /**
-     *  Class responsible to handle the Wordpress AJAX requests
+     *  Class responsible to handle an HTTP request
      * 
      *  Here is managed the sanitization and validation of request data
      * 
-     * @param string $wp_action_name (the action name handled by Wordpress hook)
      * @param object $http_data (object that implements the IWebigo_Http_Request_Data interface)
      */
-    public function __construct( string $wp_action_name, IWebigo_Http_Request_Data $http_data )
+    public function __construct( IWebigo_Http_Request_Data $http_data )
     {
-        $this->wp_action_name = $wp_action_name;
         $this->http_data = $http_data;
     }
-
-    /**
-     * Validation of nonce sent 
-     * @return bool
-     */
-    public function is_nonce_valid(): bool
-    {
-
-        $this->request_action     = $this->http_data->get_value( 'action' );
-        $this->request_nonce      = $this->http_data->get_value( 'nonce' );
-
-        if (
-            ( $this->request_action !== $this->wp_action_name )  ||
-            !isset( $this->request_nonce ) ||
-            !wp_verify_nonce($this->request_nonce, $this->action_name)
-        ) {
-
-            return false;
-        }
-
-        return true;
-    }
-
     
      /**
      * 
@@ -94,11 +47,7 @@ class Webigo_HTTP_Request {
 
         $base_http_response = array(
             'error'           => true,
-            'wp_action'       => $this->wp_action_name,
-            'request_action'  => $this->request_action,
-            'request_nonce'   => $this->request_nonce,
-            'nonce_result'    => wp_verify_nonce($this->request_nonce, $this->action_name),
-            'message'         => 'The request is not valid.',
+            'message'         => 'Something goes wrong with the request',
         );
 
         $http_error_response = array_merge( $base_http_response, $errorData );
@@ -106,9 +55,19 @@ class Webigo_HTTP_Request {
          wp_send_json_error( $http_error_response );
     }
 
+     /**
+     * Returns all the data sanitized from the request 
+     * 
+     * @return array
+     */
+    public function get_all_data( ) : array
+    {
+        return $this->http_data->get( );
+
+    }
     
     /**
-     * Returns the data from the request sanitized
+     * Returns the requested data sanitized 
      * 
      * @return string|false if the value is not found
      */

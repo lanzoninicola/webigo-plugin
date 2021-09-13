@@ -17,11 +17,4 @@ interface IWebigo_Http_Request_Data {
      */
     function trimmer( $value );
 
-    /**
-     * Returns the data sanitized
-     * 
-     * @return array $data_sanitized
-     */
-    public function get();
-
 }
