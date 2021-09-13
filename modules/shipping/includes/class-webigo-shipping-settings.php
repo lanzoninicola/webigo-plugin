@@ -18,7 +18,10 @@ class Webigo_Shipping_Settings {
     const AJAX_CEP_VERIFICATION_DATA = array(
         'action'     => FILTER_SANITIZE_STRING,
         'nonce'      => FILTER_SANITIZE_STRING,
-        'cep'        => FILTER_VALIDATE_INT,
+        'resource'   => FILTER_SANITIZE_STRING,
+        'country'    => FILTER_SANITIZE_STRING,
+        'state'      => FILTER_SANITIZE_STRING,
+        'postcode'   => FILTER_VALIDATE_INT,
     );
 
     public static function shipping_view_options() {

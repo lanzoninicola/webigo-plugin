@@ -14,61 +14,63 @@ class Webigo_Shipping_Ajax_Cep_Verification extends Webigo_Wordpress_Ajax_Reques
     public function ajax_cep_verification() 
     {
 
-        if ( !$this->http_request->is_valid() ) {
+        if ( !$this->is_nonce_valid() ) {
+            $this->record_error_ajax_response();
+            $this->send_error_ajax_response();
 
-            $log_error = array(
-                'class'       => 'Class: ' . __CLASS__,
-                'function'    => 'Method: is_valid',
-                'message'     => 'Message: Nonce verification failed'  
-            );
-
-            $this->logger->record_error( $log_error );
             return;
-
         }
 
-        var_dump($this->http_request_data);die;
+        $request_resource = $this->http_request_data->get_value( 'resource' );
+        $request_country  = $this->http_request_data->get_value( 'country' );
+        $request_state    = $this->http_request_data->get_value( 'state' );
+        $request_postcode = $this->http_request_data->get_value( 'postcode' );
 
+        
         try {
             
-            // $requestFrom = $_POST["request_id"];
+            if ( "cep-form" === $request_resource ) {
+                $package = array(
+                    'destination' => array(
+                        'country'  => isset ( $request_country ) ? $request_country : Webigo_Shipping_Settings::DEFAULT_COUNTRY_CODE,
+                        'state'    => isset ( $request_state )   ? $request_state   : Webigo_Shipping_Settings::DEFAULT_STATE_CODE,
+                        'postcode' => $request_postcode,
+                    ),
+                );
+        
+                $country   = strtoupper( wc_clean( $package['destination']['country'] ) );
+                $state     = strtoupper( wc_clean( $package['destination']['state'] ) );
+                $postcode  = wc_normalize_postcode( wc_clean( $package['destination']['postcode'] ) );
+        
+                // $cache_key        = WC_Cache_Helper::get_cache_prefix( 'shipping_zones' ) . 'wc_shipping_zone_' . md5( sprintf( '%s+%s+%s', $country, $state, $postcode ) );
+                // $matching_zone_id = wp_cache_get( $cache_key, 'shipping_zones' );
+        
+                $matching_zone_id = false;
+        
+                if (false === $matching_zone_id) {
+                    $data_store       = WC_Data_Store::load('shipping-zone');
+                    $matching_zone_id = $data_store->get_zone_id_from_package( $package );
+                    // wp_cache_set( $cache_key, $matching_zone_id, 'shipping_zones' );
+                };
+        
+                $result = array(
+                    'country_requested'  => $country,
+                    'state_requested'    => $state,
+                    'postcode_requested' => $postcode,
+                    'result'             => $matching_zone_id ? true : false,
+                );
+        
+                $this->send_success_response( $result );
 
-            // if ($requestFrom === "cep-form") {
-            //     $package = array(
-            //         'destination' => array(
-            //             'country'  => $_POST["country"],
-            //             'state'    => $_POST["state"],
-            //             'postcode' => $_POST["postcode"]
-            //         ),
-            //     );
-        
-            //     $country          = strtoupper(wc_clean($package['destination']['country']));
-            //     $state            = strtoupper(wc_clean($package['destination']['state']));
-            //     $postcode         = wc_normalize_postcode(wc_clean($package['destination']['postcode']));
-        
-            //     // $cache_key        = WC_Cache_Helper::get_cache_prefix( 'shipping_zones' ) . 'wc_shipping_zone_' . md5( sprintf( '%s+%s+%s', $country, $state, $postcode ) );
-            //     // $matching_zone_id = wp_cache_get( $cache_key, 'shipping_zones' );
-        
-            //     $matching_zone_id = false;
-        
-            //     if (false === $matching_zone_id) {
-            //         $data_store       = WC_Data_Store::load('shipping-zone');
-            //         $matching_zone_id = $data_store->get_zone_id_from_package($package);
-            //         // wp_cache_set( $cache_key, $matching_zone_id, 'shipping_zones' );
-            //     }
-        
-            //     $result = array(
-            //         'country_requested' => $country,
-            //         'state_requested' => $state,
-            //         'postcode_requested' => $postcode,
-            //         'result' => $matching_zone_id ? true : false,
-            //     );
-        
-            //     wp_send_json_success($result);
+            }
 
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (Exception $e) {
+            
+            $errorData = array(
+                'exception' => $e,
+            );
+
+            $this->send_error_response( $errorData );
         }
-
     }
 }

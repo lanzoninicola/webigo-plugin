@@ -41,6 +41,7 @@ class Webigo_Http_Request_Data implements IWebigo_Http_Request_Data {
         $this->data_filter_settings = $data_filter_settings;
 
         $this->check_filter_requested();
+        $this->sanitize_input();
     }
 
     /**
@@ -58,7 +59,7 @@ class Webigo_Http_Request_Data implements IWebigo_Http_Request_Data {
         $is_filter_set = array_search( 513, $filter_set );
 
         if ( false === $is_filter_set ) {
-            throw new Exception('No valid filter was passed to the constructor');
+            throw new Exception( 'No valid filter was passed to the constructor' );
         }
     }
     

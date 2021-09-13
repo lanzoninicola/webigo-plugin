@@ -45,13 +45,6 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
     protected $http_request_data;
 
     /**
-     * Object to handle the request
-     * 
-     * @var object
-     */
-    protected $http_request;
-
-    /**
      * Woocommerce Logger object
      * 
      * @var Webigo_Logger
@@ -68,6 +61,12 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
         $this->load_dependencies();
     }
 
+    /**
+     * This class is dedicated for handling the Wordpress AJAX requests.
+     *
+     * This class extends the "Webigo_Http_Request" class, then all methods are available here.
+     *
+     */
     private function load_dependencies() : void 
     {
         require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-http-request-data.php';
@@ -91,7 +90,7 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
         if (
             ( $this->request_action !== $this->wp_action_name )  ||
             !isset( $this->request_nonce ) ||
-            !wp_verify_nonce($this->request_nonce, $this->action_name)
+            !wp_verify_nonce($this->request_nonce, $this->request_action)
         ) {
 
             return false;
@@ -101,12 +100,13 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
     }
 
      /**
-     * Responds to client with error data
+     * Failed response sent to the client
+     * IMPORTANT: This method is dedicated to nonce verification failed
      * 
      * @param  array $errorData
      * @return void
      */
-    public function send_error_ajax_response( array $errorData ): void
+    public function send_error_ajax_response( ): void
     {
 
         $ajax_error_data = array(
@@ -118,6 +118,25 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
         );
 
         $this->send_error_response( $ajax_error_data );
+    }
+
+    /**
+     * Record failed response to Logger.
+     * IMPORTANT: This method is dedicated to nonce verification failed
+     * 
+     * @param  array $errorData
+     * @return void
+     */
+    public function record_error_ajax_response( ): void
+    {
+
+        $log_error = array(
+            'class'       => 'Class: ' . __CLASS__,
+            'function'    => 'Method: ajax_cep_verification',
+            'message'     => 'Message: Nonce verification failed'  
+        );
+
+        $this->logger->record_error( $log_error );
     }
 
     /**
