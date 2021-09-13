@@ -316,9 +316,10 @@ const webigoHelper = {
     let y = e.clientY - e.target.offsetTop;
 
     let ripples = d.createElement("span");
+    ripples.setAttribute("class", "btn-animate");
     ripples.style.left = x + "px";
     ripples.style.top = y + "px";
-    this.appendChild(ripples);
+    this.insertBefore(ripples, this.firstChild);
 
     setTimeout(() => {
       ripples.remove();

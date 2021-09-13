@@ -65,7 +65,7 @@ small,
 .wbg-button {
   width: 100%;
   padding: 0.75rem 2rem;
-  margin: 0.25rem 0;
+  margin: 0.75rem 0;
   border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -81,7 +81,7 @@ small,
   opacity: 0.2;
 }
 
-.wbg-button span {
+.wbg-button span.btn-animate {
   position: absolute;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -97,7 +97,7 @@ small,
   color: var(--hzbi-white);
 }
 
-.wbg-primary-button span {
+.wbg-primary-button span.btn-animate {
   background: var(--hzbi-whitesmoke);
 }
 
@@ -112,8 +112,8 @@ small,
   color: var(--hzbi-black);
 }
 
-.wbg-secondary-button span,
-.wbg-ternary-button span {
+.wbg-secondary-button span.btn-animate,
+.wbg-ternary-button span.btn-animate {
   background: var(--hzbi-green);
 }
 
