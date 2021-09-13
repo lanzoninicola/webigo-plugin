@@ -32,6 +32,7 @@ class EventManager {
   typeManager = null;
   type = {
     click: "click",
+    input: "input",
   };
   eventCollection = {};
 
