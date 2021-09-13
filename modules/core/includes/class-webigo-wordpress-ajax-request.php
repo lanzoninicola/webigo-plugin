@@ -62,8 +62,9 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
      * This array describes which data and the filter to apply to each of it
      * 
      */
-    public function __construct( ) {
+    public function __construct( string $wp_action_name ) {
 
+        $this->wp_action_name = $wp_action_name;
         $this->load_dependencies();
     }
 
@@ -128,7 +129,7 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
      */
     public function action_name(): string
     {
-        return $this->action_name;
+        return $this->wp_action_name;
     }
 
 

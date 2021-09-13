@@ -44,14 +44,21 @@ class Webigo_Http_Request_Data implements IWebigo_Http_Request_Data {
     }
 
     /**
-     * Check if the filter was passed to the constructor
+     * Check if at least the FILTER_SANITIZE_STRING was passed to the constructor
      */
     private function check_filter_requested() : void
     {
+        $filter_set = array();
+        
         foreach ($this->data_filter_settings as $filter_setting) {
-            if ( substr( $filter_setting, 0, 6 ) !== 'FILTER') {
-                throw new Exception('No valid filter was passed to the constructor');
-            }
+            array_push( $filter_set, $filter_setting );
+        }
+
+        // FILTER_SANITIZE_STRING is a constant with value 513
+        $is_filter_set = array_search( 513, $filter_set );
+
+        if ( false === $is_filter_set ) {
+            throw new Exception('No valid filter was passed to the constructor');
         }
     }
     

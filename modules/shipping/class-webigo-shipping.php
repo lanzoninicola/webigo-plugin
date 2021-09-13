@@ -22,7 +22,12 @@ class Webigo_Shipping extends Webigo_Module
 
 	public function load_dependencies()
 	{
+		
+		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-shipping-settings.php';
+
 		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-woo-shipping-shortcode.php';
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-ajax-cep-verification.php';
 		
 	}
 
@@ -60,6 +65,30 @@ class Webigo_Shipping extends Webigo_Module
 
 	public function add_hooks()
 	{
+
+        $this->cep_verification();
+	}
+
+	private function cep_verification() : void
+	{
+		$action_name = Webigo_Shipping_Settings::AJAX_CEP_VERIFICATION_ACTION_NAME;		
+		$ajax_cep_verification = new Webigo_Shipping_Ajax_Cep_Verification( $action_name );
+
+		// Below hook is used for Authenticated Users
+		$hook_wp_ajax = array(
+			'hook'     => 'wp_ajax_' . $action_name,
+			'callback' => array($ajax_cep_verification, 'ajax_cep_verification')
+		);
+
+		$this->hooks->register($hook_wp_ajax);
+
+		// Below hook is used for NO-Authenticated Users
+		$hook_wp_ajax_nopriv = array(
+			'hook'     => 'wp_ajax_nopriv_' . $action_name,
+			'callback' => array($ajax_cep_verification, 'ajax_cep_verification')
+		);
+
+		$this->hooks->register($hook_wp_ajax_nopriv);
 	}
 
 	private function add_shortcodes()
@@ -67,6 +96,8 @@ class Webigo_Shipping extends Webigo_Module
 
 		new Webigo_Woo_Shipping_Shortcode();
 	}
+
+	
 
 
 }

@@ -13,6 +13,14 @@ class Webigo_Shipping_Settings {
 
     const CORREIOS_URL_BUSCA_CEP = "https://buscacepinter.correios.com.br/app/endereco/index.php";
 
+    const AJAX_CEP_VERIFICATION_ACTION_NAME = "shipping_area_validation";
+
+    const AJAX_CEP_VERIFICATION_DATA = array(
+        'action'     => FILTER_SANITIZE_STRING,
+        'nonce'      => FILTER_SANITIZE_STRING,
+        'cep'        => FILTER_VALIDATE_INT,
+    );
+
     public static function shipping_view_options() {
 
         $base_url = plugin_dir_url(__DIR__);
