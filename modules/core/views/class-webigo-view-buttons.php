@@ -17,15 +17,14 @@ class Webigo_View_Buttons {
         /**
          * $options = array(
          *      'button' => array (
-         *          'classes'    => array()
+         *          'class'    => array()
          *          'attributes' => array(
          *                         att1 => '',
          *                         att2 => '',
          *                          )
          *          )
          *       'label' => array (
-         *          'value'      => '',
-         *          'classes'    => array()
+         *          'class'    => array()
          *          'attributes' => array(
          *                         att1 => '',
          *                         att2 => '',
@@ -34,9 +33,19 @@ class Webigo_View_Buttons {
          * )
          */
 
-        // $base_button_classes = "wbg-button wbg-$type-button";
-        // $user_button_classes = isset( $options['button']['classes'] ) ? $options['button']['classes'] : '';
-        // $button_classes = "$base_button_classes $user_button_classes";
+        $button_classes = '';
+
+        if ( isset( $options['button']['class'] ) ) {
+            $button_classes = implode( ' ', $options['button']['class']);
+        }
+
+        $button_attributes = '';
+
+        if ( isset( $options['button']['attributes'])) {
+            foreach ( $options['button']['attributes'] as $attr => $attr_value) {
+                $button_attributes .= " $attr=$attr_value";
+            }
+        } 
 
         
         // $button_attributes = '';
@@ -69,7 +78,7 @@ class Webigo_View_Buttons {
 
 
 ?>
-        <div class="wbg-button wbg-<?php echo esc_attr( $type ); ?>-button" data-status="enabled">
+        <div class="wbg-button wbg-<?php echo esc_attr( $type ); ?>-button <?php echo esc_attr( $button_classes ); ?>" data-visibility="visible" data-action-state="idle">
             <span class="wbg-button-label"><?php echo esc_html( trim( $label ) ); ?></span>
         </div>
 
