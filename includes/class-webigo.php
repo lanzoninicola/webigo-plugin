@@ -181,6 +181,13 @@ class Webigo
 			'shipping',
 			'class-webigo-shipping.php'
 		);
+
+		$this->modules_registry->register(
+			'shipping-banner',
+			'Webigo_Shipping_Banner',
+			'shipping-banner',
+			'class-webigo-shipping-banner.php'
+		);
 		
 	}
 
