@@ -26,14 +26,13 @@ class Webigo_Shipping_Ajax_Cep_Verification extends Webigo_Wordpress_Ajax_Reques
         $request_state    = $this->http_request_data->get_value( 'state' );
         $request_postcode = $this->http_request_data->get_value( 'postcode' );
 
-        
         try {
             
             if ( "cep-form" === $request_resource ) {
                 $package = array(
                     'destination' => array(
                         'country'  => isset ( $request_country ) ? $request_country : Webigo_Shipping_Settings::DEFAULT_COUNTRY_CODE,
-                        'state'    => isset ( $request_state )   ? $request_state   : Webigo_Shipping_Settings::DEFAULT_STATE_CODE,
+                        'state'    => $request_state,
                         'postcode' => $request_postcode,
                     ),
                 );
@@ -45,22 +44,27 @@ class Webigo_Shipping_Ajax_Cep_Verification extends Webigo_Wordpress_Ajax_Reques
                 // $cache_key        = WC_Cache_Helper::get_cache_prefix( 'shipping_zones' ) . 'wc_shipping_zone_' . md5( sprintf( '%s+%s+%s', $country, $state, $postcode ) );
                 // $matching_zone_id = wp_cache_get( $cache_key, 'shipping_zones' );
         
-                $matching_zone_id = false;
-        
-                if (false === $matching_zone_id) {
-                    $data_store       = WC_Data_Store::load('shipping-zone');
-                    $matching_zone_id = $data_store->get_zone_id_from_package( $package );
-                    // wp_cache_set( $cache_key, $matching_zone_id, 'shipping_zones' );
-                };
-        
-                $result = array(
+                $http_result_response = array(
                     'country_requested'  => $country,
                     'state_requested'    => $state,
                     'postcode_requested' => $postcode,
-                    'result'             => $matching_zone_id ? true : false,
                 );
-        
-                $this->send_success_response( $result );
+
+                if ( $this->is_zone_matched( $package )) {
+
+                    $http_result_response['zone_matched'] = true;
+                    $http_result_response['message'] = 'CEP informado está na área de cobertura';
+
+                    $this->send_success_response( $http_result_response );
+                }
+
+                if ( !$this->is_zone_matched( $package )) {
+
+                    $http_result_response['zone_matched'] = false;
+                    $http_result_response['message'] = 'CEP informado não está na área de cobertura';
+
+                    $this->send_error_response( $http_result_response );
+                }
 
             }
 
@@ -72,5 +76,20 @@ class Webigo_Shipping_Ajax_Cep_Verification extends Webigo_Wordpress_Ajax_Reques
 
             $this->send_error_response( $errorData );
         }
+    }
+
+
+    private function is_zone_matched( array $package ) {
+
+        $data_store           = WC_Data_Store::load('shipping-zone');
+        $shipping_zone_id     = $data_store->get_zone_id_from_package( $package );
+        // wp_cache_set( $cache_key, $matching_zone_id, 'shipping_zones' );
+
+        if ( null === $shipping_zone_id ) {
+            return false;
+        }
+
+        return true;
+
     }
 }

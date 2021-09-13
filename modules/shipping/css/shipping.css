@@ -89,15 +89,30 @@
   width: 100%;
 }
 
+.wbg-cep-verification-head-image {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.wbg-cep-form-intro {
+  margin-bottom: 1rem;
+}
+
 .wbg-cep-form-wrapper select {
-  margin-bottom: 0.75em;
-  padding: 0.25em;
+  padding: 0 0.75rem;
   border-radius: 10px;
+  background: var(--hzbi-white);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 .wbg-cep-form-wrapper input {
-  padding: 0.5em;
+  padding: 0 0.75rem;
   border-radius: 10px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 .wbg-cep-form-wrapper input::placeholder {
   font-size: 1rem;
@@ -125,6 +140,44 @@
 
 .wbg-cep-form-input-cep-wrapper label {
   margin-bottom: 0;
+}
+
+.wbg-button-cep-form-verifycep[data-action-state="idle"]
+  span.wbg-button-label::after {
+  content: "VERIFICA CEP";
+}
+
+.wbg-button-cep-form-verifycep[data-action-state="pending"]
+  span.wbg-button-label::after {
+  content: "VERIFICANDO...";
+}
+
+.wbg-button-cep-form-verifycep[data-action-state="completed"]
+  span.wbg-button-label::after {
+  content: "VERIFICA CEP";
+}
+
+.wbg-cep-form-notification-failed {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wbg-cep-form-notification-failed span {
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--hzbi-red);
+}
+
+.wbg-cep-form-notification-failed[data-visibility="hidden"] {
+  display: none;
+}
+
+.wbg-cep-form-notification-failed[data-visibility="visible"] {
+  animation: fadeIn 700ms ease-in;
 }
 
 .busca-cep-link {

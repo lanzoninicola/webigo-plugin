@@ -21,14 +21,14 @@ class Webigo_Shipping_Settings {
         'resource'   => FILTER_SANITIZE_STRING,
         'country'    => FILTER_SANITIZE_STRING,
         'state'      => FILTER_SANITIZE_STRING,
-        'postcode'   => FILTER_VALIDATE_INT,
+        'postcode'   => FILTER_SANITIZE_STRING,
     );
 
-    public static function shipping_view_options() {
+    public static function shipping_view_options( string $option = '' ) {
 
         $base_url = plugin_dir_url(__DIR__);
 
-        return array(
+        $shipping_options = array(
 
             'delivery' => array(
                 'name'  => 'delivery',
@@ -43,6 +43,52 @@ class Webigo_Shipping_Settings {
             ),
 
         );
+
+        if ( $option === '' ) {
+            return $shipping_options;
+        }
+
+        return $shipping_options[$option];
+    }
+
+    public static function images( string $image_name = '' ) {
+
+        $base_url = plugin_dir_url(__DIR__);
+
+        $images = array(
+
+            'delivery' => array(
+                'name'  => 'delivery',
+                'label' => 'Delivery',
+                'src'   => $base_url . 'images/delivery.png',
+            ),
+
+            'retirar_na_loja' => array(
+                'name'  => 'retirar_na_loja',
+                'label' => 'Retira na Loja',
+                'src'   => $base_url . 'images/retirar_na_loja.png',
+            ),
+
+            'ship_area_success' => array(
+                'name'  => 'ship_area_success',
+                'label' => 'CEP está na área de cobertura',
+                'src'   => $base_url . 'images/ship_area_success.png',
+            ),
+
+            'ship_area_failed' => array(
+                'name'  => 'ship_area_failed',
+                'label' => 'CEP não está na área de cobertura',
+                'src'   => $base_url . 'images/ship_area_failed.png',
+            ),
+
+        );
+
+        if ( $image_name === '' ) {
+            return $images;
+        };
+
+        return $images[$image_name];
+
     }
 
 }

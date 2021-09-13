@@ -6,6 +6,31 @@
   const _request = webigoHelper?.httpRequestManager;
   const _cookie = webigoHelper?.cookieManager;
 
+  const shippingOptionsContainer = d.querySelectorAll(
+    ".wbg-shipping-container"
+  );
+
+  const gotoStoreBtn = d.querySelectorAll(".wbg-button-goto-store");
+
+  const cepFormContainer = d.querySelectorAll(".wbg-cep-form-container")[0];
+  const cepFormStateSelected = d.getElementById("wbg-cep-form-select-states");
+  const cepFormCepInput = d.getElementById("wbg-cep-form-input-cep");
+  const cepFormNonce = d.getElementById("webigo_cep_verification_nonce");
+  const cepFormVerifyBtn = d.querySelectorAll(
+    ".wbg-button-cep-form-verifycep"
+  )[0];
+  const cepFormGoBackBtn = d.querySelectorAll(".wbg-button-cep-form-voltar")[0];
+  const cepFormNotificationFailed = d.querySelectorAll(
+    ".wbg-cep-form-notification-failed"
+  )[0];
+
+  const cepVerificationSuccessMessage = d.querySelectorAll(
+    ".wbg-cep-verification-success"
+  )[0];
+  const cepVerificationFailedMessage = d.querySelectorAll(
+    ".wbg-cep-verification-failed"
+  )[0];
+
   init();
 
   function init() {
@@ -25,7 +50,7 @@
     _event.attachEvent({
       el: shippingOptionDeliveryBtn,
       ev: _event.type.click,
-      cb: showCepVerification,
+      cb: showCepVerificationForm,
     });
 
     _event.attachEvent({
@@ -33,15 +58,22 @@
       ev: _event.type.click,
       cb: gotoShop,
     });
+
+    _event.bulkAttachEvent({
+      el: gotoStoreBtn,
+      ev: _event.type.click,
+      cb: gotoShop,
+    });
   }
 
   function initCepForm() {
-    const cepFormVerifyBtn = d.querySelectorAll(
-      ".wbg-button-cep-form-verifycep"
-    )[0];
-    const cepFormGoBackBtn = d.querySelectorAll(
-      ".wbg-button-cep-form-voltar"
-    )[0];
+    _dom.hide(cepFormVerifyBtn);
+
+    _event.attachEvent({
+      el: cepFormCepInput,
+      ev: _event.type.input,
+      cb: handleOnChangeInputCep,
+    });
 
     _event.attachEvent({
       el: cepFormVerifyBtn,
@@ -56,20 +88,33 @@
     });
   }
 
-  function showCepVerification() {
-    const shoppingOptionsContainer = d.querySelectorAll(
-      ".wbg-shipping-container"
-    );
+  function showCepVerificationForm() {
+    _dom.hide(shippingOptionsContainer);
+    _dom.show(cepFormContainer);
   }
 
-  function gotoShop() {}
+  function gotoShop() {
+    const origin = window.location.origin;
+    const destinationPath = "/loja";
+
+    window.location.href = origin + destinationPath;
+  }
+
+  function handleOnChangeInputCep() {
+    if (cepFormCepInput.value > 0) {
+      _dom.show(cepFormVerifyBtn);
+    }
+
+    if (cepFormCepInput.value <= 0) {
+      _dom.hide(cepFormVerifyBtn);
+    }
+  }
 
   async function verifyCep() {
-    const cepFormStateSelected = d.getElementById("wbg-cep-form-select-states");
-    const cepFormCepInput = d.getElementById("wbg-cep-form-input-cep");
-    const cepFormNonce = d.getElementById("webigo_cep_verification_nonce");
     const requestOptions = _request.options;
     const requestData = _request.data;
+
+    handleRequestInit();
 
     const _requestData = requestData.set({
       action: "shipping_area_validation",
@@ -85,9 +130,29 @@
     const url = wc_add_to_cart_params.ajax_url;
     const httpResponse = await fetch(url, requestOptions.get());
 
+    if (!httpResponse.ok) {
+      handleHttpResponseFailed();
+    }
+
     const wcResponse = await httpResponse.json();
 
-    console.log(wcResponse);
+    if (wcResponse.success === true) {
+      _dom.hide(cepFormContainer);
+      _dom.show(cepVerificationSuccessMessage);
+    }
+
+    if (wcResponse.success === false) {
+      _dom.hide(cepFormContainer);
+      _dom.show(cepVerificationFailedMessage);
+    }
+
+    function handleRequestInit() {
+      cepFormVerifyBtn.setAttribute("data-action-state", "pending");
+    }
+
+    function handleHttpResponseFailed() {
+      _dom.show(cepFormNotificationFailed);
+    }
   }
 
   function goBackCepForm() {}
