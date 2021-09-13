@@ -291,6 +291,43 @@ class DomManager {
   };
 }
 
+class HttpRequestOptions {
+  method = "POST";
+  credentials = "same-origin";
+  headers = {
+    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "Cache-Control": "no-cache",
+  };
+  //RequestData object
+  body = {};
+
+  addRequestData = (HttpRequestData) => {
+    if (HttpRequestData) {
+      this.body = HttpRequestData.data;
+    }
+  };
+
+  get = () => {
+    return {
+      method: this.method,
+      credentials: this.credentials,
+      headers: this.headers,
+      body: this.body,
+    };
+  };
+}
+
+class HttpRequestData {
+  data = {};
+
+  set = (userRequestData) => {
+    this.data = new URLSearchParams({
+      ...userRequestData,
+    });
+    return this;
+  };
+}
+
 const webigoHelper = {
   typeManager: new TypeManager(),
   stateManager: new StateManager(),
@@ -298,6 +335,10 @@ const webigoHelper = {
   sessionManager: new SessionManager(new TypeManager()),
   cookieManager: new CookieManager(new TypeManager()),
   domManager: new DomManager(),
+  httpRequestManager: {
+    options: new HttpRequestOptions(),
+    data: new HttpRequestData(),
+  },
 };
 
 (function (webigoHelper, d) {
