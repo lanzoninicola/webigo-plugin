@@ -8,7 +8,7 @@ class Webigo_View_Cep_Verification_Failed {
     public static function render() {
         ?>
 
-        <div class="wbg-cep-verification-success" data-visibility="visible">
+        <div class="wbg-cep-verification-failed" data-visibility="hidden">
             
             <?php self::shipping_success_image(); ?>
 
@@ -26,7 +26,7 @@ class Webigo_View_Cep_Verification_Failed {
 
     ?>
             <div class='wbg-cep-verification-head-image'>
-                <div class="wbg-shipping-option-wrapper">
+                <div class="wbg-shipping-image-wrapper">
                     <img src='<?php echo esc_url( $ship_area_failed_img['src'] ) ?>' alt="<?php echo esc_attr( $ship_area_failed_img['label'] ) ?>" title="<?php echo esc_attr( $ship_area_failed_img['label'] ) ?>">
                 </div>
             </div>
@@ -37,9 +37,10 @@ class Webigo_View_Cep_Verification_Failed {
     private static function content() {
         ?>
 
-            <h2>Nós sentimos muito. Infelizmente o CEP informado não está na área de cobertura</h2>
-            <p>Fique à vontade para explorar nosso site, lembrando que você pode retirar seu pedido na nossa loja também.</p>
-
+            <div class="wbg-cep-verification-content">
+                <h2>Nós sentimos muito. Infelizmente o CEP informado não está na área de cobertura</h2>
+                <p>Fique à vontade, lembrando que você pode retirar seu pedido na nossa loja também.</p>
+            </div>
 <?php
     }
 

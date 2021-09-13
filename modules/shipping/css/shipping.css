@@ -4,7 +4,21 @@
   justify-content: center;
   background-color: var(--hzbi-whitesmoke);
   min-width: 100vw;
-  min-height: 50vh;
+  min-height: 30vh;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 0 min(3vh, 3rem);
+  transform: translateY(0);
+  animation: slideInUp 700ms ease-in;
+  padding-block: 3rem;
+}
+
+.wbg-shipping-options-intro {
+  margin-bottom: 2rem;
+}
+
+.wbg-shipping-options-intro h4 {
+  font-weight: 600;
 }
 
 .wbg-shipping-options-container {
@@ -18,37 +32,61 @@
 }
 
 .wbg-shipping-options-container[data-visibility="visible"] {
-  animation: slideInUp 500ms ease-in;
+  animation: fadeIn 700ms ease-in;
 }
 
 .wbg-shipping-options {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
 .wbg-shipping-option {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  gap: 1rem;
   width: 50%;
 }
 
-.wbg-shipping-option-wrapper {
+.wbg-shipping-image-wrapper {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  max-width: 120px;
-  gap: 1rem;
+  border-radius: 50%;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0;
+  width: max-content;
+  padding: 2rem;
 }
 
 .wbg-shipping-option img {
-  height: 100px;
+  height: 80px;
+  width: 85px;
 }
 
 .wbg-shipping-option span {
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
+  color: var(--hzbi-white);
+  background-color: var(--hzbi-green);
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+}
+
+.wbg-shipping-options-footer {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.wbg-shipping-options-footer p {
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--hzbi-green);
 }
@@ -82,7 +120,7 @@
 }
 
 .wbg-cep-form-container[data-visibility="visible"] {
-  display: inherit;
+  animation: slideInUp 500ms ease-in;
 }
 
 .wbg-cep-verification-wrapper {
@@ -92,7 +130,12 @@
 .wbg-cep-verification-head-image {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-block: 2rem;
+}
+
+.wbg-cep-verification-head-image .wbg-shipping-image-wrapper {
+  width: 100px;
+  padding: 0.5rem;
 }
 
 .wbg-cep-form-intro {
@@ -199,6 +242,11 @@
   flex-direction: column;
 }
 
+.wbg-cep-verification-success,
+.wbg-cep-verification-failed {
+  margin-block: 3rem;
+}
+
 .wbg-cep-verification-success[data-visibility="hidden"] {
   display: none;
 }
@@ -213,6 +261,10 @@
 
 .wbg-cep-verification-failed[data-visibility="visible"] {
   animation: slideInUp 500ms ease-in;
+}
+
+.wbg-cep-verification-content {
+  margin-block: 2rem;
 }
 
 #cep-notice {

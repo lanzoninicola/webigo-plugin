@@ -18,6 +18,7 @@ class Webigo_Shipping extends Webigo_Module
 
 		$this->load_dependencies();
 		$this->add_shortcodes();
+		$this->render_banner();
 	}
 
 	public function load_dependencies()
@@ -28,6 +29,8 @@ class Webigo_Shipping extends Webigo_Module
 		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-woo-shipping-shortcode.php';
 
 		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-ajax-cep-verification.php';
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/views/class-webigo-view-shipping-banner.php';
 		
 	}
 
@@ -97,6 +100,14 @@ class Webigo_Shipping extends Webigo_Module
 		new Webigo_Woo_Shipping_Shortcode();
 	}
 
+	private function render_banner() 
+	{
+
+		$view_banner = new Webigo_View_Shipping_Banner();
+
+		$view_banner->render();
+
+	}
 	
 
 

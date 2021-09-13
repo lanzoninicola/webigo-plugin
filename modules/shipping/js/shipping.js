@@ -7,8 +7,8 @@
   const _cookie = webigoHelper?.cookieManager;
 
   const shippingOptionsContainer = d.querySelectorAll(
-    ".wbg-shipping-container"
-  );
+    ".wbg-shipping-options-container"
+  )[0];
 
   const gotoStoreBtn = d.querySelectorAll(".wbg-button-goto-store");
 
@@ -97,7 +97,7 @@
     const origin = window.location.origin;
     const destinationPath = "/loja";
 
-    window.location.href = origin + destinationPath;
+    window.location.href = origin + "/hazbier/" + destinationPath;
   }
 
   function handleOnChangeInputCep() {
@@ -155,5 +155,8 @@
     }
   }
 
-  function goBackCepForm() {}
+  function goBackCepForm() {
+    _dom.hide(cepFormContainer);
+    _dom.show(shippingOptionsContainer);
+  }
 })(webigoHelper, document);

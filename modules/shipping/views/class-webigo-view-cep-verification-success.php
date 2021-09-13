@@ -8,7 +8,7 @@ class Webigo_View_Cep_Verification_Success {
     public static function render() {
         ?>
 
-        <div class="wbg-cep-verification-success" data-visibility="visible">
+        <div class="wbg-cep-verification-success" data-visibility="hidden">
             
             <?php self::shipping_success_image(); ?>
 
@@ -26,7 +26,7 @@ class Webigo_View_Cep_Verification_Success {
 
     ?>
             <div class='wbg-cep-verification-head-image'>
-                <div class="wbg-shipping-option-wrapper">
+                <div class="wbg-shipping-image-wrapper">
                     <img src='<?php echo esc_url( $ship_area_success_img['src'] ) ?>' alt="<?php echo esc_attr( $ship_area_success_img['label'] ) ?>" title="<?php echo esc_attr( $ship_area_success_img['label'] ) ?>">
                 </div>
             </div>
@@ -37,8 +37,10 @@ class Webigo_View_Cep_Verification_Success {
     private static function content() {
         ?>
 
-            <h2>Oba! Você está dentro da área de cobertura.</h2>
-            <p>Conseguimos te entregar!</p>
+            <div class="wbg-cep-verification-content">
+                <h2>Oba! Você está dentro da área de cobertura.</h2>
+                <p>Conseguimos te entregar!</p>
+            </div>
 
 <?php
     }

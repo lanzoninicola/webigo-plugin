@@ -8,7 +8,7 @@ class Webigo_View_Cep_Verification_Form {
     public static function render() {
     ?>
 
-        <div class="wbg-cep-form-container" data-visibility="visible">
+        <div class="wbg-cep-form-container" data-visibility="hidden">
 
             <?php self::delivery_image() ?>
 
@@ -44,7 +44,7 @@ class Webigo_View_Cep_Verification_Form {
         $classes = 'wbg-cep-form-' . $delivery_img_data['name'];
     ?>
             <div class='wbg-cep-verification-head-image'>
-                    <div class="wbg-shipping-option-wrapper">
+                    <div class="wbg-shipping-image-wrapper">
                     <img src='<?php echo esc_url( $delivery_img_data['src'] ) ?>' alt="<?php echo esc_attr( $delivery_img_data['label'] ) ?>" title="<?php echo esc_attr( $delivery_img_data['label'] ) ?>">
                 </div>
             </div>
@@ -114,7 +114,7 @@ class Webigo_View_Cep_Verification_Form {
     {
         $correios_url = Webigo_Shipping_Settings::CORREIOS_URL_BUSCA_CEP;
         ?>
-            <a href="<?php echo esc_url( $correios_url ) ?>" rel="nofollow" class="busca-cep-link small-text">Não sei meu CEP</a>
+            <a href="<?php echo esc_url( $correios_url ) ?>" rel="nofollow" class="busca-cep-link text-small">Não sei meu CEP</a>
 
 <?php
     }

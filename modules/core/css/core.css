@@ -23,6 +23,7 @@ body {
 
 p {
   margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
 h1,
@@ -77,8 +78,12 @@ small,
   position: relative;
 }
 
-.wbg-button[data-status="disabled"] {
-  opacity: 0.2;
+.wbg-button[data-visibility="visible"] {
+  animation: fadeIn 700ms ease-in;
+}
+
+.wbg-button[data-visibility="hidden"] {
+  display: none;
 }
 
 .wbg-button span.btn-animate {
@@ -120,16 +125,16 @@ small,
 @keyframes slideInUp {
   0% {
     opacity: 0;
-    transform: translateY(0);
+    transform: translateY(100%);
   }
 
   100% {
     opacity: 1;
-    transform: translateY(100%);
+    transform: translateY(0);
   }
 }
 
-@-webkit-keyframes slideInUp {
+/* @-webkit-keyframes slideInUp {
   0% {
     opacity: 0;
     transform: translateY(0);
@@ -139,7 +144,7 @@ small,
     opacity: 1;
     transform: translateY(100%);
   }
-}
+} */
 
 @keyframes fadeInText {
   0% {
