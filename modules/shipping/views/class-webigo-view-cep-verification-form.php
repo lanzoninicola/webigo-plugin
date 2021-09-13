@@ -14,15 +14,17 @@ class Webigo_View_Cep_Verification_Form {
 
             <div class="wbg-cep-form-wrapper">
 
+                <?php self::state_selection(); ?>    
+                
                 <?php self::input_cep(); ?>
 
                 <?php self::busca_cep(); ?>
 
                 <?php self::nonce_field(); ?>
                     
-                <?php Webigo_View_Buttons::render( 'verifica CEP') ?>
+                <?php self::verify_cep_button(); ?>
 
-                <?php Webigo_View_Buttons::render( 'Voltar', 'ternary') ?>
+                <?php self::voltar_button(); ?>
 
             </div>
 
@@ -31,16 +33,24 @@ class Webigo_View_Cep_Verification_Form {
 <?php
     }
 
-    /*
+    private static function intro() 
+    {
+        ?>
+            <div class="wbg-cep-form-intro">
+                <h2>Onde você quer receber seu pedido?</h2>
+                <p>Entregamos no mesmo dia para Pato Branco. Você também pode retirar seu pedido na loja.</p>
+                <p>Verifique se o seu CEP está na nossa área de cobertura.</p>
+            </div>
+
+<?php
+    }
+
     private static function state_selection() {
-
-        IMPORTANT: With the current use cases is not necessary keep visibile this field
-
         ?>
 
-            <div class="wbg-cep-form-wrapper-states">
+            <div class="wbg-cep-form-wrapper-states" data-visibility="hidden">
                 <label for="wbg-cep-form-states" class="small-text">Seu estado:</label>
-                <select name="wbg-cep-form-states" id="wbg-cep-form-states">
+                <select name="wbg-cep-form-states" id="wbg-cep-form-select-states">
                     <?php
 
                     $default_country_code = Webigo_Shipping_Settings::DEFAULT_COUNTRY_CODE;
@@ -60,19 +70,6 @@ class Webigo_View_Cep_Verification_Form {
 
         <?php
     }
-    */
-
-    private static function intro() 
-    {
-        ?>
-            <div class="wbg-cep-form-intro">
-                <h2>Onde você quer receber seu pedido?</h2>
-                <p>Entregamos no mesmo dia para Pato Branco. Você também pode retirar seu pedido na loja.</p>
-                <p>Verifique se o seu CEP está na nossa área de cobertura.</p>
-            </div>
-
-<?php
-    }
 
     private static function input_cep() 
     {
@@ -84,7 +81,7 @@ class Webigo_View_Cep_Verification_Form {
         ?>
             <div class="wbg-cep-form-input-cep-wrapper">
                 <label for="wbg-input-cep" class="small-text"><?php echo esc_attr( $label ) ?></label>
-                <input type="number" name="wbg-input-cep" placeholder="<?php echo esc_attr( $placeholder ) ?>" maxlength="8">
+                <input type="number" name="wbg-input-cep" id="wbg-cep-form-input-cep" placeholder="<?php echo esc_attr( $placeholder ) ?>" maxlength="8">
             </div>
 
 <?php
@@ -106,6 +103,33 @@ class Webigo_View_Cep_Verification_Form {
         $action_name = Webigo_Shipping_Settings::AJAX_CEP_VERIFICATION_ACTION_NAME;
 
         return wp_nonce_field( $action_name , 'webigo_cep_verification_nonce' );
+    }
+
+    private static function verify_cep_button() {
+
+        $button_options = array(
+            'button' => array(
+                'class' => ['wbg-button-cep-form-verifycep'],
+            )
+        );
+
+        Webigo_View_Buttons::render( 'verifica CEP', 'primary', $button_options );
+
+    }
+
+    private static function voltar_button() {
+
+        $button_options = array(
+            'button' => array(
+                'class'      => ['wbg-button-cep-form-voltar'],
+                'attributes' => array(
+                    'disabled' => true,
+                )
+            )
+        );
+
+        Webigo_View_Buttons::render( 'Voltar', 'ternary', $button_options );
+
     }
 }
 

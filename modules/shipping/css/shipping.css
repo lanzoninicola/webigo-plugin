@@ -108,6 +108,14 @@
   flex-direction: column;
 }
 
+.wbg-cep-form-wrapper-states[data-visibility="hidden"] {
+  display: none;
+}
+
+.wbg-cep-form-wrapper-states[data-visibility="visibile"] {
+  display: inherit;
+}
+
 .wbg-cep-form-input-cep-wrapper {
   display: flex;
   flex-direction: column;
