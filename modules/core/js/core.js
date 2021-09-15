@@ -126,7 +126,7 @@ class SessionManager {
     this.typeManager = typeManager;
   }
 
-  setSession = (key, value) => {
+  set = (key, value) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
       throw "Error to set browser sesssion. The key parameter is undefined";
     }
@@ -143,14 +143,14 @@ class SessionManager {
 
     sessionStorage.setItem(key, _value);
   };
-  getSession = (key) => {
+  get = (key) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
       throw "Error to get the browser sesssion for the key selected. The key parameter is undefined";
     }
 
     sessionStorage.getItem(key);
   };
-  removeSession = (key) => {
+  remove = (key) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
       throw "Error to remove from the browser sesssion the key selected. The key parameter is undefined";
     }
