@@ -38,7 +38,7 @@ class Webigo_View_Cep_Verification_Failed {
         ?>
 
             <div class="wbg-cep-verification-content">
-                <h2>Nós sentimos muito. Infelizmente o CEP informado não está na área de cobertura</h2>
+                <h2>Nós sentimos muito. Infelizmente neste momento ainda não atendemos sua região</h2>
                 <p>Fique à vontade, lembrando que você pode retirar seu pedido na nossa loja também.</p>
             </div>
 <?php
