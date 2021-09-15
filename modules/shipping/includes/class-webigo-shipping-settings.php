@@ -24,6 +24,10 @@ class Webigo_Shipping_Settings {
         'postcode'   => FILTER_SANITIZE_STRING,
     );
 
+    const SESSION_KEYS = array(
+        'shipping_method'    => "wbg-shipping-method",
+    );
+
     public static function shipping_view_options( string $option = '' ) {
 
         $base_url = plugin_dir_url(__DIR__);
@@ -90,5 +94,7 @@ class Webigo_Shipping_Settings {
         return $images[$image_name];
 
     }
+
+    
 
 }

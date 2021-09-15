@@ -4,7 +4,7 @@
   const _event = webigoHelper?.eventManager;
   const _dom = webigoHelper?.domManager;
   const _request = webigoHelper?.httpRequestManager;
-  const _cookie = webigoHelper?.cookieManager;
+  const _session = webigoHelper?.sessionManager;
 
   const shippingOptionsContainer = d.querySelectorAll(
     ".wbg-shipping-options-container"
@@ -47,6 +47,8 @@
       ".wbg-shipping-option.retirar_na_loja"
     )[0];
 
+    resetShippingMethodSession();
+
     _event.attachEvent({
       el: shippingOptionDeliveryBtn,
       ev: _event.type.click,
@@ -56,13 +58,13 @@
     _event.attachEvent({
       el: shippingOptionGotostoreBtn,
       ev: _event.type.click,
-      cb: gotoShop,
+      cb: gotoStore,
     });
 
     _event.bulkAttachEvent({
       el: gotoStoreBtn,
       ev: _event.type.click,
-      cb: gotoShop,
+      cb: gotoStore,
     });
   }
 
@@ -88,16 +90,30 @@
     });
   }
 
+  function resetShippingMethodSession() {
+    if (!shippingOptionsContainer) {
+      return;
+    }
+
+    if (
+      shippingOptionsContainer.getAttribute("data-visibility") === "visible"
+    ) {
+      _session.remove("wbg-shipping-method");
+    }
+  }
+
   function showCepVerificationForm() {
     _dom.hide(shippingOptionsContainer);
     _dom.show(cepFormContainer);
   }
 
-  function gotoShop() {
+  function gotoStore() {
     const origin = window.location.origin;
     const destinationPath = "/loja";
 
     window.location.href = origin + "/hazbier/" + destinationPath;
+
+    _session.set("wbg-shipping-method", "pickup-in-store");
   }
 
   function handleOnChangeInputCep() {
@@ -139,11 +155,15 @@
     if (wcResponse.success === true) {
       _dom.hide(cepFormContainer);
       _dom.show(cepVerificationSuccessMessage);
+
+      _session.set("wbg-shipping-method", "delivery");
     }
 
     if (wcResponse.success === false) {
       _dom.hide(cepFormContainer);
       _dom.show(cepVerificationFailedMessage);
+
+      _session.set("wbg-shipping-method", "pickup-in-store");
     }
 
     function handleRequestInit() {

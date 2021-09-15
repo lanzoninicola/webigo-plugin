@@ -1,0 +1,29 @@
+.wbg-shipping-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 30px;
+  width: 100%;
+  background-color: var(--hzbi-green);
+}
+
+.wbg-shipping-banner-message {
+  color: var(--hzbi-white);
+  text-transform: uppercase;
+}
+
+.wbg-shipping-banner-pickup-store[data-visibility="hidden"] {
+  display: none;
+}
+
+.wbg-shipping-banner-pickup-store[data-visibility="visible"] {
+  animation: fadeIn 700ms ease-in;
+}
+
+.wbg-shipping-banner-delivery[data-visibility="hidden"] {
+  display: none;
+}
+
+.wbg-shipping-banner-delivery[data-visibility="visible"] {
+  animation: fadeIn 700ms ease-in;
+}

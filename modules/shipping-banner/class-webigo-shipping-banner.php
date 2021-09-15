@@ -16,13 +16,12 @@ class Webigo_Shipping_Banner extends Webigo_Module
 	{
 		parent::__construct();
 
-		$this->render_banner();
 	}
 
 	public function load_dependencies()
 	{
 		
-		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-shipping-settings.php';
+		// require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-shipping-settings.php';
 
 		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping-banner/views/class-webigo-view-shipping-banner.php';
 		
@@ -63,17 +62,15 @@ class Webigo_Shipping_Banner extends Webigo_Module
 	public function add_hooks()
 	{
 
-	}
-
-	private function render_banner() 
-	{
-
 		$view_banner = new Webigo_View_Shipping_Banner();
 
-		$view_banner->render();
+		$hook_footer = array(
+			'hook'     => 'wp_footer',
+			'callback' => array( $view_banner, 'render' )
+		);
 
+		$this->hooks->register($hook_footer);
 	}
-	
 
 
 }
