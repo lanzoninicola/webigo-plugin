@@ -53,7 +53,7 @@ class Webigo_Cart_Widget extends Webigo_Module
 		$script_data = array(
 			'module'      => $this->name,
 			'file_name'   => 'cart-widget.js',
-			'dependencies' => array('core'),
+			'dependencies' => array('core', 'add-to-cart'),
 			'in_footer'   => true
 		);
 

@@ -75,8 +75,11 @@
         return;
       }
 
-      _session.set(wc_cart_fragments_params.fragment_name, data.fragments);
+      if (!wc_cart_fragments_params) {
+        return;
+      }
 
+      _session.set(wc_cart_fragments_params.fragment_name, data.fragments);
       _session.set(wc_cart_fragments_params.cart_hash_key, data.cart_hash);
     }
 
@@ -90,6 +93,19 @@
       Object.keys(fragmentsData).forEach((key) => {
         $(key).replaceWith(fragmentsData[key]);
       });
+
+      // removed the link from the product item
+      const miniCartItems = d.querySelectorAll(
+        ".mini-cart-wrapper .mini_cart_item a:not(.remove_from_cart_button)"
+      );
+
+      if (miniCartItems) {
+        if (miniCartItems.length > 0) {
+          miniCartItems.forEach((item) => {
+            item.setAttribute("href", "#");
+          });
+        }
+      }
     }
   }
 

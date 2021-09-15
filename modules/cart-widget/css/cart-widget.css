@@ -1,0 +1,77 @@
+/* #bricks-site-wrapper > *:not(header) {
+  filter: blur(4px);
+} */
+
+.mini-cart-wrapper .cart-detail {
+  border-radius: 10px;
+  background: var(--hzbi-light-grey);
+  /* box-shadow: 20px 20px 60px var(--hzbi-light-black),
+    -20px -20px 60px var(--hzbi-light-black); */
+  margin-bottom: 3em;
+  padding-bottom: 1em;
+}
+
+.mini-cart-wrapper .mini-cart-link .cart-icon .cart-count {
+  background: var(--hzbi-green);
+  width: 24px;
+  height: 24px;
+  font-size: 0.85rem;
+  animation: blink 2000ms infinite;
+}
+
+.mini-cart-wrapper .mini_cart_item a:not(.remove_from_cart_button) {
+  text-transform: uppercase;
+  color: var(--hzbi-green);
+}
+
+.mini-cart-wrapper .mini_cart_item span.quantity {
+  color: var(--hzbi-black);
+  font-weight: 600;
+}
+
+.mini-cart-wrapper
+  .mini_cart_item
+  span.quantity
+  .woocommerce-Price-currencySymbol {
+  font-size: 0.75rem;
+  margin-right: 0.25rem;
+}
+
+.mini-cart-wrapper .cart-detail .total {
+  border-color: var(--hzbi-green);
+}
+
+.mini-cart-wrapper .cart-detail .total .woocommerce-Price-amount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--hzbi-green);
+}
+
+.mini-cart-wrapper .cart-detail .total .woocommerce-Price-currencySymbol {
+  font-size: 0.75rem;
+  margin-right: 0.25rem;
+}
+
+.mini-cart-wrapper
+  .woocommerce-mini-cart__buttons
+  a.button.wc-forward:not(.checkout) {
+  display: none;
+}
+
+.mini-cart-wrapper
+  .woocommerce-mini-cart__buttons
+  a.button.wc-forward.checkout {
+  width: 100%;
+  padding: 0.75rem 2rem;
+  margin: 0.75rem 0;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  font-size: 0.85rem;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0;
+  background-color: var(--hzbi-green) !important;
+  color: var(--hzbi-white);
+  line-height: 2;
+}

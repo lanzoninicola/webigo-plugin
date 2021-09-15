@@ -4,5 +4,9 @@
 
   init();
 
-  function init() {}
+  function init() {
+    styleCheckoutButton();
+  }
+
+  function styleCheckoutButton() {}
 })(webigoHelper, document);
