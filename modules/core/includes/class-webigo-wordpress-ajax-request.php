@@ -69,12 +69,38 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
      */
     private function load_dependencies() : void 
     {
-        require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-http-request-data.php';
-        $this->http_request_data = new Webigo_Http_Request_Data( 'post', $this->data_filter_settings );
-
         require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-logger.php';
         $this->logger = new Webigo_Logger();
 
+    }
+
+    /**
+     * This set the filter of POST data for the module.
+     * Generally the filter is described inside the module settings via class
+     * 
+     */
+    public function set_data_filter_settings( array $data_filter_settings ) : void 
+    {
+        if ( count ( $data_filter_settings ) === 0 ) {
+            throw new Exception( "No data filter settings are found. The 'set_data_filter_settings' method expect an array of filter settings. See: https://www.php.net/manual/en/filter.filters.sanitize.php");
+        }
+
+        $this->data_filter_settings = $data_filter_settings;
+    }
+
+    /**
+     * The instantiation of Webigo_Http_Request_Data was moved external from the constructor,
+     * because it must be called inside the plugin login when it is required, 
+     * otherwise it will manage all the requests sent to Wordpress and it could fired unexpected errors.
+     * 
+     * This must be called after the "set_data_filter_settings" settings
+     * 
+     */
+    protected function load_request_data() : void 
+    {
+
+        require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-http-request-data.php';
+        $this->http_request_data = new Webigo_Http_Request_Data( 'post', $this->data_filter_settings );
     }
 
     /**
@@ -149,6 +175,18 @@ abstract class Webigo_Wordpress_Ajax_Request extends Webigo_Http_Request {
     public function action_name(): string
     {
         return $this->wp_action_name;
+    }
+
+
+    /**
+     * This method is called by the Wordpress hook.
+     * This method must be public
+     * This method must be called in the child class at first instant( parent::handle_ajax_request() )
+     * 
+     */
+    public function handle_ajax_request() {
+
+        $this->load_request_data();
     }
 
 
