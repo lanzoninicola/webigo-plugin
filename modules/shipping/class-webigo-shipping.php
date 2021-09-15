@@ -77,18 +77,18 @@ class Webigo_Shipping extends Webigo_Module
 		// Below hook is used for Authenticated Users
 		$hook_wp_ajax = array(
 			'hook'     => 'wp_ajax_' . $action_name,
-			'callback' => array($ajax_cep_verification, 'ajax_cep_verification')
+			'callback' => array( $ajax_cep_verification, 'handle_ajax_request' )
 		);
 
-		$this->hooks->register($hook_wp_ajax);
+		$this->hooks->register( $hook_wp_ajax );
 
 		// Below hook is used for NO-Authenticated Users
 		$hook_wp_ajax_nopriv = array(
 			'hook'     => 'wp_ajax_nopriv_' . $action_name,
-			'callback' => array($ajax_cep_verification, 'ajax_cep_verification')
+			'callback' => array( $ajax_cep_verification, 'handle_ajax_request' )
 		);
 
-		$this->hooks->register($hook_wp_ajax_nopriv);
+		$this->hooks->register( $hook_wp_ajax_nopriv );
 	}
 
 	private function add_shortcodes()

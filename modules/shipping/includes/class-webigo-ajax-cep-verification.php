@@ -6,13 +6,14 @@ require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-wordpress
 class Webigo_Shipping_Ajax_Cep_Verification extends Webigo_Wordpress_Ajax_Request {
 
     public function __construct( string $wp_action_name ) {
-        $this->data_filter_settings = Webigo_Shipping_Settings::AJAX_CEP_VERIFICATION_DATA;
+        $this->set_data_filter_settings( Webigo_Shipping_Settings::AJAX_CEP_VERIFICATION_DATA );
 
         parent::__construct( $wp_action_name );
     }
 
-    public function ajax_cep_verification() 
+    public function handle_ajax_request() 
     {
+        parent::handle_ajax_request();
 
         if ( !$this->is_nonce_valid() ) {
             $this->record_error_ajax_response();
