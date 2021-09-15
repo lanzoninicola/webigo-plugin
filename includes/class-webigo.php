@@ -89,15 +89,30 @@ class Webigo
 		} else {
 			$this->plugin_name = 'webigo';
 		}
-
+		
+		
 		$this->load_dependencies();
-		$this->add_modules();
-		$this->register_module_dependencies();
-		$this->load_modules();
 		$this->set_locale();
-		$this->define_styles();
-		$this->define_scripts();
+	
+		$this->load_modules_registry();
+		$this->add_modules();
+		// $this->register_module_dependencies();
+		$this->load_modules();
+		/**
+		 * Here the plugin manages also the actions hooks for the AJAX request, 
+		 * these requests are handled on ADMIN side, then this calls must be external of !is_admin() condition
+		 */
 		$this->define_hooks();
+
+		/**
+		 * Styles and scripts are loaded only on front-end side
+		 */
+		if ( !is_admin() ) {
+			$this->define_styles();
+			$this->define_scripts();
+		}
+
+		
 	}
 
 	/**
@@ -125,12 +140,19 @@ class Webigo
 		 */
 		require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-loader.php';
 
+		$this->loader = new Webigo_Loader();
+
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
 		require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-i18n.php';
 
+		
+	}
+
+	private function load_modules_registry()
+	{
 		/**
 		 * The class responsible for orchestrating the modules
 		 * of the plugin.
@@ -140,13 +162,20 @@ class Webigo
 		$this->modules_registry = new Webigo_Modules_Registry();
 
 		$this->modules_registry->init();
-
-		$this->loader = new Webigo_Loader();
 	}
 
 	private function add_modules()
 	{
 	
+		// TODO: adding conditionally load related to the page
+		/**
+		 * I cannot do here because the modules are loaded before
+		 * the conditional page function are executed.
+		 * 
+		 * I should move the js and css loading in a class that 
+		 * it will instantiate after
+		 */
+
 		$this->modules_registry->register(
 			'core',
 			'Webigo_Core',
@@ -182,50 +211,77 @@ class Webigo
 			'class-webigo-shipping.php'
 		);
 
+		/*
 		$this->modules_registry->register(
 			'shipping-banner',
 			'Webigo_Shipping_Banner',
 			'shipping-banner',
 			'class-webigo-shipping-banner.php'
 		);
-		
+		*/
+
+		/*
+		* Since the problem with the UPDATE CART
+		* https://forum.bricksbuilder.io/t/urgent-woocommerce-cart-after-update-the-cart-the-products-images-disappear/995
+		* I decided to use the cart widget of Bricks team to manage the cart
+		$this->modules_registry->register(
+			'cart-page',
+			'Webigo_Cart_Page',
+			'cart-page',
+			'class-webigo-cart-page.php'
+		);
+		 */
+
+		 /**
+		  * Here the cupouns are not managed
+		  */
+		$this->modules_registry->register(
+			'cart-widget',
+			'Webigo_Cart_Widget',
+			'cart-widget',
+			'class-webigo-cart-widget.php'
+		);
+
+		$this->modules_registry->register(
+			'checkout-pagseguro',
+			'Webigo_Checkout_Pagseguro',
+			'checkout-pagseguro',
+			'class-webigo-checkout-pagseguro.php'
+		);
+
+		$this->modules_registry->register(
+			'checkout',
+			'Webigo_Checkout',
+			'checkout',
+			'class-webigo-checkout.php'
+		);
+
+		$this->modules_registry->register(
+			'login',
+			'Webigo_Login',
+			'login',
+			'class-webigo-login.php'
+		);
+
+	
 	}
 
-	private function register_module_dependencies() {
+	// private function register_module_dependencies() {
 
-		// TODO: modify - array of each module with its dependencies
-		// module1 => array(dep1, dep2, dep3)
-		// module2 => array(dep1, dep2, dep3)
-		$dependencies = array( 'core', 'archive-product' );
+	// 	// TODO: modify - array of each module with its dependencies
+	// 	// module1 => array(dep1, dep2, dep3)
+	// 	// module2 => array(dep1, dep2, dep3)
+	// 	$dependencies = array( 'core', 'archive-product' );
 
-		$this->modules_registry->define_module_dependencies( $dependencies );
+	// 	$this->modules_registry->define_module_dependencies( $dependencies );
 
-	}
+	// }
 
 	private function load_modules()
 	{
 
 		$this->modules_registry->load();
 	}
-
-
-	/**
-	 * Define the locale for this plugin for internationalization.
-	 *
-	 * Uses the Webigo_i18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function set_locale()
-	{
-
-		$plugin_i18n = new Webigo_i18n();
-
-		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
-	}
-
 
 	private function define_styles()
 	{
@@ -291,6 +347,23 @@ class Webigo
 			}
 		}
 
+	}
+
+	/**
+	 * Define the locale for this plugin for internationalization.
+	 *
+	 * Uses the Webigo_i18n class in order to set the domain and to register the hook
+	 * with WordPress.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function set_locale()
+	{
+
+		$plugin_i18n = new Webigo_i18n();
+
+		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
 
 	/**
