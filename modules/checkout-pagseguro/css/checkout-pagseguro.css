@@ -1,0 +1,83 @@
+/* Start PagSeguro Form */
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form {
+  display: flex;
+  flex-direction: column;
+  border: none !important;
+  padding: 0;
+}
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form li {
+  border: none !important;
+  border-radius: unset;
+  -webkit-border-radius: unset;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+}
+
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form li label {
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px;
+}
+
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form li.active {
+  background: var(--bb-dark-brown);
+  color: var(--bb-white);
+  -webkit-border-radius: unset;
+  border-radius: unset !important;
+}
+
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p {
+  width: 100% !important;
+  margin-bottom: 0;
+}
+
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p input {
+  padding: 0.1rem 0.5rem !important;
+  margin-bottom: 0.35rem !important;
+  font-size: 1.25rem !important;
+  letter-spacing: 1px;
+}
+
+.woocommerce-checkout
+  .woocommerce
+  fieldset#pagseguro-payment-form
+  p
+  input:focus {
+  outline: 2px solid var(--bb-dark-brown);
+}
+
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p select {
+  background: white;
+}
+
+.woocommerce-checkout
+  .woocommerce
+  fieldset#pagseguro-payment-form
+  p
+  select:focus {
+  outline: 2px solid var(--bb-light-brown);
+}
+
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p option {
+  background: white;
+  font-size: 1rem;
+  color: black;
+  letter-spacing: 1px;
+  font-family: "Segoe UI";
+}
+
+.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p label {
+  text-transform: uppercase !important;
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 0;
+}
+
+/* .woocommerce-checkout
+  .woocommerce
+  .pagseguro-method-form
+  .woocommerce
+  fieldset {
+} */
+/* End PagSeguro Form */
