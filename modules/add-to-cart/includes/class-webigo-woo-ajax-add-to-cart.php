@@ -83,10 +83,9 @@ class Webigo_Woo_Ajax_Add_To_Cart
                         wc_add_to_cart_message( array($product_id => $quantity), true );
                     }
                     */
-
                 $this->send_success_response( $product_id, $quantity );
 
-                WC_AJAX::get_refreshed_fragments();
+                
 
                 }
         } catch (Exception $e) {
@@ -110,15 +109,42 @@ class Webigo_Woo_Ajax_Add_To_Cart
     {
         $product = (object) wc_get_product( $product_id );
 
+        $mini_cart = (array) $this->get_refreshed_fragments();
+
         $data = array(
             'product_id'   => $product_id,
             'product_name' => $product->get_name(),
-            'quantity'     => $quantity
+            'quantity'     => $quantity,
+            'fragments'    => $mini_cart['fragments'],
+            'cart_hash'    => $mini_cart['cart_hash']
         );
         
         $this->request->send_success_response( $data );
 
     }
+
+    /**
+     * Code from WC_AJAX::get_refreshed_fragments();
+	 * Get a refreshed cart fragment, including the mini cart HTML.
+	 */
+	private function get_refreshed_fragments() : array
+    {
+		ob_start();
+
+		woocommerce_mini_cart();
+
+		$mini_cart = ob_get_clean();
+
+		return array(
+			'fragments' => apply_filters(
+				'woocommerce_add_to_cart_fragments',
+				array(
+					'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+				)
+			),
+			'cart_hash' => WC()->cart->get_cart_hash(),
+		);
+	}
 
     /**
      * This method uses the request class Webigo_Add_To_Cart_Request to handle the response

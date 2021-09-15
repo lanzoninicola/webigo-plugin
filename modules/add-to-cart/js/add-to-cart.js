@@ -1,9 +1,9 @@
 /* global webigoHelper */
 /* jshint latedef:nofunc */
-
-(function (webigoHelper, d) {
+(function (webigoHelper, d, $, wc_cart_fragments_params) {
   const _event = webigoHelper?.eventManager;
   const _dom = webigoHelper?.domManager;
+  const _session = webigoHelper?.sessionManager;
 
   init();
 
@@ -46,6 +46,8 @@
 
     if (wcResponse.success === true) {
       handleResponseSuccess();
+      updateMiniCart(wcResponse.data);
+      updateSessionCartFragments(wcResponse.data);
     }
 
     if (wcResponse.error || wcResponse.success === false) {
@@ -66,6 +68,29 @@
       addToCartActions.completed();
       addToCartNotification.showSuccess();
     }
+
+    function updateSessionCartFragments(data) {
+      // inspired by the Woo cart-fragments.js
+      if (!data.fragments) {
+        return;
+      }
+
+      _session.set(wc_cart_fragments_params.fragment_name, data.fragments);
+
+      _session.set(wc_cart_fragments_params.cart_hash_key, data.cart_hash);
+    }
+
+    function updateMiniCart(data) {
+      if (!data.fragments) {
+        return;
+      }
+
+      const fragmentsData = data.fragments;
+
+      Object.keys(fragmentsData).forEach((key) => {
+        $(key).replaceWith(fragmentsData[key]);
+      });
+    }
   }
 
   function showAddToCartContainer(el) {
@@ -75,7 +100,7 @@
   function hideAddToCartContainer(el) {
     _dom.hide(el);
   }
-})(webigoHelper, document);
+})(webigoHelper, document, jQuery, wc_cart_fragments_params);
 
 /**
  * Class to handle the notifications
