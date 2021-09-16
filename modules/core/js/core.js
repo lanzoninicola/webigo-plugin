@@ -238,6 +238,9 @@ class DomManager {
     const el = document.querySelectorAll(query);
 
     if (el) {
+      if (el.length === 0) {
+        return false;
+      }
       if (el.length === 1) {
         return el[0];
       }
@@ -262,7 +265,7 @@ class DomManager {
 
   insertAfter = ({ target = null, newParent = null }) => {
     if (newParent) {
-      newParent.parentNode.insertBefore(target, newParent.nextSibling);
+      newParent.parentNode?.insertBefore(target, newParent.nextSibling);
     }
   };
 

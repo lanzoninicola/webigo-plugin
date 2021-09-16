@@ -44,9 +44,14 @@
   newAccountInfo.innerText =
     'Caso você seja um novo cliente, para finalizar sua compra e criar uma conta, preencha o formulário abaixo e depois siga para a seção de "Detalhes de faturamento"';
 
-  formNewAccount.insertBefore(newAccountInfo, formNewAccount.firstElementChild);
+  if (formNewAccount) {
+    formNewAccount.insertBefore(
+      newAccountInfo,
+      formNewAccount.firstElementChild
+    );
 
-  formNewAccount.style.display = "none";
+    formNewAccount.style.display = "none";
+  }
 
   _event.attachEvent({
     el: arrowRightNewAccount,
