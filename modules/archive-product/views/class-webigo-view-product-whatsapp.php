@@ -60,24 +60,11 @@ class Webigo_View_Product_Whatsapp {
 
     public function render() {
 
-        // https://api.whatsapp.com/send?phone=55468816333220&text=Ola%20bois
-
-        
-        $product_wa_text = $this->whatsapp_product_text();
-        
-        $whatsapp_number = $this->whatsapp_number();
-        $message = Webigo_Archive_Product_Settings::PRODUCT_WA_PREFIX_CUSTOMER_MSG;
-        $product_description = $this->product->name();
-        
-        $wa_url = "https://api.whatsapp.com/send?phone=$whatsapp_number&text=$message $product_description";
-
-       
-
         $output = '<div class="wbg-product-whatsapp-contact">';
         
-        $output .= "<p class='wbg-product-wa-label text-small'>$product_wa_text</p>"; 
+        $output .= '<p class="wbg-product-wa-label text-small">' . esc_html( $this->whatsapp_product_text() ) . '</p>'; 
 
-        $output .= '<a href="' . esc_url( $wa_url ) . '">';
+        $output .= '<a href="' . esc_url( $this->build_wa_url() ) . '">';
         
         $output .= '<div class="wbg-product-wa-button">';
         $output .= '<div class="action-buttons">';
@@ -93,7 +80,6 @@ class Webigo_View_Product_Whatsapp {
         $output .= '</div>';  
 
         return $output;
-
         
     }
 
@@ -136,6 +122,15 @@ class Webigo_View_Product_Whatsapp {
         }
         
         
+    }
+
+    private function build_wa_url() : string
+    {
+        $whatsapp_number = $this->whatsapp_number();
+        $message = Webigo_Archive_Product_Settings::PRODUCT_WA_PREFIX_CUSTOMER_MSG;
+        $product_description = $this->product->name();
+        
+        return "https://api.whatsapp.com/send?phone=$whatsapp_number&text=$message $product_description";
     }
 
  
