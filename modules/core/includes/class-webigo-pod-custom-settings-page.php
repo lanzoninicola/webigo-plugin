@@ -66,6 +66,10 @@ class Webigo_Pod_Custom_Settings_Page extends Webigo_Pod_Fields {
             if ( isset($field_value) ) {
                 $this->settings_page[$setting]['value'] = $field_value;
             }
+
+            if ( !isset($field_value) ) {
+                $this->settings_page[$setting]['value'] = '';
+            }
         }
     }
 
@@ -106,7 +110,9 @@ class Webigo_Pod_Custom_Settings_Page extends Webigo_Pod_Fields {
      */
     public function value_of( string $field_name ) : string 
     {
+
         return $this->settings_page[$field_name]['value'];
+
     }
 
 }
