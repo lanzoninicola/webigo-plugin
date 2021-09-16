@@ -7,7 +7,9 @@
   --hzbi-green: rgba(0, 89, 48, 1);
   --hzbi-light-green: rgba(0, 89, 48, 0.5);
   --hzbi-lighter-green: rgba(0, 89, 48, 0.2);
+  --hzbi-dark-gold: rgba(117, 98, 75, 1);
   --hzbi-gold: rgba(214, 177, 132, 1);
+  --hzbi-light-gold: rgba(214, 177, 132, 0.5);
   --hzbi-red: rgba(187, 6, 35, 1);
 }
 
@@ -22,7 +24,8 @@ body {
   line-height: 1.75;
 }
 
-p {
+p,
+p:last-of-type {
   margin-bottom: 1rem;
   line-height: 1.2;
 }
@@ -98,9 +101,9 @@ small,
 }
 
 .wbg-primary-button {
-  background-color: var(--hzbi-green);
+  background-color: var(--hzbi-green) !important;
   border: none;
-  color: var(--hzbi-white);
+  color: var(--hzbi-white) !important;
 }
 
 .wbg-primary-button span.btn-animate {

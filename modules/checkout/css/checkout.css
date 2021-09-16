@@ -13,11 +13,10 @@
 
 .woocommerce-checkout .woocommerce-form-login-toggle::before {
   content: "Informações de contato";
-  font-size: 1.215rem;
+  font-size: 1.383rem;
   font-weight: 600;
-  color: var(--hzbi-green);
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--hzbi-lighter-green);
+  color: var(--hzbi-black);
+  letter-spacing: 0.5px;
 }
 
 .woocommerce-checkout .woocommerce-form-login-toggle .woocommerce-info {
@@ -41,18 +40,10 @@
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--hzbi-green);
+  color: var(--hzbi-dark-gold);
   border-radius: 10px;
-  background-color: var(--hzbi-gold);
+  background-color: var(--hzbi-light-gold);
   margin-bottom: 1rem;
-}
-
-.woocommerce-checkout .woocommerce-account-fields[data-visibility="hidden"] {
-  display: none;
-}
-
-.woocommerce-checkout .woocommerce-account-fields[data-visibility="visible"] {
-  animation: fadeIn 500ms ease-in;
 }
 
 .woocommerce-checkout .ion-md-arrow-round-forward {
@@ -60,12 +51,11 @@
 }
 
 .woocommerce-checkout h3:not(#ship-to-different-address) {
-  font-weight: 600;
-  color: var(--hzbi-green);
-  text-transform: uppercase;
+  font-size: 1.383rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: var(--hzbi-black);
   margin-bottom: 1rem;
-  border-bottom: 1px solid var(--hzbi-lighter-green);
-  width: max-content;
 }
 /* Start Hiding Coupon */
 .woocommerce-checkout .woocommerce-form-coupon-toggle,
@@ -109,7 +99,7 @@
 }
 
 .woocommerce-checkout .woocommerce #customer_details input:focus {
-  border: 1px solid var(--bb-green) !important;
+  border: 1px solid var(--hzbi-green) !important;
   outline: none;
 }
 
@@ -119,19 +109,22 @@
 
 /* Start second checkout column */
 .woocommerce-checkout .woocommerce #order_review {
-  background: var(--hzbi-lighter-green);
+  /* background: var(--hzbi-lighter-green);
+  border-radius: 10px; */
   border: none !important;
   color: var(--hzbi-black);
   letter-spacing: 0.5px;
 }
 
+/* Start Review Order Table */
 .woocommerce-checkout .woocommerce #order_review table {
   letter-spacing: 1.2px;
+  background: var(--hzbi-light-gold);
+  border-radius: 10px;
 }
 
-.woocommerce-checkout .woocommerce #order_review table thead,
-.woocommerce-checkout .woocommerce #order_review table tfoot {
-  border-bottom-color: var(--bb-light-brown);
+.woocommerce-checkout .woocommerce #order_review table thead {
+  border-bottom-color: var(--hzbi-whitesmoke);
 }
 
 .woocommerce-checkout .woocommerce #order_review table thead th:nth-child(2) {
@@ -146,22 +139,98 @@
   text-align: right;
 }
 
-.woocommerce-checkout .woocommerce .order-total .woocommerce-Price-amount {
-  font-size: 1.25rem !important;
+/* Start Shipping Area */
+.woocommerce-checkout
+  .woocommerce
+  #order_review
+  ul.woocommerce-shipping-methods
+  li {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
 }
 
 .woocommerce-checkout
   .woocommerce
-  .order-total
-  .woocommerce-Price-currencySymbol {
-  font-size: 0.75rem !important;
+  #order_review
+  ul.woocommerce-shipping-methods
+  li
+  input {
+  width: unset;
 }
 
+.woocommerce-checkout
+  .woocommerce
+  #order_review
+  ul.woocommerce-shipping-methods
+  li
+  label {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+/* End Shipping Area */
+
+.woocommerce-checkout .woocommerce #order_review table tfoot {
+  border-bottom: none !important;
+}
+
+.woocommerce-checkout .woocommerce #order_review .order-total {
+  border-top: 1px solid var(--hzbi-whitesmoke);
+}
+
+.woocommerce-checkout
+  .woocommerce
+  #order_review
+  .order-total
+  .woocommerce-Price-amount {
+  font-size: 1.25rem !important;
+}
+/* End Review Order Table */
+
 /* Start Payment Area */
+
+.woocommerce-checkout
+  .woocommerce
+  #order_review
+  div.woocommerce-checkout-payment::before {
+  content: "Pagamento";
+  font-size: 1.383rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--hzbi-black);
+}
+
+.woocommerce-checkout
+  .woocommerce
+  #order_review
+  div.woocommerce-checkout-payment {
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.woocommerce-checkout
+  .woocommerce
+  #order_review
+  div.woocommerce-checkout-payment
+  li:not(#pagseguro-payment-form li) {
+  border-radius: 10px;
+  background-color: var(--hzbi-lighter-green);
+  padding: 1.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.woocommerce-checkout .woocommerce .woocommerce-Price-currencySymbol {
+  font-size: 0.75rem !important;
+  margin-right: 0.25rem;
+}
 
 .woocommerce-checkout .woocommerce ul.wc_payment_methods {
   display: flex;
   flex-direction: column;
+  margin-top: 1rem !important;
 }
 
 .woocommerce-checkout .woocommerce div.payment_box {
@@ -183,14 +252,22 @@
   background: none !important;
 }
 
+/* Start Checkout Button */
 .woocommerce-checkout .woocommerce #place_order {
-  background-color: var(--bb-dark-brown) !important;
-  color: var(--bb-white) !important;
+  width: 100%;
+  padding: 0.75rem 2rem;
+  margin: 0.75rem 0;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  font-size: 1.25rem;
+  background-color: var(--hzbi-green) !important;
+  border: none;
+  color: var(--hzbi-white) !important;
 }
-.woocommerce-checkout .woocommerce #place_order:hover {
-  background-color: var(--bb-light-brown) !important;
-  color: var(--bb-gray) !important;
-}
+
+/* End Checkout Button */
 
 /* End Payment Area */
 

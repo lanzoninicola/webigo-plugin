@@ -2,68 +2,114 @@
   const _event = webigoHelper?.eventManager;
   const _dom = webigoHelper?.domManager;
 
-  const wooFormLogin = _dom.el(".woocommerce-checkout .woocommerce-form-login");
+  const formExistingAccount = _dom.el(
+    ".woocommerce-checkout .woocommerce-form-login"
+  );
 
-  const wooAccountFields = _dom.el(
+  /**  Start Checkout New Account  */
+
+  const formNewAccount = _dom.el(
     ".woocommerce-checkout .woocommerce-account-fields"
   );
 
-  /**  Start Checkout Create Account  */
-
-  const wooFormCreateAccountToggle = createNewAccountToggle();
+  const newAccountToggle = createNewAccountToggle();
   _dom.insertAfter({
-    target: wooFormCreateAccountToggle,
-    newParent: wooFormLogin,
+    target: newAccountToggle,
+    newParent: formExistingAccount,
   });
 
   _dom.insertAfter({
-    target: wooAccountFields,
-    newParent: wooFormCreateAccountToggle,
+    target: formNewAccount,
+    newParent: newAccountToggle,
   });
 
-  const wooFormCreateAccountToggleContent = createNewAccountToggleContent();
+  const newAccountToggleContent = createNewAccountToggleContent();
   _dom.appendChild({
-    child: wooFormCreateAccountToggleContent,
-    parent: wooFormCreateAccountToggle,
+    child: newAccountToggleContent,
+    parent: newAccountToggle,
   });
 
-  const arrowRightCreateAccount = d.createElement("i");
-  arrowRightCreateAccount.classList.add("ion-md-arrow-round-forward");
+  const arrowRightNewAccount = d.createElement("a");
+  arrowRightNewAccount.classList.add(
+    "ion-md-arrow-round-forward",
+    "shownewaccount"
+  );
 
   _dom.appendChild({
-    child: arrowRightCreateAccount,
-    parent: wooFormCreateAccountToggleContent,
+    child: arrowRightNewAccount,
+    parent: newAccountToggleContent,
   });
 
-  _dom.hide(wooAccountFields);
+  const newAccountInfo = d.createElement("p");
+  newAccountInfo.innerText =
+    'Caso você seja um novo cliente, para finalizar sua compra e criar uma conta, preencha o formulário abaixo e depois siga para a seção de "Detalhes de faturamento"';
+
+  formNewAccount.insertBefore(newAccountInfo, formNewAccount.firstElementChild);
+
+  formNewAccount.style.display = "none";
 
   _event.attachEvent({
-    el: arrowRightCreateAccount,
+    el: arrowRightNewAccount,
     ev: _event.type.click,
-    cb: showFormCreateAccount,
+    cb: showFormNewAccount,
   });
 
-  function showFormCreateAccount() {
-    if (_dom.shouldVisible(wooAccountFields)) {
-      _dom.hide(wooAccountFields);
-      return;
-    }
-
-    if (_dom.shouldHidden(wooAccountFields)) {
-      _dom.show(wooAccountFields);
-      return;
-    }
+  function showFormNewAccount() {
+    // This to clone the woo login form animation in checkout page
+    $(".woocommerce-checkout .woocommerce-account-fields").slideToggle();
   }
 
-  /**  End Checkout Create Account  */
+  /**  End Checkout New Account  */
 
-  /** Start Checkout Login */
+  /** Start Checkout Existing Account */
+  const lostPassword = _dom.el(
+    ".woocommerce-checkout .woocommerce-form-login .lost_password"
+  );
 
-  $(".woocommerce-info a").replaceWith(
+  const pwdInput = _dom.el(
+    '.woocommerce-checkout .woocommerce-form-login input[name="password"]'
+  );
+
+  _dom.insertAfter({
+    target: lostPassword,
+    newParent: pwdInput,
+  });
+
+  $(".woocommerce-form-login-toggle .woocommerce-info a").replaceWith(
     "<a class='ion-md-arrow-round-forward showlogin'></a>"
   );
 
-  /** End Checkout Login */
+  const existingAccountInfo = _dom.el(
+    ".woocommerce-checkout .woocommerce-form-login > p:first-child"
+  );
+  existingAccountInfo.innerHTML =
+    "Caso você já tenha comprado conosco antes, informe seus dados abaixo.";
+
+  const rememberMeLoginNode = _dom.el(
+    ".woocommerce-checkout .woocommerce-form-login .woocommerce-form-login__rememberme"
+  );
+
+  const rememberMeLogin = _dom.el(
+    '.woocommerce-checkout .woocommerce-form-login .woocommerce-form-login__rememberme input[name="rememberme"]'
+  );
+
+  if (rememberMeLogin) {
+    rememberMeLogin.checked = true;
+  }
+
+  if (rememberMeLoginNode) {
+    rememberMeLoginNode.style.display = "none";
+  }
+
+  const loginSubmitButton = _dom.el(
+    ".woocommerce-checkout .woocommerce-form-login .woocommerce-form-login__submit"
+  );
+
+  if (loginSubmitButton) {
+    loginSubmitButton.classList.add("wbg-button", "wbg-primary-button");
+  }
+
+  /** End Checkout Existing Account */
 
   function createNewAccountToggle() {
     const el = d.createElement("div");

@@ -50,7 +50,19 @@ class Webigo_Checkout_PagSeguro extends Webigo_Module
 	public function add_hooks()
 	{
 
-		
+		$hook_dequeue_pagseguro_style = array(
+			'hook'     => 'wp_enqueue_scripts',
+			'callback' => array( $this, 'dequeue_pagseguro_style'),
+			'priority' => 11
+		);
+
+		$this->hooks->register($hook_dequeue_pagseguro_style);
+	
+	}
+
+	public function dequeue_pagseguro_style() : void
+	{
+		wp_dequeue_style( 'pagseguro-checkout' );
 	}
 
 

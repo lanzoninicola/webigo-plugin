@@ -1,39 +1,56 @@
+#pagseguro-icon-ticket {
+  background: transparent
+    url(http://localhost/hazbier/wp-content/plugins/woocommerce-pagseguro/assets/images/transparent-checkout-icons.png)
+    no-repeat top right;
+  display: block;
+  float: left;
+  height: 51px;
+  margin: 0 10px 5px 0;
+  width: 51px;
+}
+
+#pagseguro-payment-methods {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+}
+
 /* Start PagSeguro Form */
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form {
   display: flex;
   flex-direction: column;
-  border: none !important;
+  border: none;
   padding: 0;
 }
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form li {
-  border: none !important;
+  border: none;
   border-radius: unset;
   -webkit-border-radius: unset;
-  font-weight: 400 !important;
-  text-transform: uppercase !important;
+  font-weight: 400;
+
+  background: none;
+  padding: 0;
 }
 
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form li label {
-  font-weight: 400 !important;
-  text-transform: uppercase !important;
+  font-weight: 400;
   letter-spacing: 0.5px;
+  text-transform: uppercase !important;
 }
 
-.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form li.active {
-  background: var(--bb-dark-brown);
-  color: var(--bb-white);
+.woocommerce-checkout
+  .woocommerce
+  fieldset#pagseguro-payment-form
+  li.active
+  label {
+  font-weight: 600;
   -webkit-border-radius: unset;
-  border-radius: unset !important;
-}
-
-.woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p {
-  width: 100% !important;
-  margin-bottom: 0;
+  border-radius: unset;
 }
 
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p input {
-  padding: 0.1rem 0.5rem !important;
-  margin-bottom: 0.35rem !important;
+  padding: 0.1rem 0.75rem !important;
+  margin-bottom: 0.35rem;
   font-size: 1.25rem !important;
   letter-spacing: 1px;
 }
@@ -43,11 +60,14 @@
   fieldset#pagseguro-payment-form
   p
   input:focus {
-  outline: 2px solid var(--bb-dark-brown);
+  border: 2px solid var(--hzbi-green);
+  outline: none;
 }
 
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p select {
-  background: white;
+  background: var(--hzbi-white);
+  padding: 0.1rem 0.75rem !important;
+  font-size: 1.25rem;
 }
 
 .woocommerce-checkout
@@ -55,23 +75,25 @@
   fieldset#pagseguro-payment-form
   p
   select:focus {
-  outline: 2px solid var(--bb-light-brown);
+  border: 2px solid var(--hzbi-green);
+  outline: none;
 }
 
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p option {
-  background: white;
+  background: var(--hzbi-light-white);
   font-size: 1rem;
-  color: black;
+  color: var(--hzbi-light-black);
   letter-spacing: 1px;
   font-family: "Segoe UI";
 }
 
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p label {
-  text-transform: uppercase !important;
   font-weight: 400;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   letter-spacing: 0.5px;
-  margin-bottom: 0;
+  line-height: 1.1 !important;
+  text-transform: uppercase !important;
+  margin-bottom: 0.25rem;
 }
 
 /* .woocommerce-checkout
