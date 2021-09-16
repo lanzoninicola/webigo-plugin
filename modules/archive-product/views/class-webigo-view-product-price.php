@@ -16,23 +16,60 @@ class Webigo_View_Product_Price {
     public function render() : string
     {
 
-        $price = $this->product->price();
+        $output = '<div class="wbg-product-price-container">';
+        
+        $output .= $this->render_price();
 
-        $sale_price = $this->product->sale_price();
+        $output .= $this->render_discount();
 
-        // $final_price = $this->product->final_price();
-
-        $this->render_price = $price;
-
-        if ( !empty( $sale_price ) ) {
-
-            $this->render_price = $sale_price;
-        }
-
-        // TODO: improve UI when a sale price is available
-        $output = '<div class="wbg-product-price">R$' . esc_html( $this->product->final_price() ) . '</div>';
+        $output .= '</div>';
 
         return $output;
 
+    }
+
+    private function render_price() : string
+    {
+
+        $output = '<div class="wbg-product-price-wrapper">';
+
+        if ( $this->product->is_sale() ) {
+            $output .= '<div class="wbg-product-full-price">';
+            $output .= '<span class="wbg-price-symbol">R$</span>';
+            $output .= '<span class="wbg-price wbg-full-price">' . esc_html( $this->product->price() ) . '</span>';
+            $output .= '<span> - </span>';
+            $output .= '</div>';
+        }
+
+        $output .= '<div class="wbg-product-sale-price">';
+        $output .= '<span class="wbg-price-symbol">R$</span>';
+        $output .= '<span class="wbg-price wbg-final-price">' . esc_html( $this->product->final_price() ) . '</span>';
+        $output .= '</div>';
+
+        $output .= '</div>';
+
+        return $output;
+    }
+
+    private function render_discount() : string 
+    {
+
+        $output = '<div class="wbg-product-discount-wrapper">';
+
+        if ( $this->product->is_sale() ) {
+
+            $discount_percentage = ( $this->product->final_price() / $this->product->price() ) * 100;
+        
+            $output .= '<div class="wbg-product-discount">';
+
+            $output .= '<span>' . esc_html( number_format((float)$discount_percentage, 2, ',', '')) . '% OFF</span>';
+
+            $output .= '</div>';
+        
+        }
+
+        $output .= '</div>';
+
+        return $output;
     }
 }
