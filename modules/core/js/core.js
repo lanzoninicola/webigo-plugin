@@ -234,6 +234,17 @@ class DomManager {
     clamped: "clamped",
   };
 
+  el = (query) => {
+    const el = document.querySelectorAll(query);
+
+    if (el) {
+      if (el.length === 1) {
+        return el[0];
+      }
+      return el;
+    }
+  };
+
   getElementAttribute = (el) => {
     return {
       prodId: el?.getAttribute(this.domAttributes.productId),
@@ -241,6 +252,18 @@ class DomManager {
       catId: el?.getAttribute(this.domAttributes.categoryId),
       visibility: el?.getAttribute(this.domAttributes.dataVisibility),
     };
+  };
+
+  appendChild = ({ child = null, parent = null }) => {
+    if (child && parent) {
+      parent.appendChild(child);
+    }
+  };
+
+  insertAfter = ({ target = null, newParent = null }) => {
+    if (newParent) {
+      newParent.parentNode.insertBefore(target, newParent.nextSibling);
+    }
   };
 
   show = (el) => {

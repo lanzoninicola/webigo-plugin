@@ -44,6 +44,15 @@ class Webigo_Checkout extends Webigo_Module
 
 	public function add_script()
 	{
+
+		$script_data = array(
+			'module'      => $this->name,
+			'file_name'   => 'checkout.js',
+			'dependencies' => array('core'),
+			'in_footer'   => true
+		);
+
+		$this->script->register_public_script( $script_data );
 		
 	}
 
