@@ -157,5 +157,19 @@ class Webigo_Woo_Product extends WC_Product_Simple {
         return $this->bundle_parents;
     }
 
+    /**
+     * Tells if the product is in sale
+     * 
+     * @return bool 
+     */
+    public function is_sale() : bool
+    {
+        if ( absint( $this->get_sale_price() ) > 0 ) {
+            return true;
+        }
+
+        return false;
+    }
+
 
 }

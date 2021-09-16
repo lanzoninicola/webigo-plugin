@@ -112,11 +112,11 @@
 
   function calculateSubTotal(prodId, catId) {
     const subtotalNode = d.querySelectorAll(
-      ".wbg-product-subtotal-value[data-product-id='" +
+      ".wbg-product-subtotal-wrapper[data-product-id='" +
         parseInt(prodId, 10) +
         "'][data-category-id='" +
         catId +
-        "']"
+        "'] .wbg-product-subtotal-value"
     )[0];
 
     const userQty = state["prodId_" + prodId + "_catId_" + catId]?.userQty;
@@ -124,7 +124,7 @@
 
     if (subtotalNode) {
       const subtotal = userQty * price;
-      subtotalNode.innerText = "R$" + subtotal.toFixed(2);
+      subtotalNode.innerText = subtotal.toFixed(2);
     }
   }
 
@@ -182,6 +182,34 @@
     }
   }
 })(webigoHelper, document);
+
+/**
+ * Expand the category
+ */
+(function (webigoHelper, d, $) {
+  const _dom = webigoHelper?.domManager;
+  const _event = webigoHelper?.eventManager;
+
+  const toggleExpandCatButtons = d.querySelectorAll(".toggleExpandLabel");
+
+  init();
+
+  function init() {
+    _event.bulkAttachEvent({
+      elements: toggleExpandCatButtons,
+      ev: _event.type.click,
+      cb: showProducts,
+    });
+  }
+
+  function showProducts() {
+    const { catId } = _dom.getElementAttribute(this);
+
+    $(
+      ".wbg-product-list-wrapper[data-category-id=" + catId + "]"
+    ).slideToggle();
+  }
+})(webigoHelper, document, jQuery);
 
 /**
  * Expand the product description

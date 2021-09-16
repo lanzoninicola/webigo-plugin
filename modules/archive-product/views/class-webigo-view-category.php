@@ -154,9 +154,9 @@ class Webigo_View_Category
     private function render_products() : string
     {
 
-        $output = '<div class="wbg-product-list-wrapper" data-visibility="hidden">';
+        $output = '<div class="wbg-product-list-wrapper" data-category-id="' . esc_attr( $this->category->id() ) . '" data-visibility="hidden">';
        
-        $output .= '<ul class="wbg-product-list" data-category-id="' . esc_attr( $this->category->id() ) . '">';
+        $output .= '<ul class="wbg-product-list">';
 
         $products = (array) $this->database->get_products_category( $this->category->id() );
 
@@ -165,6 +165,7 @@ class Webigo_View_Category
             $view_product = new Webigo_View_Product( $product, $this->category );
 
             $output .= $view_product->render();
+
         }
 
         $output .= '</ul>';

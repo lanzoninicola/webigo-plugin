@@ -44,6 +44,13 @@ class Webigo_Woo_Products_Categories_Facade {
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/models/class-webigo-woo-products-categories.php';
     }
 
+    /**
+     * This method merge the array of product that belongs to the category as standard
+     * and the combos products that not belongs directly to the category, 
+     * but inside the bundle a product belongs to the category
+     * 
+     * @return array of Webigo_Woo_Product|Webigo_Woo_Product_Bundle
+     */
     public function get_products_category( string $category_id ) : array
     {
 
@@ -57,6 +64,9 @@ class Webigo_Woo_Products_Categories_Facade {
     }
 
 
+    /**
+     * @return array of Webigo_Woo_Product|Webigo_Woo_Product_Bundle
+     */
     private function get_standard_product_cats( $category_id ) : array
     {
 
@@ -65,6 +75,9 @@ class Webigo_Woo_Products_Categories_Facade {
         return isset( $product_cats) ? $product_cats : array();
     }
 
+    /**
+     * @return array of Webigo_Woo_Product|Webigo_Woo_Product_Bundle
+     */
     private function get_hazbier_product_cats( $category_id ) : array
     {
 

@@ -128,6 +128,7 @@
   flex-direction: row;
   gap: 0.5em;
   margin-top: 0.5rem;
+  width: max-content;
 }
 
 .wbg-category-attribute-value {
@@ -193,22 +194,59 @@
   margin: 0;
 }
 
-.wbg-product-list[data-visibility="hidden"] {
+.wbg-product-list-wrapper[data-visibility="hidden"] {
   display: none;
-}
-
-.wbg-product-list[data-visibility="shown"] {
 }
 
 .wbg-product-container {
   display: flex;
   flex-direction: row;
+  position: relative;
 }
 
 .wbg-product {
   padding: 1em 0em 1em 0em;
   border-top: 1px solid #00593014;
   margin-top: 1em;
+}
+
+.wbg-product-sale-banner {
+  position: absolute;
+  top: 0.25rem;
+  left: -0.25rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  background-color: var(--hzbi-gold);
+  animation: blink 1000ms infinite;
+  animation-direction: alternate;
+}
+
+.wbg-product-sale-banner span {
+  font-size: 0.85rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--hzbi-black);
+  font-weight: 900;
+}
+
+.wbg-product-combo-wrapper {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  width: 75%;
+}
+
+.wbg-product-combo-message {
+  color: var(--hzbi-green);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  margin: 0 !important;
+  font-weight: 600;
+}
+
+.wbg-product-combo-message.lowercase {
+  text-transform: unset;
+  letter-spacing: 0.25px;
 }
 
 .wbg-product-image {
@@ -257,12 +295,48 @@
   width: 20px;
 }
 
-.wbg-product-price {
-  /* font-size: 1.2em; */
-  color: var(--hzbi-green);
+.wbg-product-price-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.wbg-price {
+  font-size: 1.2rem;
   font-weight: 900;
   letter-spacing: 0.1em;
+}
+
+.wbg-final-price {
+  color: var(--hzbi-green);
+}
+
+.wbg-full-price {
+  color: var(--hzbi-light-black);
+  text-decoration: line-through;
+}
+
+.wbg-price-symbol {
+  font-size: 0.95rem;
+  margin-right: 0.15rem;
+}
+
+.wbg-product-discount {
+  display: flex;
+  padding: 0.35rem 1rem;
+  background-color: var(--hzbi-green);
+  width: max-content;
+  border-radius: 20px;
+  align-items: center;
   margin-top: 0.5rem;
+}
+
+.wbg-product-discount span {
+  color: var(--hzbi-white);
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  line-height: 1;
 }
 
 .wbg-product-whatsapp-contact {
@@ -283,14 +357,14 @@
 }
 
 .wbg-product-quantity {
-  margin-bottom: 1em;
+  margin-block: 1rem;
 }
 
 .wbg-product-quantity .wbg-product-qty-label {
-  font-size: 0.75em;
+  font-size: 0.75rem;
   font-weight: 600;
   text-align: right;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.1rem;
   color: black;
   text-transform: capitalize;
 }
@@ -336,6 +410,7 @@
   text-align: right;
   letter-spacing: 0.1em;
   color: black;
+  gap: 0.5rem;
 }
 
 .wbg-product-subtotal-label {

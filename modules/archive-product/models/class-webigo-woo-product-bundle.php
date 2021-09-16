@@ -5,6 +5,8 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
 
     protected $type;
 
+    private $bundle_parents;
+
     public function __construct($product) {
         parent::__construct( $product );
 
@@ -83,6 +85,34 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
     {
 
         return $this->get_image();
+    }
+
+    /**
+     * Tells if the product is in sale
+     * 
+     * @return bool 
+     */
+    public function is_sale() : bool
+    {
+        if ( absint( $this->get_sale_price() ) > 0 ) {
+            return true;
+        }
+
+        return false;
+    }
+
+     /**
+     * Tells if the product is part of bundle product
+     * 
+     * @return bool
+     */
+    public function is_bundled_item() : bool
+    {
+        if ( !empty( $this->bundle_parents ) ) {
+            return true;
+        }
+
+        return false;
     }
 
 

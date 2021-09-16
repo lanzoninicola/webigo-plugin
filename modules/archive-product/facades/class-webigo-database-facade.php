@@ -72,6 +72,9 @@ class Webigo_Database_Facade {
     }
 
 
+     /**
+     * @return array of Webigo_Woo_Category
+     */
     public function get_products_category( string $category_id ) : array
     {
 

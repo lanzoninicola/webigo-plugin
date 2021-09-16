@@ -80,7 +80,15 @@ class Webigo_View_Product {
     {
 
         $output = '<li class="wbg-product" data-product-id="' . esc_html( $this->product->id() ) . '">';
+        
+            $output .= $this->render_combo_promotion_message();
+
             $output .= '<div class="wbg-product-container">';
+
+                if ( $this->product->is_sale() ) {
+
+                    $output .= $this->render_sale_banner();
+                }
 
                 $output .= $this->product_info->render_image();
             
@@ -116,9 +124,43 @@ class Webigo_View_Product {
         $output =  '<div class="wbg-product-subtotal">';
         
         $output .= '<div class="wbg-product-subtotal-label">Subtotal</div>';
-        $output .= '<div class="wbg-product-subtotal-value" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">R$0</div>';
+        $output .= '<div class="wbg-product-subtotal-wrapper" data-product-id="' . esc_attr( $this->product->id() ) . '" data-category-id="' . esc_attr( $this->category->id() ) . '">';
+        $output .= '<span class="wbg-price-symbol">R$</span>';
+        $output .= '<span class="wbg-product-subtotal-value">0</span>';
+        $output .= '</div>';
         
         $output .= '</div>';
+
+        return $output;
+    }
+
+
+    private function render_sale_banner() : string 
+    {
+
+        $output =  '<div class="wbg-product-sale-banner">';
+        $output .= '<span>promoção</span>';
+        $output .= '</div>';
+
+        return $output;
+    }
+
+    private function render_combo_promotion_message() : string
+    {
+        
+        $output = '';
+        
+        if ( $this->product->type() === 'bundle' && $this->category->name() !== 'Combos') {
+            
+            $output .= '<div class="wbg-product-combo-wrapper">';
+
+            $output .= '<p class="wbg-product-combo-message">Descubra nossa ' . esc_html( $this->product->name() ) . '.</p>';
+            
+            $output .= '<p class="wbg-product-combo-message lowercase">Seu ' . esc_html( $this->category->name() ) . ' junto com nossas outras criações a um preço mais barato.</p>';
+
+            $output .= '</div>';
+        
+        }
 
         return $output;
     }
