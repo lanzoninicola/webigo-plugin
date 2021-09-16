@@ -265,6 +265,23 @@
   margin-top: 0.5rem;
 }
 
+.wbg-product-whatsapp-contact {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.wbg-product-wa-label {
+  font-weight: 600;
+  text-align: right;
+}
+
+.wbg-product-wa-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .wbg-product-quantity {
   margin-bottom: 1em;
 }

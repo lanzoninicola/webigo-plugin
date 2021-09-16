@@ -22,6 +22,9 @@ class Webigo_Archive_Product extends Webigo_Module
 
 	public function load_dependencies()
 	{
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-archive-product-settings.php';
+
 		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-archive-product-shortcode.php';
 		
 	}

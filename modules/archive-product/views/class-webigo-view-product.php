@@ -35,20 +35,13 @@ class Webigo_View_Product {
      */
     private $add_to_cart;
 
-    /**
-     * Dependency
-     * 
-     * @var Webigo_Pod_Custom_Fields
-     */
-    private $pod_custom_fields;
 
     /**
      * Dependency
      * 
-     * @var Webigo_Pod_Custom_Settings_Page
+     * @var Webigo_View_Product_Whatsapp
      */
-    private $pod_biz_info_settings;
-
+    private $product_whatsapp;
 
     /**
      * 
@@ -74,16 +67,13 @@ class Webigo_View_Product {
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-quantity.php';
         $this->product_quantity = new Webigo_View_Product_Quantity( $this->product, $this->category );
 
+        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-whatsapp.php';
+        $this->product_whatsapp = new Webigo_View_Product_Whatsapp( $this->product );
+
         // TODO Future feature Below is a module dependency, so i might to query the registry to load this module
         // Because I can unregister the module. The app must work but the specific funcionality no
         require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/views/class-webigo-view-add-to-cart.php';
         $this->add_to_cart = new Webigo_View_Add_To_Cart();
-
-        require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-pod-custom-fields.php';
-        $this->pod_custom_fields = new Webigo_Pod_Custom_Fields( 'product', $this->product, 'post' );
-        
-        require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-pod-custom-settings-page.php';
-        $this->pod_biz_info_settings = new Webigo_Pod_Custom_Settings_Page('informacoes_comerciais');
     }
 
     public function render() : string
@@ -97,11 +87,11 @@ class Webigo_View_Product {
                 $output .= '<div class="wbg-product-inner-details">';
                 $output .= $this->product_info->render();
       
-                if ( $this->is_whatsapp_required() ) {
-                    $output .= $this->render_whatsapp_button();
+                if ( $this->product_whatsapp->is_whatsapp_required() ) {
+                    $output .= $this->product_whatsapp->render();
                 }
 
-                if ( !$this->is_whatsapp_required() ) {
+                if ( !$this->product_whatsapp->is_whatsapp_required() ) {
                     $output .= $this->product_quantity->render();    
       
                     $output .=  '<div class="wbg-product-footer">';
@@ -118,48 +108,7 @@ class Webigo_View_Product {
         return $output;
     }
 
-    /**
-     * Returns the value of Whatsapp option inside the product
-     * 
-     * @return bool true|false
-     */
-    private function is_whatsapp_required() : bool
-    {
-        
-        $whatsapp_field = "product_wapp_contact";
-
-        if ( $this->pod_custom_fields->is_field_exists( $whatsapp_field )) {
-            return $this->pod_custom_fields->value_of( $whatsapp_field );
-        }
-        
-        return false;
-    }
-
-    /**
-     * Returns the whatsapp number inside the Custom Settings Page
-     * 
-     * @return string 
-     */
-    private function whatsapp_number() : string
-    {
-        $whatsapp_number_field = "numero_whatsapp";
-
-        if ( $this->pod_biz_info_settings->is_field_exists( $whatsapp_number_field  )) {
-            return $this->pod_biz_info_settings->value_of( $whatsapp_number_field );
-        }
-        
-        return '';
-    }
-
-    private function render_whatsapp_button() {
-
-        // TODO: complete when returns
-        return sprintf(
-            '<div class="wbg-product-whatsapp-contact">%s</div>',
-            esc_html( $this->whatsapp_number() )
-        );
-        
-    }
+    
 
     private function render_subtotal() : string
     {
