@@ -1,30 +1,45 @@
 class StateManager {
   state = {};
 
-  setState = (prevState = {}, newState = {}, options = { cb: null }) => {
-    let _newState = { ...prevState };
+  setState = (newState = {}, options = { cb: null }) => {
     const { cb } = options;
 
-    // manage upto 2 levels of state object
-    Object.keys(newState).forEach((stateItem) => {
-      if (_newState[stateItem.toString()]) {
-        Object.keys(newState[stateItem.toString()]).forEach((subStateItem) => {
-          _newState[stateItem.toString()][subStateItem.toString()] =
-            newState[stateItem.toString()][subStateItem.toString()];
-        });
-      } else {
-        _newState = {
-          ..._newState,
-          [stateItem.toString()]: newState[stateItem.toString()],
-        };
-      }
-    });
+    const _prevState = { ...this.state };
+    const _prevStateMergedKeys = this.mergeKeys(newState, _prevState);
+    const _newState = this.mergeData(newState, _prevStateMergedKeys);
 
-    this.state = { ...prevState };
-
+    this.state = { ..._newState };
     if (typeof cb !== "undefined" && cb !== null) {
       cb();
     }
+  };
+
+  mergeKeys = (source = {}, target = {}) => {
+    for (const [key, val] of Object.entries(source)) {
+      if (typeof source === "object") {
+        const isKeyExists = key in target;
+        if (!isKeyExists) {
+          target[key] = {};
+        }
+        this.mergeKeys(source[key], target[key]);
+      }
+    }
+
+    return target;
+  };
+
+  mergeData = (source = {}, target = {}) => {
+    for (const [key, val] of Object.entries(source)) {
+      if (val !== null && typeof val === `object`) {
+        if (target[key] === undefined) {
+          target[key] = new val.__proto__.constructor();
+        }
+        this.mergeData(val, target[key]);
+      } else {
+        target[key] = val;
+      }
+    }
+    return target;
   };
 }
 
@@ -60,7 +75,7 @@ class EventManager {
     }
   };
 
-  trigger = ({ ev, targetQuery = null, data }) => {
+  trigger = ({ ev, targetQuery = null, payload = null }) => {
     if (!this.typeManager.istypeString(ev)) {
       throw "EventManager.trigger: eventName must be a string";
     }
@@ -251,8 +266,8 @@ class DomManager {
   getElementAttribute = (el) => {
     return {
       prodId: el?.getAttribute(this.domAttributes.productId),
-      productPrice: el?.getAttribute(this.domAttributes.productPrice),
       catId: el?.getAttribute(this.domAttributes.categoryId),
+      price: el?.getAttribute(this.domAttributes.productPrice),
       visibility: el?.getAttribute(this.domAttributes.dataVisibility),
     };
   };
