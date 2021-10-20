@@ -99,8 +99,9 @@ class Webigo
 			$this->plugin_name = 'webigo';
 		}
 
-		$this->customer = 'hazbier';
-		
+		if (defined('CUSTOMER_NAME')) {
+			$this->customer = CUSTOMER_NAME;
+		}
 		
 		$this->load_dependencies();
 		$this->set_locale();
