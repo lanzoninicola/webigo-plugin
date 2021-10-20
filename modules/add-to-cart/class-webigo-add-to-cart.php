@@ -48,9 +48,10 @@ class Webigo_Add_To_Cart extends Webigo_Module
 	{
 		$style_data = array(
 			'module'       => $this->name,
-			'file_name'    => 'add-to-cart.css',
+			'file_name'    => 'add-to-cart-mini.css',
 			'dependencies' => array('core'),
 			'version'	   => $this->style_version,
+			'includes'     => array( 'is_shop' )
 		);
 
 		$this->style->register_public_style($style_data);
@@ -61,10 +62,10 @@ class Webigo_Add_To_Cart extends Webigo_Module
 
 		$script_data = array(
 			'module'       => $this->name,
-			'file_name'    => 'add-to-cart.js',
+			'file_name'    => 'add-to-cart-mini.js',
 			'dependencies' => array('core', 'notifications'),
 			'version'	   => $this->js_version,
-			'in_footer'    => true
+			'includes'     => array( 'is_shop' )
 		);
 
 		$this->script->register_public_script( $script_data );

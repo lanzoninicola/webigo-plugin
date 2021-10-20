@@ -7,23 +7,25 @@
   const _session = webigoHelper?.sessionManager;
   const _request = webigoHelper?.httpRequestManager;
 
+  const addToCartButtons = d.querySelectorAll(".wbg-add-to-cart-button");
+  const addToCartFooterArea = _dom.el(".wbg-add-to-cart-footer");
+  const bulkAddToCartButton = _dom.el(
+    ".wbg-add-to-cart-footer .wbg-bulk-add-to-cart"
+  );
+  const showCartFooterButton = _dom.el(".wbg-show-cart");
+
   init();
 
   function init() {
-    const addToCartButtons = d.querySelectorAll(".wbg-add-to-cart-button");
-    const bulkAddToCartButtons = d.querySelectorAll(".wbg-bulk-add-to-cart");
-
     _event.bulkAttachEvent({
       elements: addToCartButtons,
       ev: _event.type.click,
       cb: addToCart,
     });
 
-    _event.bulkAttachEvent({
-      elements: bulkAddToCartButtons,
-      ev: _event.type.click,
-      cb: bulkAddToCart,
-    });
+    if (showCartFooterButton) {
+      showCartFooterButton.addEventListener("click", openMinicart);
+    }
 
     _event.listen({
       ev: "showAddToCartContainer",
@@ -36,28 +38,8 @@
     });
 
     _event.listen({
-      ev: "showAddToCartFooter",
-      cb: showAddToCartFooter,
-    });
-
-    _event.listen({
-      ev: "hideAddToCartFooter",
-      cb: hideAddToCartFooter,
-    });
-
-    _event.listen({
-      ev: "addMiniature",
-      cb: addMiniature,
-    });
-
-    _event.listen({
-      ev: "removeMiniature",
-      cb: removeMiniature,
-    });
-
-    _event.listen({
-      ev: "addedToCart",
-      cb: [resetCartState, resetMiniature],
+      ev: "handleAddToCartFooterVisibility",
+      cb: handleAddToCartFooterVisibility,
     });
   }
 
@@ -130,103 +112,6 @@
     }
   }
 
-  async function bulkAddToCart(e) {
-    e.preventDefault();
-    const addToCartNotification = new WbgAddToCartNotification();
-    const addToCartActions = new WbgAddToCartActions();
-    const wpnonce = d.getElementById("webigo_bulk_add_to_cart_nonce");
-
-    const requestOptions = _request.options;
-    const requestData = _request.data;
-
-    handleRequestInit();
-
-    const cartContent = JSON.stringify(_state.state.cart);
-
-    const _requestData = requestData.set({
-      action: "webigo_bulk_add_to_cart",
-      nonce: wpnonce.value,
-      resource: "bulk-add-to-cart",
-      cart: cartContent,
-    });
-
-    requestOptions.addRequestData(_requestData);
-
-    const url = wc_add_to_cart_params.ajax_url;
-    const httpResponse = await fetch(url, requestOptions.get());
-
-    if (!httpResponse.ok) {
-      handleResponseFailed();
-    }
-    const wcResponse = await httpResponse.json();
-
-    if (wcResponse.success === true) {
-      handleResponseSuccess();
-      updateMiniCart(wcResponse.data);
-      updateSessionCartFragments(wcResponse.data);
-    }
-
-    if (wcResponse.error || wcResponse.success === false) {
-      handleResponseFailed();
-    }
-
-    function handleRequestInit() {
-      addToCartActions.pending();
-      addToCartNotification.hide();
-    }
-
-    function handleResponseFailed() {
-      addToCartActions.idle();
-      addToCartNotification.showFailed();
-    }
-
-    function handleResponseSuccess() {
-      addToCartActions.completed();
-      addToCartNotification.showSuccess();
-
-      setTimeout(function () {
-        _event.trigger({
-          ev: "hideAddToCartFooter",
-          targetQuery: ".wbg-add-to-cart-footer",
-        });
-        _event.trigger({ ev: "resetProductQuantity" });
-        resetCartState();
-        resetMiniature();
-        addToCartNotification.hide();
-      }, 700);
-    }
-
-    function resetCartState() {
-      _state.resetItemState("cart");
-    }
-
-    function updateSessionCartFragments(data) {
-      // inspired by the Woo cart-fragments.js
-      if (!data.fragments) {
-        return;
-      }
-
-      if (!wc_cart_fragments_params) {
-        return;
-      }
-
-      _session.set(wc_cart_fragments_params.fragment_name, data.fragments);
-      _session.set(wc_cart_fragments_params.cart_hash_key, data.cart_hash);
-    }
-
-    function updateMiniCart(data) {
-      if (!data.fragments) {
-        return;
-      }
-
-      const fragmentsData = data.fragments;
-
-      Object.keys(fragmentsData).forEach((key) => {
-        $(key).replaceWith(fragmentsData[key]);
-      });
-    }
-  }
-
   function showAddToCartContainer({ domTarget }) {
     _dom.show(domTarget);
   }
@@ -237,55 +122,47 @@
 
   function showAddToCartFooter({ domTarget }) {
     _dom.show(domTarget);
+    _dom.hide(showCartFooterButton);
+    _dom.show(bulkAddToCartButton);
   }
 
   function hideAddToCartFooter({ domTarget }) {
     _dom.hide(domTarget);
   }
 
-  function getMiniature() {
-    const _miniature = d.createElement("li");
-    _miniature.classList.add("fas", "fa-beer");
-    _miniature.setAttribute("data-visibility", "visible");
+  function handleAddToCartFooterVisibility() {
+    const { qty: cartTotalQty } = _state.state.cartTotals;
 
-    return _miniature;
-  }
+    if (cartTotalQty > 0) {
+      showAddToCartFooter({ domTarget: addToCartFooterArea });
+    }
 
-  function addMiniature() {
-    const miniatureArea = _dom.el(
-      ".wbg-add-to-cart-footer .wbg-add-to-cart-miniature"
-    );
-    const miniature = getMiniature();
-
-    const _miniaturesNrs = _state.state?.miniatures;
-
-    if (_miniaturesNrs) {
-      for (let index = 0; index < _miniaturesNrs; index++) {
-        miniatureArea.appendChild(miniature);
-      }
+    if (cartTotalQty === 0 || typeof cartTotalQty === "undefined") {
+      hideAddToCartFooter({ domTarget: addToCartFooterArea });
     }
   }
 
-  function removeMiniature() {
-    const miniatureArea = _dom.el(
-      ".wbg-add-to-cart-footer .wbg-add-to-cart-miniature"
-    );
+  function openMinicart(e) {
+    e.preventDefault();
+    const miniCartDetail = d.querySelectorAll(
+      ".mini-cart-wrapper .cart-detail"
+    )[0];
 
-    miniatureArea.removeChild(miniatureArea.lastChild);
-  }
-
-  function resetMiniature() {
-    const miniatureArea = _dom.el(
-      ".wbg-add-to-cart-footer .wbg-add-to-cart-miniature"
-    );
-
-    if (miniatureArea) {
-      while (miniatureArea.firstChild) {
-        miniatureArea.removeChild(miniatureArea.lastChild);
-      }
+    if (miniCartDetail) {
+      miniCartDetail.classList.add("active");
     }
 
-    _state.resetItemState("miniatures");
+    // Bricks has a click event attached to the parent
+    // use to avoid collisions with that event
+    e.stopPropagation();
+
+    _dom.scrollToTop();
+
+    _dom.hide(addToCartFooterArea);
+    _dom.hide(showCartFooterButton);
+    _dom.show(bulkAddToCartButton);
+
+    _event.trigger({ ev: "minicartOpened" });
   }
 })(webigoHelper, document, jQuery, wc_cart_fragments_params);
 

@@ -62,7 +62,7 @@
     });
 
     increaseQty();
-    _event.trigger({ ev: "handleAddToCartFooterVisibility" });
+    _event.trigger({ ev: "archive-product-prod-qty-increased" });
     updateProdSubTotal();
     writeProdQuantity();
 
@@ -77,7 +77,7 @@
     });
 
     decreaseQty();
-    _event.trigger({ ev: "handleAddToCartFooterVisibility" });
+    _event.trigger({ ev: "archive-product-prod-qty-decreased" });
     updateProdSubTotal();
     writeProdQuantity();
 
