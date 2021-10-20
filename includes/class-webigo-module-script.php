@@ -121,6 +121,7 @@ class Webigo_Module_Script
         $this->set_version();
         $this->set_register_callbacks_function();
         $this->set_inclusions();
+        $this->set_disabled_script();
         $this->set_enqueue_callbacks_function();
     }
 
@@ -226,6 +227,22 @@ class Webigo_Module_Script
         $this->scripts[$this->script_id]['includes'] = $this->script_data['includes'];
     }
 
+    private function set_disabled_script() : void
+    {
+
+        if ( isset( $this->script_data['disabled'] ) === false ) {
+            $this->scripts[$this->script_id]['disabled'] = false;
+            return;
+        }
+
+        if ( $this->script_data['disabled'] === null ) {
+            $this->scripts[$this->script_id]['disabled'] = false;
+            return;
+        }
+
+        $this->scripts[$this->script_id]['disabled'] = $this->script_data['disabled'];
+    }
+
 
     
     public function set_register_callbacks_function()
@@ -316,6 +333,13 @@ class Webigo_Module_Script
          */
         if ( count( $this->scripts[$script_id]['includes'] ) === 0 ) {
             $this->scripts[$script_id]['should_enqueued'] = true;
+        }
+
+         /**
+         * If script is marked disabled it is not enqueued;
+         */
+        if ( $this->scripts[$script_id]['disabled'] === true ) {
+            $this->scripts[$script_id]['should_enqueued'] = false;
         }
 
         return $this->scripts[$script_id]['should_enqueued'];

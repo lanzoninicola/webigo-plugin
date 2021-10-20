@@ -121,6 +121,7 @@ class Webigo_Module_Style
         $this->set_version();
         $this->set_register_callbacks_function();
         $this->set_inclusions();
+        $this->set_disabled_style();
         $this->set_enqueue_callbacks_function();
     }
 
@@ -227,6 +228,23 @@ class Webigo_Module_Style
     }
 
 
+    private function set_disabled_style() : void
+    {
+
+        if ( isset( $this->style_data['disabled'] ) === false ) {
+            $this->styles[$this->style_id]['disabled'] = false;
+            return;
+        }
+
+        if ( $this->style_data['disabled'] === null ) {
+            $this->styles[$this->style_id]['disabled'] = false;
+            return;
+        }
+
+        $this->styles[$this->style_id]['disabled'] = $this->style_data['disabled'];
+    }
+
+
     
     public function set_register_callbacks_function()
     {
@@ -313,6 +331,13 @@ class Webigo_Module_Style
          */
         if ( count( $this->styles[$style_id]['includes'] ) === 0 ) {
             $this->styles[$style_id]['should_enqueued'] = true;
+        }
+
+        /**
+         * If style is marked disabled it is not enqueued;
+         */
+        if ( $this->styles[$style_id]['disabled'] === true ) {
+            $this->styles[$style_id]['should_enqueued'] = false;
         }
 
         return $this->styles[$style_id]['should_enqueued'];
