@@ -11,9 +11,9 @@ class Webigo_Core_Settings {
 
     const BOOTSTRAP_CLASS_FILENAME = 'class-webigo-core.php';
 
-    const CSS_VERSION = '2109292134';
+    const CSS_VERSION = '2010071538';
 
-    const JS_VERSION = '2109292134';
+    const JS_VERSION = '2010071538';
 
     /**
      *  @return array
