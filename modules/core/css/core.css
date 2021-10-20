@@ -1,0 +1,28 @@
+/* Start BricksBuilder Hack */
+#bricks-structure.bricks-mode-dark
+  .bricks-panel-content
+  .bricks-panel-structure-items-wrapper
+  > .element.active {
+  background-color: #ffe68c54;
+  padding-bottom: 0.01rem;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-bottom: 0.5rem;
+  padding-right: 0.5em;
+}
+
+#bricks-structure.bricks-mode-dark .element.active > .structure-item {
+  box-shadow: 0 0 0 0.25rem #fed74f !important;
+}
+
+#bricks-panel.bricks-mode-dark #bricks-panel-toggle {
+  background-color: #ffd64f !important;
+  width: 40px;
+  height: 50px;
+}
+
+#bricks-panel.bricks-mode-dark #bricks-panel-toggle:hover {
+  color: black;
+}
+
+/* Start BricksBuilder Hack */

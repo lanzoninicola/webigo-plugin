@@ -1,0 +1,25 @@
+.woocommerce input,
+.woocommerce select,
+.woocommerce textarea {
+  padding: 0 0.75rem;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.woocommerce select,
+.woocommerce textarea {
+  text-transform: uppercase;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

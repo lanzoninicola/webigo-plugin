@@ -1,0 +1,60 @@
+.wbg-button {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: 0.5rem 2rem;
+  margin: 0.75rem 0;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  font-size: var(--button-font-size);
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wbg-button[data-visibility="visible"] {
+  animation: fadeIn 700ms ease-in;
+}
+
+.wbg-button[data-visibility="hidden"] {
+  display: none;
+}
+
+.wbg-button span.btn-animate {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  animation: ripple 700ms linear forwards;
+}
+
+.wbg-primary-button {
+  background-color: var(--hzbi-green) !important;
+  border: none;
+  color: var(--hzbi-white) !important;
+}
+
+.wbg-primary-button span.btn-animate {
+  background: var(--hzbi-whitesmoke);
+}
+
+.wbg-secondary-button {
+  border: 2px solid var(--hzbi-green);
+  font-weight: 600;
+  color: var(--hzbi-black);
+}
+
+.wbg-ternary-button {
+  border: 1px solid var(--hzbi-light-green);
+  color: var(--hzbi-black);
+}
+
+.wbg-secondary-button span.btn-animate,
+.wbg-ternary-button span.btn-animate {
+  background: var(--hzbi-green);
+}

@@ -1,0 +1,23 @@
+:root {
+  --hzbi-white: rgba(255, 255, 255, 1);
+  --hzbi-whitesmoke: rgba(231, 231, 231, 1);
+  --hzbi-light-grey: rgba(224, 224, 224, 1);
+  --hzbi-light-black: rgba(0, 0, 0, 0.6);
+  --hzbi-black: rgba(0, 0, 0, 1);
+  --hzbi-green: rgba(0, 89, 48, 1);
+  /* --hzbi-light-green: rgba(0, 89, 48, 0.5); */
+  --hzbi-light-green: rgb(141, 172, 151);
+  --hzbi-lighter-green: rgba(0, 89, 48, 0.2);
+  --hzbi-dark-gold: rgba(117, 98, 75, 1);
+  --hzbi-gold: rgba(214, 177, 132, 1);
+  --hzbi-light-gold: rgba(214, 177, 132, 0.5);
+  --hzbi-red: rgba(187, 6, 35, 1);
+  --hzbi-light-red: rgb(230, 138, 147);
+  --hzbi-lighter-red: rgba(187, 6, 35, 0.2);
+  --vh: 8.12;
+  --button-font-size: clamp(
+    0.75rem,
+    calc(0.75rem + ((1vw - 0.225rem) * 26.6667)),
+    1rem
+  );
+}
