@@ -69,6 +69,7 @@
   position: fixed;
   right: 20px;
   bottom: 20px;
+  z-index: 10;
 }
 
 /* Mini add to cart footer */
