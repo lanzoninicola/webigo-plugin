@@ -71,6 +71,14 @@ class StateManager {
   };
 }
 
+class EventData {
+  data = {};
+
+  constructor(eventData) {
+    this.data = {...this.data, eventData};
+  }
+}
+
 class EventManager {
   typeManager = null;
   type = {
@@ -78,11 +86,11 @@ class EventManager {
     input: "input",
     change: "input",
   };
-  eventCollection = {};
 
-  constructor(typeManager, domManager) {
+  constructor({ eventData, typeManager, domManager}) {
     this.typeManager = typeManager;
     this._dom = domManager;
+    this.eventData = eventData.data;
   }
 
   initEventObject = ({ ev }) => {
@@ -146,6 +154,7 @@ class EventManager {
     // this.fireCallbacks({ ev, payload });
 
     const cbFn = this.eventCollection?.[ev.toString()]?.["cb"];
+    console.log("triggering", cbFn);
     const eventPayload = this.eventCollection?.[ev.toString()]?.payload;
 
     if (typeof cbFn === "function") {
@@ -154,6 +163,7 @@ class EventManager {
           cbFn({ domTarget, eventPayload });
         });
       } else {
+        console.log(eventPayload);
         cbFn(eventPayload);
       }
     }
@@ -228,24 +238,8 @@ class EventManager {
     }
   };
 
-  bulkAttachEvent = ({ elements, el, ev, cb, debug = false }) => {
+  bulkAttachEvent = ({ elements, el, ev, cb }) => {
     const _el = elements || el; // manage retroactive calls
-
-    if (debug) {
-      console.log({
-        element: _el,
-        event: ev,
-        callback_called: cb,
-      });
-
-      if (!_el) {
-        console.error(
-          `EventManager 'bulkAttachEvent': Elements not found: event ${ev} - cb ${cb}`
-        );
-      }
-
-      cb = () => console.log("Debug mode: event fired");
-    }
 
     if (!_el) {
       return;
@@ -260,23 +254,7 @@ class EventManager {
     }
   };
 
-  attachEvent = ({ el, ev, cb, debug = false }) => {
-    if (debug) {
-      console.log({
-        element: _el,
-        event: ev,
-        callback_called: cb,
-      });
-
-      if (!_el) {
-        console.error(
-          `EventManager 'attachEvent': Elements not found: event ${ev} - cb ${cb}`
-        );
-      }
-
-      cb = () => console.log("Debug mode: event fired");
-    }
-
+  attachEvent = ({ el, ev, cb }) => {
     if (!el) {
       return;
     }
@@ -425,17 +403,9 @@ class DomManager {
     clamped: "clamped",
   };
 
-  isMobile = false;
-
   constructor(eventManager) {
     this._event = eventManager;
-    this.init();
   }
-
-  init = () => {
-    this.isMobileViewport();
-    this.listenViewportResize();
-  };
 
   elType = (el) => {
     if (typeof el === "undefined" || el === null) {
@@ -554,11 +524,11 @@ class DomManager {
     if (this.isSingleElement(el)) {
       if (this.shouldVisible(el)) {
         this.hide(el);
-        return "hidden";
+        return;
       }
       if (this.shouldHidden(el)) {
         this.show(el);
-        return "visible";
+        return;
       }
     }
 
@@ -566,11 +536,11 @@ class DomManager {
       Object.keys(el).forEach((idx) => {
         if (this.shouldVisible(el[parseInt(idx, 10)])) {
           this.hide(el[parseInt(idx, 10)]);
-          return "hidden";
+          return;
         }
         if (this.shouldHidden(el[parseInt(idx, 10)])) {
           this.show(el[parseInt(idx, 10)]);
-          return "visible";
+          return;
         }
       });
     }
@@ -594,7 +564,6 @@ class DomManager {
 
   shouldHidden = (el) => {
     const { visibility } = this.getElementAttribute(el);
-    console.log(el, visibility);
     return visibility === this.visibilityState.hidden ? true : false;
   };
 
@@ -603,56 +572,21 @@ class DomManager {
     return visibility === this.visibilityState.clamped ? true : false;
   };
 
-  styleElements = () => {
-    const elementsShouldStyled = this.el("*[data-style]");
+  isMobile = () => {
+    const isMobileViewport = () => {
+      return window.innerWidth < 478 ? true : false;
+    };
 
-    if (elementsShouldStyled === false) {
-      return;
-    }
+    window.addEventListener("resize", () => {
+      const isMobile = isMobileViewport();
 
-    elementsShouldStyled.forEach((el) => {
-      const jsonElementStyleData = el.getAttribute("data-style");
-
-      if (
-        typeof jsonElementStyleData === "undefined" ||
-        jsonElementStyleData === null
-      ) {
-        return;
-      }
-
-      if (jsonElementStyleData.length === 0) {
-        return;
-      }
-
-      const elementStyleData = JSON.parse(jsonElementStyleData);
-
-      if (typeof elementStyleData["breakpoints"] === "undefined") {
-        throw "DomManager - elementStyles: no breakpoints (min, max) are defined";
-      }
-
-      const { min, max } = elementStyleData["breakpoints"];
-
-      Object.keys(elementStyleData).forEach((styleProperty) => {
-        if (styleProperty === "breakpoints") {
-          return;
-        }
-
-        if (
-          window.innerWidth >= parseInt(min, 10) &&
-          window.innerWidth <= parseInt(max, 10)
-        ) {
-          el.style[styleProperty] = elementStyleData[styleProperty];
-        }
+      this._event.trigger({
+        ev: "viewportResized",
+        payload: { isMobile: isMobile },
       });
     });
-  };
 
-  isMobileViewport = () => {
-    this.isMobile = window.innerWidth < 478 ? true : false;
-  };
-
-  listenViewportResize = () => {
-    window.addEventListener("resize", this.isMobileViewport);
+    return isMobileViewport();
   };
 }
 
@@ -693,18 +627,124 @@ class HttpRequestData {
   };
 }
 
+const wbgEventManager = new EventManager(new TypeManager(), new DomManager()),
+
 const webigoHelper = {
-  typeManager: new TypeManager(),
+  typeManager: wbgTypeManager,
   stateManager: new StateManager(),
   eventManager: new EventManager(new TypeManager(), new DomManager()),
   sessionManager: new SessionManager(new TypeManager()),
   cookieManager: new CookieManager(new TypeManager()),
-  domManager: new DomManager(),
+  domManager: new DomManager(webigoHelper.eventManager),
   httpRequestManager: {
     options: new HttpRequestOptions(),
     data: new HttpRequestData(),
   },
 };
+
+/** Button Animation */
+(function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
+
+  const buttons = document.querySelectorAll(".wbg-button");
+
+  _event.bulkAttachEvent({
+    el: buttons,
+    ev: _event.type.click,
+    cb: animateButtons,
+  });
+
+  function animateButtons(e) {
+    let x = e.clientX - e.target.offsetLeft;
+    let y = e.clientY - e.target.offsetTop;
+
+    let ripples = d.createElement("span");
+    ripples.setAttribute("class", "btn-animate");
+    ripples.style.left = x + "px";
+    ripples.style.top = y + "px";
+    this.insertBefore(ripples, this.firstChild);
+
+    setTimeout(() => {
+      ripples.remove();
+    }, 700);
+  }
+})(webigoHelper, document);
+
+/** Overlay */
+(function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
+  const _dom = webigoHelper?.domManager;
+
+  const overlay = _dom.el(".wbg-overlay");
+
+  init();
+
+  function init() {
+    if (overlay) {
+      overlay.addEventListener("click", toggleOverlay);
+    }
+  }
+
+  function toggleOverlay() {
+    const { visibility } = _dom.getElementAttribute(overlay);
+
+    if (visibility === "hidden") {
+      _dom.show(overlay);
+    }
+
+    if (visibility === "visible") {
+      _dom.hide(overlay);
+    }
+  }
+})(webigoHelper, document);
+
+/** Collapse Header On Scroll */
+
+(function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
+  const _dom = webigoHelper?.domManager;
+
+  const header = _dom.el("header#bricks-header");
+  const headerLabels = _dom.el(".wbg-header-nav-label");
+
+  init();
+
+  function init() {
+    if (header) {
+      header.setAttribute("data-action-state", "idle");
+    }
+
+    if (headerLabels) {
+      headerLabels.forEach((item) =>
+        item.setAttribute("data-visibility", "visible")
+      );
+    }
+
+    window.onscroll = function () {
+      scrollFunction();
+    };
+  }
+
+  function scrollFunction() {
+    if (d.body.scrollTop > 50 || d.documentElement.scrollTop > 50) {
+      fixedHeader();
+    } else {
+      releaseHeader();
+    }
+  }
+
+  function fixedHeader() {
+    if (header) {
+      header.setAttribute("data-action-state", "fixed");
+    }
+  }
+
+  function releaseHeader() {
+    if (header) {
+      header.setAttribute("data-action-state", "idle");
+    }
+  }
+})(webigoHelper, document);
 
 /** Trick to viewport units on mobile */
 

@@ -74,6 +74,32 @@ class Webigo_Pod_Custom_Settings_Page extends Webigo_Pod_Fields {
     }
 
     /**
+     * Returns all fields with their data
+     */
+    public function all() : array
+    {
+
+        $settings = array();
+
+        foreach ( $this->settings_page as $key => $setting ) {
+
+                $_setting = $setting['value'];
+
+                if ( $_setting === "0" ) {
+                    $_setting = false;
+                }
+
+                if ( $_setting === "1" ) {
+                    $_setting = true;
+                }
+
+                $settings[$key] = $_setting;
+        }
+
+        return $settings;
+    }
+
+    /**
      * Check if the field exists in the custom settings page.
      * 
      * @return bool 

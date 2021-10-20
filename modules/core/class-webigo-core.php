@@ -40,25 +40,131 @@ class Webigo_Core extends Webigo_Module
 
 	public function add_style()
 	{
-		$style_data = array(
+		$core = array(
 			'module'    => $this->name,
 			'file_name' => 'core.css',
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style($style_data);
+		$this->style->register_public_style( $core );
+
+		$colors = array(
+			'module'    => $this->name,
+			'file_name' => CUSTOMER_NAME . '-colors.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $colors );
+
+		$fonts = array(
+			'module'    => $this->name,
+			'file_name' => CUSTOMER_NAME . '-fonts.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $fonts );
+
+		$buttons = array(
+			'module'    => $this->name,
+			'file_name' => CUSTOMER_NAME . '-buttons.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $buttons );
+
+		$hazbier = array(
+			'module'    => $this->name,
+			'file_name' => 'hazbier.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $hazbier );
+
+		$keyframes = array(
+			'module'    => $this->name,
+			'file_name' => 'keyframes.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $keyframes );
+
+		$overlay = array(
+			'module'    => $this->name,
+			'file_name' => 'overlay.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $overlay );
+
+		$pix = array(
+			'module'    => $this->name,
+			'file_name' => 'pix.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $pix );
+
+		$swiper = array(
+			'module'    => $this->name,
+			'file_name' => 'swiper.css',
+			'version'   => $this->style_version,
+			'disabled'  => true
+		);
+
+		$this->style->register_public_style( $swiper );
+
+		$woocommerce = array(
+			'module'    => $this->name,
+			'file_name' => 'woocommerce.css',
+			'version'   => $this->style_version,
+		);
+
+		$this->style->register_public_style( $woocommerce );
+		
 	}
 
 	public function add_script()
 	{
+		$state_manager = array(
+			'module'      => $this->name,
+			'file_name'   => 'state-manager.js',
+			'version'     => $this->js_version,
+			'disabled'    => true
+		);
+
+		$this->script->register_public_script( $state_manager );
+
 		$script_data = array(
 			'module'      => $this->name,
 			'file_name'   => 'core.js',
-			'in_footer'   => true,
 			'version'     => $this->js_version,
 		);
 
 		$this->script->register_public_script( $script_data );
+
+		$header = array(
+			'module'      => $this->name,
+			'file_name'   => 'header.js',
+			'version'     => $this->js_version,
+		);
+
+		$this->script->register_public_script( $header );
+
+		$buttons = array(
+			'module'      => $this->name,
+			'file_name'   => 'buttons.js',
+			'version'     => $this->js_version,
+		);
+
+		$this->script->register_public_script( $buttons );
+
+		$overlay = array(
+			'module'      => $this->name,
+			'file_name'   => 'overlay.js',
+			'version'     => $this->js_version,
+		);
+
+		$this->script->register_public_script( $overlay );
 	}
 
 	public function add_hooks()

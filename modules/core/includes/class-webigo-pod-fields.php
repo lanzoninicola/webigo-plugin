@@ -49,6 +49,10 @@ class Webigo_Pod_Fields {
             return;
         }
 
+        if ( $this->pod_object instanceof stdClass ) {
+            throw new Exception('==== Webigo_Pod_Fields Class - The pod "' .  $this->pod_name . '" does not exist ====');
+        }
+
         $_pod_fields = (array) $this->pod_object->fields;
 
         foreach ($_pod_fields as $pod_field => $pod_field_data) {

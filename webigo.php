@@ -51,6 +51,12 @@ define( 'WEBIGO_VERSION', '1.0.0' );
  */
 define( 'WEBIGO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
+/**
+ * Must be in lowercase
+ * 
+ * Used to load related modules, css, js files
+ */
+define( 'CUSTOMER_NAME', 'hazbier' );
 
 define( 'WEBIGO_SIMPLE_PRODUCT_CLASS_NAME' , 'WC_Product_Simple' );
 

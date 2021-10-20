@@ -1,0 +1,21 @@
+.wbg-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--hzbi-light-black);
+  z-index: 1000;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+}
+
+.wbg-overlay[data-visibility="visible"] {
+  animation: fadeIn 100ms ease-in;
+}
+
+.wbg-overlay[data-visibility="hidden"] {
+  display: none;
+}

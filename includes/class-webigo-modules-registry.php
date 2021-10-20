@@ -5,6 +5,22 @@ class Webigo_Modules_Registry
 {
 
     /**
+     * The name of customer for whom this plugin is developed.
+     * 
+     * @var string
+     */
+    private $customer;
+
+    /**
+     * List of customer modules
+     * 
+     * @var array
+     */
+    private $customer_modules = array(
+        'core' => 'Webigo_Core_Settings',
+    );
+
+    /**
      * 
      * @var Webigo_Module_Descriptor
      */
@@ -27,8 +43,11 @@ class Webigo_Modules_Registry
     protected $module_dependencies;
 
 
-    public function __construct()
+    public function __construct( string $customer )
     {
+        $this->customer = $customer;
+        $this->require_customer_modules_class();
+        $this->load_customer_modules();
     }
 
     public function init() {
@@ -43,12 +62,55 @@ class Webigo_Modules_Registry
 
     protected function load_dependencies()
     {
-
         /**
          * The class responsible for describing the plugin module
-         * 
          */
         require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-module-descriptor.php';
+    }
+
+
+    private function require_customer_modules_class()
+    {
+        $customer = $this->customer;
+        require_once plugin_dir_path(__DIR__) . "includes/customers/$customer/class-webigo-customer-modules.php";
+    }
+
+
+    private function load_customer_modules()
+    {
+        $modules = (array) Webigo_Customer_Modules::get();
+
+        foreach( $modules as $module_name => $settings_class ) {
+            $this->customer_modules[$module_name] = $settings_class;
+        }
+    }
+
+    /**
+     * @param bool Optional - If true, only the core module will be loaded
+     */
+    public function register_all( bool $emergency = false )
+    {
+
+        $customer_modules = $this->customer_modules;
+
+        if ( $emergency === true ) {
+            $customer_modules = array_filter( $this->customer_modules , function( $settings_class ) { 
+                return $settings_class === 'Webigo_Core_Settings';
+            });
+        }
+
+        foreach ( $customer_modules as $module_name => $settings_class ) {
+
+            require_once WEBIGO_PLUGIN_PATH . "/modules/$module_name/settings/class-webigo-$module_name-settings.php";
+
+            $this->register(
+                $settings_class::MODULE_NAME,
+                $settings_class::BOOTSTRAP_CLASS_NAME,
+                $settings_class::MODULE_FOLDER,
+                $settings_class::BOOTSTRAP_CLASS_FILENAME,
+            );
+
+        }
     }
 
 
@@ -60,7 +122,7 @@ class Webigo_Modules_Registry
      *  @param string folder_name          - Name of module folder
      *  @param string bootstrap_class_file - Name of class file
      */
-    public function register(string $name, string $class_name, string $folder_name, string $bootstrap_class_file)
+    private function register( string $name, string $class_name, string $folder_name, string $bootstrap_class_file )
     {
 
         $this->module_descriptor = new Webigo_Module_Descriptor(
@@ -70,7 +132,7 @@ class Webigo_Modules_Registry
             $bootstrap_class_file
         );
 
-        array_push($this->modules, $this->module_descriptor);
+        array_push( $this->modules, $this->module_descriptor );
     }
 
     public function unregister($name)

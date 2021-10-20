@@ -1,0 +1,77 @@
+.wbg-icon-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: var(--hzbi-lighter-green);
+  border-radius: 20px;
+  padding: 0.75rem;
+  min-width: 120px;
+}
+
+.wbg-icon-mini-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--hzbi-lighter-green);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  min-width: 90px;
+}
+
+.wbg-icon-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.wbg-icon-mini-card span:nth-child(1),
+.wbg-icon-card-content span:nth-child(1) {
+  font-size: 0.85rem;
+  color: var(--hzbi-black);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.wbg-icon-card-content span:nth-child(2) {
+  color: var(--hzbi-black);
+  font-size: 0.75rem;
+}
+
+.divider-wrapper {
+  padding: 0.5rem 3.5rem;
+}
+
+.divider.lightgreen {
+  border-top: 1px solid var(--hzbi-light-green);
+  width: 100%;
+  padding: 0 3rem;
+}
+
+header[data-action-state="fixed"] {
+  position: fixed !important;
+  top: 0;
+  transition: all 700ms ease-in;
+}
+
+header[data-action-state="idle"] {
+  position: relative !important;
+  top: unset;
+}
+
+header[data-action-state="fixed"] .wbg-header-nav {
+  padding: 0.75rem 0.25rem !important;
+  transition: all 200ms ease-in;
+}
+
+header[data-action-state="fixed"] .wbg-header-nav-icon i {
+  font-size: 1rem !important;
+  transition: all 200ms ease-in;
+}
+
+header[data-action-state="fixed"] .wbg-header-nav-label {
+  display: none;
+}
+
+header[data-action-state="idle"] .wbg-header-nav-label {
+  animation: fadeIn 300ms ease-in forwards;
+}

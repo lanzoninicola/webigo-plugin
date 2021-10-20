@@ -1,0 +1,25 @@
+.wcpix-p {
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding-top: 0.5rem;
+}
+
+.wcpix-button-copy-code {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: 0.75rem 2rem;
+  margin: 0.75rem 0;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  font-size: 0.85rem;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--hzbi-green) !important;
+  border: none;
+  color: var(--hzbi-white) !important;
+}

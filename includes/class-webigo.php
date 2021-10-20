@@ -29,6 +29,15 @@
  */
 class Webigo
 {
+
+
+	/**
+	 * The name of customer for whom the plugin is developed.
+	 * 
+	 * @var string 
+	 */
+	private $customer;
+
 	/**
 	 * The modules that's responsible for maintaining and registering all plugin modules.
 	 *
@@ -89,7 +98,10 @@ class Webigo
 		} else {
 			$this->plugin_name = 'webigo';
 		}
-		
+
+		if (defined('CUSTOMER_NAME')) {
+			$this->customer = CUSTOMER_NAME;
+		}
 		
 		$this->load_dependencies();
 		$this->set_locale();
@@ -100,7 +112,8 @@ class Webigo
 		$this->load_modules();
 		/**
 		 * Here the plugin manages also the actions hooks for the AJAX request, 
-		 * these requests are handled on ADMIN side, then this calls must be external of !is_admin() condition
+		 * these requests are handled on ADMIN side, 
+		 * then this calls must be external of !is_admin() condition
 		 */
 		$this->define_hooks();
 
@@ -109,13 +122,12 @@ class Webigo
 		 * //TODO: criar specific methods for admin
 		 */
 		if ( !is_admin() ) {
-			$this->define_styles();
-			$this->define_scripts();
 			$this->define_data_for_scripts();
 		}
 
-		
-		
+		$this->define_scripts();
+		$this->define_styles();
+
 	}
 
 	/**
@@ -162,151 +174,14 @@ class Webigo
 		 */
 		require_once plugin_dir_path(__DIR__) . 'includes/class-webigo-modules-registry.php';
 
-		$this->modules_registry = new Webigo_Modules_Registry();
+		$this->modules_registry = new Webigo_Modules_Registry( $this->customer );
 
 		$this->modules_registry->init();
 	}
 
 	private function add_modules()
 	{
-	
-		// TODO: adding conditionally load related to the page
-		/**
-		 * I cannot do here because the modules are loaded before
-		 * the conditional page function are executed.
-		 * 
-		 * I should move the js and css loading in a class that 
-		 * it will instantiate after
-		 */
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/core/settings/class-webigo-core-settings.php';
-		
-		$this->modules_registry->register(
-			Webigo_Core_Settings::MODULE_NAME,
-			Webigo_Core_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Core_Settings::MODULE_FOLDER,
-			Webigo_Core_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/notifications/settings/class-webigo-notifications-settings.php';
-		
-		$this->modules_registry->register(
-			Webigo_Notifications_Settings::MODULE_NAME,
-			Webigo_Notifications_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Notifications_Settings::MODULE_FOLDER,
-			Webigo_Notifications_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/settings/class-webigo-archive-product-settings.php';
-
-		$this->modules_registry->register(
-			Webigo_Archive_Product_Settings::MODULE_NAME,
-			Webigo_Archive_Product_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Archive_Product_Settings::MODULE_FOLDER,
-			Webigo_Archive_Product_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/settings/class-webigo-add-to-cart-settings.php';
-
-		$this->modules_registry->register(
-			Webigo_Add_To_Cart_Settings::MODULE_NAME,
-			Webigo_Add_To_Cart_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Add_To_Cart_Settings::MODULE_FOLDER,
-			Webigo_Add_To_Cart_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		$this->modules_registry->register(
-			'cart-bundle-products',
-			'Webigo_Cart_Bundle_Products',
-			'cart-bundle-products',
-			'class-webigo-cart-bundle-products.php'
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/settings/class-webigo-shipping-settings.php';
-
-		$this->modules_registry->register(
-			Webigo_Shipping_Settings::MODULE_NAME,
-			Webigo_Shipping_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Shipping_Settings::MODULE_FOLDER,
-			Webigo_Shipping_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		/*
-		$this->modules_registry->register(
-			'shipping-banner',
-			'Webigo_Shipping_Banner',
-			'shipping-banner',
-			'class-webigo-shipping-banner.php'
-		);
-		*/
-
-		/*
-		* Since the problem with the UPDATE CART
-		* https://forum.bricksbuilder.io/t/urgent-woocommerce-cart-after-update-the-cart-the-products-images-disappear/995
-		* I decided to use the cart widget of Bricks team to manage the cart
-		$this->modules_registry->register(
-			'cart-page',
-			'Webigo_Cart_Page',
-			'cart-page',
-			'class-webigo-cart-page.php'
-		);
-		 */
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/cart-widget/settings/class-webigo-cart-widget-settings.php';
-		 /**
-		  * Here the cupouns are not managed
-		  */
-		$this->modules_registry->register(
-			Webigo_Cart_Widget_Settings::MODULE_NAME,
-			Webigo_Cart_Widget_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Cart_Widget_Settings::MODULE_FOLDER,
-			Webigo_Cart_Widget_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		$this->modules_registry->register(
-			'checkout-pagseguro',
-			'Webigo_Checkout_Pagseguro',
-			'checkout-pagseguro',
-			'class-webigo-checkout-pagseguro.php'
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/checkout/settings/class-webigo-checkout-settings.php';
-
-		$this->modules_registry->register(
-			Webigo_Checkout_Settings::MODULE_NAME,
-			Webigo_Checkout_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Checkout_Settings::MODULE_FOLDER,
-			Webigo_Checkout_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/widgets/settings/class-webigo-widgets-settings.php';
-
-		$this->modules_registry->register(
-			Webigo_Widgets_Settings::MODULE_NAME,
-			Webigo_Widgets_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Widgets_Settings::MODULE_FOLDER,
-			Webigo_Widgets_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/myaccount/settings/class-webigo-myaccount-settings.php';
-
-		$this->modules_registry->register(
-			Webigo_Myaccount_Settings::MODULE_NAME,
-			Webigo_Myaccount_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Myaccount_Settings::MODULE_FOLDER,
-			Webigo_Myaccount_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-		require_once WEBIGO_PLUGIN_PATH . '/modules/orders/settings/class-webigo-orders-settings.php';
-
-		$this->modules_registry->register(
-			Webigo_Orders_Settings::MODULE_NAME,
-			Webigo_Orders_Settings::BOOTSTRAP_CLASS_NAME,
-			Webigo_Orders_Settings::MODULE_FOLDER,
-			Webigo_Orders_Settings::BOOTSTRAP_CLASS_FILENAME,
-		);
-
-	
+		$this->modules_registry->register_all();
 	}
 
 	// private function register_module_dependencies() {
@@ -331,30 +206,53 @@ class Webigo
 
 		$module_registered = $this->modules_registry->get_registered_modules();
 
-		foreach ($module_registered as $module_obj_instance) {
+		foreach ( $module_registered as $module_obj_instance ) {
 
-			$action_name   = $module_obj_instance->style->action_name();
 			$style_object  = $module_obj_instance->style;
-			$callback_name = $module_obj_instance->style->callback_name();
+			
+			// Registering the styles
+			$register_action_name    = $module_obj_instance->style->register_action_name();
+			$register_callbacks_name = $module_obj_instance->style->register_callbacks();
 
-			// TODO: if multiple styles is added the code breaks here
-			$this->loader->add_action($action_name, $style_object, $callback_name);
+			foreach( $register_callbacks_name as $callback ) {
+				$this->loader->add_action( $register_action_name, $style_object, $callback );	
+			}
+			
+			// Enqueue the style
+			$enqueue_action_name    = $module_obj_instance->style->enqueue_action_name();
+			$enqueue_callbacks_name = $module_obj_instance->style->enqueue_callbacks();
+
+			foreach( $enqueue_callbacks_name as $callback ) {
+				$this->loader->add_action( $enqueue_action_name, $style_object, $callback );	
+			}
 		}
 	}
 
 
 	private function define_scripts()
 	{
-
+		
 		$module_registered = $this->modules_registry->get_registered_modules();
 
-		foreach ($module_registered as $module_obj_instance) {
+		foreach ( $module_registered as $module_obj_instance ) {
+			
+			$script_object  = $module_obj_instance->script;
 
-			$action_name   = $module_obj_instance->script->action_name();
-			$style_object  = $module_obj_instance->script;
-			$callback_name = $module_obj_instance->script->callback_name();
+			// Registering the styles
+			$register_action_name    = $module_obj_instance->script->register_action_name();
+			$register_callbacks_name = $module_obj_instance->script->register_callbacks();
 
-			$this->loader->add_action($action_name, $style_object, $callback_name);
+			foreach( $register_callbacks_name as $callback ) {
+				$this->loader->add_action( $register_action_name, $script_object, $callback );	
+			}
+			
+			// Enqueue the style
+			$enqueue_action_name    = $module_obj_instance->script->enqueue_action_name();
+			$enqueue_callbacks_name = $module_obj_instance->script->enqueue_callbacks();
+
+			foreach( $enqueue_callbacks_name as $callback ) {
+				$this->loader->add_action( $enqueue_action_name, $script_object, $callback );	
+			}
 		}
 	}
 
