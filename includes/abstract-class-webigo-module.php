@@ -1,5 +1,6 @@
 <?php
 
+require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-conditionals.php';
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-style.php';
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-script.php';
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-hooks.php';

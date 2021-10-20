@@ -1,7 +1,9 @@
 <?php
 
+// TODO: need to create a separeted class for admin scripts
+
 /**
- * This class encapsulate the style of module and 
+ * This class encapsulate the script of module and 
  * it contains the callback function fired by the Wordpress hook
  * 
  * It is used in the Webigo class to load as param of loader->add_action
@@ -12,151 +14,87 @@ class Webigo_Module_Script
 {
 
     /**
-     * Contain each scripts added for the module
+     * The id of single css file
+     * 
+     * @var string
+     */
+    private $script_id;
+
+    /**
+     * Contain each script added for the module
      * 
      * @var array 
      */
-    private $scripts;
-
-
-    /**
-     * The name of module who instanciate this class, passed by 
-     * the register_public_style or register_admin_style methods
-     * 
-     * @var string
-     */
-    private $module_name;
-
-    
-    /**
-     * The name of folder that contains the style
-     * 
-     * @var string
-     */
-    private $module_folder;
+    private $scripts = array();
 
     /**
-     * The root path of css file
-     * 
-     * @var string
-     */
-    private $script_root_path;
-
-    /**
-     * The full path of css file
-     * 
-     * @var string
-     */
-    private $src;
-
-    /**
-     * The array of css dependencies
+     * Array of data to load the module script passed as input on module init
      * 
      * @var array
      */
-    private $dependencies;
-
-    /**
-     * The version of style
-     * 
-     * @var string
-     */
-    private $version;
-
-    /**
-     * Indicate if the script should be loaded in the footer
-     * 
-     * @var bool
-     */
-    private $in_footer;
+    private $script_data = array();
 
     /**
      * The name of Wordpress hook to be appended. It used in the plugin loader class in the Webigo class 
      * 
      * @var string
      */
-    private $action_name;
+    private $register_action_name = 'wp_enqueue_scripts';
 
+    
     /**
-     * The name of callback to be called when the hook is fired 
+     * The name of Wordpress hook to be appended. It used in the plugin loader class in the Webigo class 
      * 
      * @var string
      */
-    private $callback_name;
+    private $enqueue_action_name = 'wp_footer';
+
+    /**
+     * List of callbacks name used to register the script.
+     * Names are generated dinamically appending the ID of script
+     * 
+     * @var array
+     */
+    private $register_callbacks_name = [];
+
+    /**
+     * List of callbacks name used to enqueue the script
+     * Names are generated dinamically appending the ID of script
+     * 
+     * @var array
+     */
+    private $enqueue_callbacks_name = [];
+
 
     public function __construct()
     {
-
-        $this->callback_name = 'enqueue_script';
     }
 
-    // this method must be public to be called to plugin loader
-    public function action_name()
+    public function register_action_name()
     {
-
-        return $this->action_name;
+        return $this->register_action_name;
     }
 
-    // this method must be public to be called to plugin loader
-    public function callback_name()
+    public function enqueue_action_name()
     {
-
-        return $this->callback_name;
+        return $this->enqueue_action_name;
     }
 
+
+    public function register_callbacks() : array
+    {
+        return $this->register_callbacks_name;
+    }
+
+
+    public function enqueue_callbacks() : array
+    {
+        return $this->enqueue_callbacks_name;
+    }
+
+    
     /**
-     *  Populate the Webigo_Module_Script object with the public-facing style of module
-     *  
-     *  @return void
-     *  @param array $script_data
-     *       
-     *  $script_data = array(
-     *                    'module'        => string - the name of module who instanciate the class
-     *                    'file_name'  => string - the name of css file
-     *                    'dependencies'  => array  - Optional - array of css dependencies
-     *                    'version'       => string - Optional - version of css
-     *                    'in_footer'     => bool   - Option - Indicate if the script should be placed in the footer
-     *                 )
-     * 
-     */
-    public function register_public_script(array $script_data)
-    {
-
-        $this->action_name = 'wp_enqueue_scripts';
-        $this->init_module_info($script_data['module']);
-        $this->build_public_js_file_root_path();
-        $this->set_scripts_info($script_data);
-        $this->add();
-    }
-
-    /**
-     *  Populate the Webigo_Module_Script object with the public-facing style of module
-     *  
-     *  @return void
-     *  @param array $script_data
-     *       
-     *  $script_data = array(
-     *                    'module'        => string - the name of module who instanciate the class
-     *                    'file_name'  => string - the name of css file
-     *                    'dependencies'  => array  - Optional - array of css dependencies
-     *                    'version'       => string - Optional - version of css
-     *                    'in_footer'     => bool   - Option - Indicate if the script should be placed in the footer
-     *                 )
-     * 
-     */
-    public function register_admin_script(array $script_data)
-    {
-
-        $this->action_name = 'admin_enqueue_scripts';
-        $this->init_module_info($script_data['module']);
-        $this->build_admin_js_file_root_path();
-        $this->set_scripts_info($script_data);
-        $this->add();
-    }
-
-
-    /**
-     *  Internal utility function, set the internal object properties
+     *  Populate the Webigo_Module_Script object with the PUBLIC-FACING script of module
      *  
      *  @return void
      *  @param array $script_data
@@ -169,103 +107,162 @@ class Webigo_Module_Script
      *                 )
      * 
      */
-
-    private function set_scripts_info($script_data)
+    public function register_public_script( array $script_data )
     {
+        $this->script_data = $script_data;
 
-        // TODO: refactor building method for each value with single responsibility
-
-        $this->src            = $this->script_root_path . $script_data['file_name'];
-
-        $default_dependencies = array();
-        $dependencies         = isset($script_data['dependencies']) ? $script_data['dependencies'] : $default_dependencies;
-        $this->set_dependencies($dependencies);
-        
-        $default_version      = '1.0';
-        $this->version        = isset($script_data['version']) ? $script_data['version'] : $default_version;
-
-        $default_in_footer    = true;
-        $this->in_footer      = isset($script_data['in_footer']) ? $script_data['in_footer'] : $default_in_footer;
+        /**
+         *  Do not change the orders of these functions
+         */
+        $this->set_script_id();
+        $this->set_handle_name();
+        $this->set_script_src();
+        $this->set_dependencies();
+        $this->set_version();
+        $this->set_register_callbacks_function();
+        $this->set_inclusions();
+        $this->set_enqueue_callbacks_function();
     }
 
 
-    /**
-     * Internal utility function, it adds each script of module inside the scripts array
-     * 
-     */
-    private function add() {
-
-        $this->scripts[$this->module_name]                 = array();
-
-        $this->scripts[$this->module_name]['src']          = $this->src;
-        $this->scripts[$this->module_name]['dependencies'] = $this->dependencies;
-        $this->scripts[$this->module_name]['version']      = $this->version;
-        $this->scripts[$this->module_name]['in_footer']    = $this->in_footer;
-        
+    private function set_script_id()
+    {
+        $this->script_id = uniqid();
+        $this->scripts[$this->script_id] = array();
     }
 
-
-   /**
-     * Set the array of dependencies to pass to the wp_enqueue_style function
-     * 
-     * @param array of style dependencies
-     */
-    private function set_dependencies( array $dependencies ) {
-
-        if ( empty( $dependencies ) ) {
-
-            $this->dependencies = $dependencies;
-        }
-
-        if ( !empty( $dependencies ) ) {
-
-            $next_dependencies = array();
-
-            foreach ( $dependencies as $dependency ) {
-                array_push( $next_dependencies,  PLUGIN_NAME . '-' . $dependency );
-            }
-
-            $this->dependencies = $next_dependencies;
-        }
-    }
-
+     
     /**
      * Set the name of handle for the css.
      * The handle name is composed of the NAME_OF_PLUGIN + MODULE_NAME
      * 
      * @param string
      */
-    private function init_module_info(string $module) {
+    private function set_handle_name() {
+
+        if ( isset( $this->script_data['module'] ) === false ) {
+            throw 'Webigo_Module_Style - "module" key is required on array input';
+        }
+
+        $handle_name = PLUGIN_NAME . '-' . $this->script_data['module'] . '-' . $this->script_id;
+
+        $this->scripts[$this->script_id]['handle'] = $handle_name;
       
-        $this->module_name = PLUGIN_NAME . '-' . $module;
-      
-        $this->module_folder = $module;
-    }
-
-     /**
-     *  Internal utility function to build the full js path of public facing site
-     *  
-     *  @return void
-     */
-    public function build_public_js_file_root_path()
-    {
-
-        $path = plugin_dir_url(__DIR__) . 'modules/' . $this->module_folder . '/js/';
-
-        $this->script_root_path = $path;
     }
 
     /**
-     *  Internal utility function to build the full js path of admin side
+     *  Internal utility function to build the full css path for the public facing site
      *  
      *  @return void
      */
-    public function build_admin_js_file_root_path()
+    private function set_script_src()
+    {
+        if ( isset( $this->script_data['file_name'] ) === false ) {
+            throw 'Webigo_Module_Style - "file_name" key is required on array input';
+        }
+
+        $path = plugin_dir_url(__DIR__) . 'modules/' . $this->script_data['module'] . '/js/';
+
+        $this->scripts[$this->script_id]['src'] = $path . $this->script_data['file_name'];
+    }
+
+    /**
+     * Set the array of dependencies to pass to the wp_enqueue_script function
+     * 
+     * @param array of script dependencies
+     */
+    private function set_dependencies() {
+
+        $default_dependencies = array();
+
+        if ( isset( $this->script_data['dependecies'] )  === false ) {
+            $this->scripts[$this->script_id]['dependencies'] = $default_dependencies;
+            return;
+        }
+
+
+        if ( empty( $this->script_data['dependecies'] ) === false ) {
+
+            $dependencies = array();
+
+            foreach ( $this->script_data['dependecies'] as $dependency ) {
+                array_push( $dependencies,  PLUGIN_NAME . '-' . $dependency );
+            }
+
+            $this->scripts[$this->script_id]['dependencies'] = $dependencies;
+        }
+    }
+
+
+    private function set_version()
+    {
+        $default_version      = '1.0';
+
+        if ( isset( $this->script_data['version'] )  === false ) {
+            $this->scripts[$this->script_id]['version'] = $default_version;
+            return;
+        }
+
+        $this->scripts[$this->script_id]['version'] = $this->script_data['version'];
+    }
+
+
+    /**
+     * 
+     */
+    private function set_inclusions() : void
     {
 
-        $path = plugin_dir_url(__DIR__) . 'modules/' . $this->module_folder . '/admin/js/';
+        if ( isset( $this->script_data['includes'] ) === false ) {
+            $this->scripts[$this->script_id]['includes'] = array();
+            return;
+        }
 
-        $this->script_root_path = $path;
+        if ( $this->script_data['includes'] === null ) {
+            $this->scripts[$this->script_id]['includes'] = array();
+            return;
+        }
+
+        $this->scripts[$this->script_id]['includes'] = $this->script_data['includes'];
+    }
+
+
+    
+    public function set_register_callbacks_function()
+    {
+        foreach( array_keys( $this->scripts ) as $id ) {
+            array_push( $this->register_callbacks_name, "wp_register_script_$id");
+        }
+    }
+
+    public function set_enqueue_callbacks_function()
+    {
+        foreach( array_keys( $this->scripts ) as $id ) {
+            array_push( $this->enqueue_callbacks_name, "wp_enqueue_script_$id");
+        }
+    }
+
+    /**
+     * __call is a magic PHP function. It is triggered when invoking inaccessible methods in an object context.
+     * 
+     * This function is used to intercept the call to the register and enqueue functions (did in the webigo main class)
+     * and call the related methods with the ID of script
+     * 
+     */
+    public function __call( $function, $params ){
+
+        
+
+        if ( substr( $function, 0, 19 ) === 'wp_register_script_' ) {
+            $script_id = substr( $function, 19, 99 );
+            $this->register_script( $script_id );
+        }
+
+        if ( substr( $function, 0, 18 ) === 'wp_enqueue_script_' ) {
+            $script_id = substr( $function, 18, 99 );
+            $this->enqueue_script( $script_id );
+        }
+
     }
 
     /**
@@ -274,16 +271,67 @@ class Webigo_Module_Script
      *  
      *  @return void
      */
-    public function enqueue_script()
+    public function register_script( $script_id )
     {
 
-        // TODO: this not works with multiple stylesheet
-        // This method is added to the hook, each style might have each enqueue_style method
+        $handle       = $this->scripts[$script_id]['handle'];
+        $src          = $this->scripts[$script_id]['src'];
+        $dependencies = $this->scripts[$script_id]['dependencies'];
+        $version      = $this->scripts[$script_id]['version'];
+        $in_footer    = true;
 
-        foreach( $this->scripts as $module_name => $script_info ) {
-            
-            wp_enqueue_script($module_name, $script_info['src'], $script_info['dependencies'], $script_info['version'], $script_info['in_footer']);
+        wp_register_script( $handle, $src, $dependencies, $version, $in_footer );
+
+    }
+
+
+     /**
+     * Determine if a script should be enqueued depending on the condiationals functions
+     * 
+     * @var bool
+     */
+    private function should_enqueued( $script_id ) : bool
+    {
+
+        $this->scripts[$script_id]['should_enqueued'] = false;
+
+        $conditional_results = [];
+
+        foreach ( $this->scripts[$script_id]['includes'] as $conditional_fn_name ) {
+            $conditionals = new Webigo_Module_Conditionals();
+            $conditional_results[] = $conditionals->test( $conditional_fn_name );
         }
-       
+
+        /**
+        * if one of condition passed is true the script is enqueued
+        */
+        if ( count( array_filter( $conditional_results, function( $result ) {
+            return $result === true;
+        }) ) > 0 ) {
+            $this->scripts[$script_id]['should_enqueued'] = true;
+        }
+
+        /**
+         * If not is declared the script is enqueued
+         */
+        if ( count( $this->scripts[$script_id]['includes'] ) === 0 ) {
+            $this->scripts[$script_id]['should_enqueued'] = true;
+        }
+
+        return $this->scripts[$script_id]['should_enqueued'];
+    }
+
+    /**
+     * This is triggered whent the wp_footer action is fired.
+     * In that moment the Woocommerce and WordPress conditional tag 
+     * return the correct value and it can be possible test them
+     */
+    public function enqueue_script( $script_id )
+    {
+        $handle       = $this->scripts[$script_id]['handle'];
+
+        if ( $this->should_enqueued( $script_id ) === true ) {
+            wp_enqueue_script( $handle );
+        }
     }
 }
