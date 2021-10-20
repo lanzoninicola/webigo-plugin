@@ -1,0 +1,60 @@
+.wbg-add-to-cart-footer.large {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--hzbi-whitesmoke);
+  padding: 0.5rem 1rem;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  box-shadow: rgb(136 165 191 / 68%) 6px 2px 16px 0,
+    rgb(255 255 255 / 80%) -6px -2px 16px 0;
+}
+
+.wbg-add-to-cart-footer[data-visibility="hidden"].large {
+  animation: slideOutDown 700ms ease-in forwards;
+}
+
+.wbg-add-to-cart-footer[data-visibility="visible"].large {
+  animation: slideInUp 700ms ease-in forwards;
+}
+
+.wbg-bulk-add-to-cart {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+
+.wbg-add-to-cart-footer[data-action-state="idle"].large
+  .wbg-bulk-add-to-cart
+  span.wbg-button-label::after {
+  content: "ADICIONAR AO CARRINHO";
+}
+
+.wbg-add-to-cart-footer[data-action-state="pending"].large
+  .wbg-bulk-add-to-cart {
+  border: 2px solid var(--hzbi-green);
+  opacity: 0.5;
+}
+
+.wbg-add-to-cart-footer[data-action-state="pending"].large
+  .wbg-bulk-add-to-cart
+  span.wbg-button-label::after {
+  content: "ADICIONANDO...";
+}
+
+.wbg-add-to-cart-footer[data-action-state="completed"].large
+  .wbg-bulk-add-to-cart
+  span.wbg-button-label::after {
+  content: "ADICIONAR AO CARRINHO";
+}
+
+.wbg-show-cart {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+
+.wbg-show-cart[data-visibility="hidden"] {
+  display: none;
+}
