@@ -35,14 +35,14 @@ class Webigo_View_Product_Price {
 
         if ( $this->product->is_sale() ) {
             $output .= '<div class="wbg-product-full-price">';
-            $output .= '<span class="wbg-price-symbol">R$</span>';
+            $output .= '<span class="wbg-price-symbol wbg-full-price">R$</span>';
             $output .= '<span class="wbg-price wbg-full-price">' . esc_html( $this->product->price() ) . '</span>';
-            $output .= '<span> - </span>';
             $output .= '</div>';
+            $output .= '<span> - </span>';
         }
 
         $output .= '<div class="wbg-product-sale-price">';
-        $output .= '<span class="wbg-price-symbol">R$</span>';
+        $output .= '<span class="wbg-price-symbol wbg-final-price">R$</span>';
         $output .= '<span class="wbg-price wbg-final-price">' . esc_html( $this->product->final_price() ) . '</span>';
         $output .= '</div>';
 
@@ -58,7 +58,7 @@ class Webigo_View_Product_Price {
 
         if ( $this->product->is_sale() ) {
 
-            $discount_percentage = ( $this->product->final_price() / $this->product->price() ) * 100;
+            $discount_percentage = 100 - ( $this->product->final_price() / $this->product->price() ) * 100;
         
             $output .= '<div class="wbg-product-discount">';
 

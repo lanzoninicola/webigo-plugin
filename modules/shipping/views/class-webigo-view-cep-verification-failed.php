@@ -14,7 +14,7 @@ class Webigo_View_Cep_Verification_Failed {
 
             <?php self::content(); ?>
             
-            <?php self::button(); ?>
+            <?php Webigo_Gotostore_Button::render(); ?>
         </div>
 
 <?php
@@ -43,20 +43,4 @@ class Webigo_View_Cep_Verification_Failed {
             </div>
 <?php
     }
-
-
-    private static function button () {
-
-        $button_label = 'Seguir para á loja';
-
-        $button_options = array(
-            'button' => array(
-                'class'  => ['wbg-button-goto-store']
-            )
-        );
-
-        Webigo_View_Buttons::render( $button_label, 'primary', $button_options ); 
-
-    }
-
 }

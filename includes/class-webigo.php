@@ -106,12 +106,15 @@ class Webigo
 
 		/**
 		 * Styles and scripts are loaded only on front-end side
+		 * //TODO: criar specific methods for admin
 		 */
 		if ( !is_admin() ) {
 			$this->define_styles();
 			$this->define_scripts();
+			$this->define_data_for_scripts();
 		}
 
+		
 		
 	}
 
@@ -176,25 +179,40 @@ class Webigo
 		 * it will instantiate after
 		 */
 
+		require_once WEBIGO_PLUGIN_PATH . '/modules/core/settings/class-webigo-core-settings.php';
+		
 		$this->modules_registry->register(
-			'core',
-			'Webigo_Core',
-			'core',
-			'class-webigo-core.php'
+			Webigo_Core_Settings::MODULE_NAME,
+			Webigo_Core_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Core_Settings::MODULE_FOLDER,
+			Webigo_Core_Settings::BOOTSTRAP_CLASS_FILENAME,
 		);
 
+		require_once WEBIGO_PLUGIN_PATH . '/modules/notifications/settings/class-webigo-notifications-settings.php';
+		
 		$this->modules_registry->register(
-			'archive-product',
-			'Webigo_Archive_Product',
-			'archive-product',
-			'class-webigo-archive-product.php'
+			Webigo_Notifications_Settings::MODULE_NAME,
+			Webigo_Notifications_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Notifications_Settings::MODULE_FOLDER,
+			Webigo_Notifications_Settings::BOOTSTRAP_CLASS_FILENAME,
 		);
 
+		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/settings/class-webigo-archive-product-settings.php';
+
 		$this->modules_registry->register(
-			'add-to-cart',
-			'Webigo_Add_To_Cart',
-			'add-to-cart',
-			'class-webigo-add-to-cart.php'
+			Webigo_Archive_Product_Settings::MODULE_NAME,
+			Webigo_Archive_Product_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Archive_Product_Settings::MODULE_FOLDER,
+			Webigo_Archive_Product_Settings::BOOTSTRAP_CLASS_FILENAME,
+		);
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/add-to-cart/settings/class-webigo-add-to-cart-settings.php';
+
+		$this->modules_registry->register(
+			Webigo_Add_To_Cart_Settings::MODULE_NAME,
+			Webigo_Add_To_Cart_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Add_To_Cart_Settings::MODULE_FOLDER,
+			Webigo_Add_To_Cart_Settings::BOOTSTRAP_CLASS_FILENAME,
 		);
 
 		$this->modules_registry->register(
@@ -204,11 +222,13 @@ class Webigo
 			'class-webigo-cart-bundle-products.php'
 		);
 
+		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/settings/class-webigo-shipping-settings.php';
+
 		$this->modules_registry->register(
-			'shipping',
-			'Webigo_Shipping',
-			'shipping',
-			'class-webigo-shipping.php'
+			Webigo_Shipping_Settings::MODULE_NAME,
+			Webigo_Shipping_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Shipping_Settings::MODULE_FOLDER,
+			Webigo_Shipping_Settings::BOOTSTRAP_CLASS_FILENAME,
 		);
 
 		/*
@@ -232,14 +252,15 @@ class Webigo
 		);
 		 */
 
+		require_once WEBIGO_PLUGIN_PATH . '/modules/cart-widget/settings/class-webigo-cart-widget-settings.php';
 		 /**
 		  * Here the cupouns are not managed
 		  */
 		$this->modules_registry->register(
-			'cart-widget',
-			'Webigo_Cart_Widget',
-			'cart-widget',
-			'class-webigo-cart-widget.php'
+			Webigo_Cart_Widget_Settings::MODULE_NAME,
+			Webigo_Cart_Widget_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Cart_Widget_Settings::MODULE_FOLDER,
+			Webigo_Cart_Widget_Settings::BOOTSTRAP_CLASS_FILENAME,
 		);
 
 		$this->modules_registry->register(
@@ -249,18 +270,40 @@ class Webigo
 			'class-webigo-checkout-pagseguro.php'
 		);
 
-		$this->modules_registry->register(
-			'checkout',
-			'Webigo_Checkout',
-			'checkout',
-			'class-webigo-checkout.php'
-		);
+		require_once WEBIGO_PLUGIN_PATH . '/modules/checkout/settings/class-webigo-checkout-settings.php';
 
 		$this->modules_registry->register(
-			'login',
-			'Webigo_Login',
-			'login',
-			'class-webigo-login.php'
+			Webigo_Checkout_Settings::MODULE_NAME,
+			Webigo_Checkout_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Checkout_Settings::MODULE_FOLDER,
+			Webigo_Checkout_Settings::BOOTSTRAP_CLASS_FILENAME,
+		);
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/widgets/settings/class-webigo-widgets-settings.php';
+
+		$this->modules_registry->register(
+			Webigo_Widgets_Settings::MODULE_NAME,
+			Webigo_Widgets_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Widgets_Settings::MODULE_FOLDER,
+			Webigo_Widgets_Settings::BOOTSTRAP_CLASS_FILENAME,
+		);
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/myaccount/settings/class-webigo-myaccount-settings.php';
+
+		$this->modules_registry->register(
+			Webigo_Myaccount_Settings::MODULE_NAME,
+			Webigo_Myaccount_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Myaccount_Settings::MODULE_FOLDER,
+			Webigo_Myaccount_Settings::BOOTSTRAP_CLASS_FILENAME,
+		);
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/orders/settings/class-webigo-orders-settings.php';
+
+		$this->modules_registry->register(
+			Webigo_Orders_Settings::MODULE_NAME,
+			Webigo_Orders_Settings::BOOTSTRAP_CLASS_NAME,
+			Webigo_Orders_Settings::MODULE_FOLDER,
+			Webigo_Orders_Settings::BOOTSTRAP_CLASS_FILENAME,
 		);
 
 	
@@ -290,8 +333,8 @@ class Webigo
 
 		foreach ($module_registered as $module_obj_instance) {
 
-			$action_name = $module_obj_instance->style->action_name();
-			$style_object = $module_obj_instance->style;
+			$action_name   = $module_obj_instance->style->action_name();
+			$style_object  = $module_obj_instance->style;
 			$callback_name = $module_obj_instance->style->callback_name();
 
 			// TODO: if multiple styles is added the code breaks here
@@ -307,11 +350,33 @@ class Webigo
 
 		foreach ($module_registered as $module_obj_instance) {
 
-			$action_name = $module_obj_instance->script->action_name();
-			$style_object = $module_obj_instance->script;
+			$action_name   = $module_obj_instance->script->action_name();
+			$style_object  = $module_obj_instance->script;
 			$callback_name = $module_obj_instance->script->callback_name();
 
 			$this->loader->add_action($action_name, $style_object, $callback_name);
+		}
+	}
+
+	
+	/**
+	 * From the Wordpress documentation : 
+	 * IMPORTANT! wp_localize_script() MUST be called after the script has been registered using wp_register_script() or wp_enqueue_script().
+	 * 
+	 * So I must run this function hooked to wp_footer hook
+	 */
+	private function define_data_for_scripts()
+	{
+
+		$module_registered = $this->modules_registry->get_registered_modules();
+
+		foreach ( $module_registered as $module_obj_instance ) {
+
+			$action_name      = $module_obj_instance->localize_script->action_name();
+			$localize_object  = $module_obj_instance->localize_script;
+			$callback_name    = $module_obj_instance->localize_script->callback_name();
+			
+			$this->loader->add_action( $action_name, $localize_object, $callback_name );
 		}
 	}
 
@@ -349,6 +414,8 @@ class Webigo
 
 	}
 
+
+
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
@@ -374,7 +441,11 @@ class Webigo
 	public function run()
 	{
 		$this->loader->run();
+		
 	}
+
+
+
 
 	/**
 	 * The name of the plugin used to uniquely identify it within the context of

@@ -24,7 +24,7 @@ class Webigo_View_Archive_Product {
     public function render_archive_products( object $database ) : string
     {
 
-        $output = '<div class="wbg-archive-product-container">';
+        $output = '<div class="wbg-archive-product-container" data-visibility="visible">';
 
         $output .= '<ul class="wbg-archive-product-wrapper">';
 

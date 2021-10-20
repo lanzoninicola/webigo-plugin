@@ -14,6 +14,34 @@ class StateManager {
     }
   };
 
+  resetState = () => {
+    this.state = {};
+  };
+
+  resetItemState = (item) => {
+    if (typeof item === "undefined") {
+      throw "resetItemState expects a parameter";
+    }
+
+    if (typeof item !== "string") {
+      throw "resetItemState parameter must be a string";
+    }
+
+    if (this.state.hasOwnProperty(item)) {
+      if (typeof this.state[item] === "object") {
+        this.state[item] = {};
+      }
+
+      if (typeof this.state[item] === "string") {
+        this.state[item] = "";
+      }
+
+      if (typeof this.state[item] === "number") {
+        this.state[item] = 0;
+      }
+    }
+  };
+
   mergeKeys = (source = {}, target = {}) => {
     for (const [key, val] of Object.entries(source)) {
       if (typeof source === "object") {
@@ -48,14 +76,16 @@ class EventManager {
   type = {
     click: "click",
     input: "input",
+    change: "input",
   };
   eventCollection = {};
 
-  constructor(typeManager) {
+  constructor(typeManager, domManager) {
     this.typeManager = typeManager;
+    this._dom = domManager;
   }
 
-  listen = ({ ev, targetQuery = null, cb }) => {
+  initEventObject = ({ ev }) => {
     if (typeof ev === "undefined" && ev === null) {
       throw "EventManager.listen: eventName parameter is required";
     }
@@ -65,35 +95,98 @@ class EventManager {
     }
 
     this.eventCollection[ev.toString()] = {
-      cbFn: (args) => cb(args),
+      cb: false,
       targets: [],
-      data: {},
+      payload: {},
     };
-
-    if (typeof targetQuery !== "undefined" && targetQuery !== null) {
-      this.defineTarget({ ev, targetQuery });
-    }
   };
 
-  trigger = ({ ev, targetQuery = null, payload = null }) => {
+  listen = ({ ev, cb }) => {
+    this.initEventObject({ ev });
+
+    this.registerCallbacks({ ev, cb });
+  };
+
+  // listen = ({ ev, targetQuery = null, cb }) => {
+  //   this.initEventObject({ ev });
+
+  //   this.registerCallbacks({ ev, cb });
+
+  //   if (typeof targetQuery !== "undefined" && targetQuery !== null) {
+  //     this.defineTarget({ ev, targetQuery });
+  //   }
+  // };
+
+  trigger = ({ ev, payload = null }) => {
     if (!this.typeManager.istypeString(ev)) {
       throw "EventManager.trigger: eventName must be a string";
     }
 
-    if (!this.typeManager.istypeString(targetQuery)) {
-      throw "EventManager.trigger: targetQuery must be a string";
+    if (
+      typeof payload?.targetQuery !== "undefined" &&
+      payload?.targetQuery !== null
+    ) {
+      this.defineTarget({ ev, targetQuery: payload.targetQuery });
     }
 
-    const cbFn = this.eventCollection?.[ev.toString()]?.["cbFn"];
+    // if (
+    //   typeof payload?.targetQuery !== "undefined" &&
+    //   payload?.targetQuery !== null
+    // ) {
+    //   this.triggerEventTargetedDomElement({
+    //     ev,
+    //     targetQuery: payload.targetQuery,
+    //   });
+    // }
 
-    if (typeof targetQuery !== "undefined" && targetQuery !== null) {
-      this.defineTarget({ ev, targetQuery });
+    // if (typeof payload?.targetQuery === "undefined") {
+    //   this.fireCallbacks({ ev, payload });
+    // }
+
+    // this.fireCallbacks({ ev, payload });
+
+    const cbFn = this.eventCollection?.[ev.toString()]?.["cb"];
+
+    const eventPayload = this.eventCollection?.[ev.toString()]?.payload;
+
+    if (typeof cbFn === "function") {
+      if (typeof eventPayload?.targets !== "undefined") {
+        eventPayload.targets.forEach((domTarget) => {
+          cbFn({ domTarget, eventPayload });
+        });
+      } else {
+        cbFn(eventPayload);
+      }
     }
 
-    const targets = this.eventCollection?.[ev.toString()]?.targets;
-
-    targets?.forEach((target) => cbFn(target));
+    if (Array.isArray(cbFn)) {
+      cbFn.forEach((fn) => {
+        if (typeof eventPayload?.targets !== "undefined") {
+          eventPayload.targets.forEach((domTarget) => {
+            fn({ domTarget, eventPayload });
+          });
+        } else {
+          fn(eventPayload);
+        }
+      });
+    }
   };
+
+  // triggerEventTargetedDomElement = ({ ev, targetQuery = null }) => {
+  //   if (!this.typeManager.istypeString(targetQuery)) {
+  //     throw "EventManager.trigger: targetQuery must be a string";
+  //   }
+
+  //   this.defineTarget({ ev, targetQuery });
+
+  //   const targets = this.eventCollection?.[ev.toString()]?.targets;
+
+  //   if (targets.length > 0) {
+  //     targets?.forEach((target) => {
+  //       this.fireCallbacks({ ev, target });
+  //     });
+  //   }
+  // };
 
   defineTarget = ({ ev, targetQuery }) => {
     if (!this.typeManager.istypeString(ev)) {
@@ -108,9 +201,32 @@ class EventManager {
 
     const elementsCollection = document.querySelectorAll(targetQuery);
 
+    // elementsCollection?.forEach((el) => {
+    //   this.eventCollection?.[ev.toString()]?.targets?.push(el);
+    // });
+
+    let eventPayload = this.eventCollection?.[ev.toString()]?.payload;
+    eventPayload.targets = [];
+
     elementsCollection?.forEach((el) => {
-      this.eventCollection?.[ev.toString()]?.targets?.push(el);
+      eventPayload.targets.push(el);
     });
+  };
+
+  registerCallbacks = ({ ev, cb }) => {
+    if (typeof cb == "function") {
+      this.eventCollection[ev.toString()]["cb"] = (args) => cb(args);
+    }
+
+    if (Array.isArray(cb)) {
+      let callbacks = [];
+
+      cb.forEach((item) => {
+        callbacks.push(item);
+      });
+
+      this.eventCollection[ev.toString()]["cb"] = callbacks;
+    }
   };
 
   bulkAttachEvent = ({ elements, el, ev, cb }) => {
@@ -120,9 +236,13 @@ class EventManager {
       return;
     }
 
-    Object.keys(_el).forEach((idx) => {
-      _el[parseInt(idx, 10)].addEventListener(ev, cb);
-    });
+    if (this._dom.isMultipleElements(_el)) {
+      Object.keys(_el).forEach((idx) => {
+        _el[parseInt(idx, 10)].addEventListener(ev, cb);
+      });
+    } else {
+      this.attachEvent({ el: _el, ev, cb });
+    }
   };
 
   attachEvent = ({ el, ev, cb }) => {
@@ -130,7 +250,30 @@ class EventManager {
       return;
     }
 
-    el.addEventListener(ev, cb);
+    if (this._dom.isSingleElement(el)) {
+      el.addEventListener(ev, cb);
+    }
+  };
+
+  scrollStop = ({ cb, refresh = 66 }) => {
+    // Make sure a valid callback was provided
+    if (!cb || typeof cb !== "function") return;
+
+    // Setup scrolling variable
+    let isScrolling;
+
+    // Listen for scroll events
+    window.addEventListener(
+      "scroll",
+      function (e) {
+        // Clear our timeout throughout the scroll
+        window.clearTimeout(isScrolling);
+
+        // Set a timeout to run after scrolling ends
+        isScrolling = setTimeout(cb, refresh);
+      },
+      false
+    );
   };
 }
 
@@ -163,7 +306,7 @@ class SessionManager {
       throw "Error to get the browser sesssion for the key selected. The key parameter is undefined";
     }
 
-    sessionStorage.getItem(key);
+    return sessionStorage.getItem(key);
   };
   remove = (key) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
@@ -241,12 +384,34 @@ class DomManager {
     productPrice: "data-product-price",
     categoryId: "data-category-id",
     dataVisibility: "data-visibility",
+    dataActionState: "data-action-state",
   };
 
   visibilityState = {
     visible: "visible",
     hidden: "hidden",
     clamped: "clamped",
+  };
+
+  elType = (el) => {
+    if (typeof el === "undefined" || el === null) {
+      throw "DomManage elType: parameter must be a string";
+    }
+    return Object.prototype.toString.call(el);
+  };
+
+  isMultipleElements = (el) => {
+    const elType = this.elType(el);
+
+    return elType === "[object HTMLCollection]" ||
+      elType === "[object NodeList]"
+      ? true
+      : false;
+  };
+
+  isSingleElement = (el) => {
+    const elType = this.elType(el);
+    return elType.includes("Element");
   };
 
   el = (query) => {
@@ -269,6 +434,7 @@ class DomManager {
       catId: el?.getAttribute(this.domAttributes.categoryId),
       price: el?.getAttribute(this.domAttributes.productPrice),
       visibility: el?.getAttribute(this.domAttributes.dataVisibility),
+      actionState: el?.getAttribute(this.domAttributes.dataActionState),
     };
   };
 
@@ -284,15 +450,30 @@ class DomManager {
     }
   };
 
+  scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
+
   show = (el) => {
     if (!el) {
       return;
     }
 
-    el.setAttribute(
-      this.domAttributes.dataVisibility,
-      this.visibilityState.visible
-    );
+    if (this.isSingleElement(el)) {
+      el.setAttribute(
+        this.domAttributes.dataVisibility,
+        this.visibilityState.visible
+      );
+    }
+
+    if (this.isMultipleElements(el)) {
+      Object.keys(el).forEach((idx) => {
+        el[parseInt(idx, 10)].setAttribute(
+          this.domAttributes.dataVisibility,
+          this.visibilityState.visible
+        );
+      });
+    }
   };
 
   hide = (el) => {
@@ -300,10 +481,40 @@ class DomManager {
       return;
     }
 
-    el.setAttribute(
-      this.domAttributes.dataVisibility,
-      this.visibilityState.hidden
-    );
+    if (this.isSingleElement(el)) {
+      el.setAttribute(
+        this.domAttributes.dataVisibility,
+        this.visibilityState.hidden
+      );
+    }
+
+    if (this.isMultipleElements(el)) {
+      Object.keys(el).forEach((idx) => {
+        el[parseInt(idx, 10)].setAttribute(
+          this.domAttributes.dataVisibility,
+          this.visibilityState.hidden
+        );
+      });
+    }
+  };
+
+  exists = (el) => {
+    return this.isMultipleElements(el) || this.isSingleElement(el);
+  };
+
+  toggleVisibility = (el) => {
+    if (!el) {
+      return;
+    }
+
+    if (this.shouldVisible(el)) {
+      this.hide(el);
+      return;
+    }
+    if (this.shouldHidden(el)) {
+      this.show(el);
+      return;
+    }
   };
 
   clamp = (el) => {
@@ -373,7 +584,7 @@ class HttpRequestData {
 const webigoHelper = {
   typeManager: new TypeManager(),
   stateManager: new StateManager(),
-  eventManager: new EventManager(new TypeManager()),
+  eventManager: new EventManager(new TypeManager(), new DomManager()),
   sessionManager: new SessionManager(new TypeManager()),
   cookieManager: new CookieManager(new TypeManager()),
   domManager: new DomManager(),
@@ -383,6 +594,7 @@ const webigoHelper = {
   },
 };
 
+/** Button Animation */
 (function (webigoHelper, d) {
   const _event = webigoHelper?.eventManager;
 
@@ -409,3 +621,99 @@ const webigoHelper = {
     }, 700);
   }
 })(webigoHelper, document);
+
+/** Overlay */
+(function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
+  const _dom = webigoHelper?.domManager;
+
+  const overlay = _dom.el(".wbg-overlay");
+
+  init();
+
+  function init() {
+    if (overlay) {
+      overlay.addEventListener("click", toggleOverlay);
+    }
+  }
+
+  function toggleOverlay() {
+    const { visibility } = _dom.getElementAttribute(overlay);
+
+    if (visibility === "hidden") {
+      _dom.show(overlay);
+    }
+
+    if (visibility === "visible") {
+      _dom.hide(overlay);
+    }
+  }
+})(webigoHelper, document);
+
+/** Collapse Header On Scroll */
+
+(function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
+  const _dom = webigoHelper?.domManager;
+
+  const header = _dom.el("header#bricks-header");
+  const headerLabels = _dom.el(".wbg-header-nav-label");
+
+  init();
+
+  function init() {
+    if (header) {
+      header.setAttribute("data-action-state", "idle");
+    }
+
+    if (headerLabels) {
+      headerLabels.forEach((item) =>
+        item.setAttribute("data-visibility", "visible")
+      );
+    }
+
+    window.onscroll = function () {
+      scrollFunction();
+    };
+  }
+
+  function scrollFunction() {
+    if (d.body.scrollTop > 50 || d.documentElement.scrollTop > 50) {
+      fixedHeader();
+    } else {
+      releaseHeader();
+    }
+  }
+
+  function fixedHeader() {
+    if (header) {
+      header.setAttribute("data-action-state", "fixed");
+    }
+  }
+
+  function releaseHeader() {
+    if (header) {
+      header.setAttribute("data-action-state", "idle");
+    }
+  }
+})(webigoHelper, document);
+
+/** Trick to viewport units on mobile */
+
+(function () {
+  init();
+  let vh = window.innerHeight * 0.01;
+  setViewportHeight();
+
+  function init() {
+    // We listen to the resize event
+    window.addEventListener("resize", () => {
+      // We execute the same script as before
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
+  }
+
+  function setViewportHeight() {
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
+})();

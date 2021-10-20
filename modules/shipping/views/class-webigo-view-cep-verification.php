@@ -25,13 +25,14 @@ class Webigo_View_Cep_Verification {
     
     public function render( ) 
     {
+        $cep_verification_form = new Webigo_View_Cep_Verification_Form();
         ?>
 
-        <div class="wbg-cep-verification-container" data-visibility="visible">
+        <div class="wbg-cep-verification-container" data-visibility="hidden">
 
             <div class="wbg-cep-verification-wrapper">
 
-                <?php Webigo_View_Cep_Verification_Form::render() ?>
+                <?php $cep_verification_form->render() ?>
 
                 <?php Webigo_View_Cep_Verification_Success::render(); ?>
 

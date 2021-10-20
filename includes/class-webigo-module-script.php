@@ -281,7 +281,7 @@ class Webigo_Module_Script
         // This method is added to the hook, each style might have each enqueue_style method
 
         foreach( $this->scripts as $module_name => $script_info ) {
-
+            
             wp_enqueue_script($module_name, $script_info['src'], $script_info['dependencies'], $script_info['version'], $script_info['in_footer']);
         }
        

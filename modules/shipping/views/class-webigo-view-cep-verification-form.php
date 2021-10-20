@@ -4,31 +4,65 @@
 
 class Webigo_View_Cep_Verification_Form {
 
-    
-    public static function render() {
+
+    /**
+     * The Customer Shipping Data object
+     * 
+     * @var Webigo_Customer_Shipping_Data
+     */
+    private $customer_shipping_data;
+
+    /**
+     * Default data for the module
+     * 
+     */
+    private $default = array(
+            'country_code'  => Webigo_Shipping_Settings::DEFAULT_COUNTRY_CODE,
+            'state_code'    => Webigo_Shipping_Settings::DEFAULT_STATE_CODE,
+    );
+
+    /**
+     * The customer postcode
+     * 
+     * @var string
+     */
+    private $customer_postcode;
+
+    public function __construct()
+    {
+
+        $this->customer_shipping_data = new Webigo_Customer_Shipping_Data();
+        $this->customer_postcode = $this->customer_shipping_data->postcode();
+
+        // var_dump($this->customer_postcode);
+    }
+
+
+    public function render() {
     ?>
 
         <div class="wbg-cep-form-container" data-visibility="hidden">
 
-            <?php self::delivery_image() ?>
+            <?php $this->delivery_image() ?>
 
-            <?php self::intro() ?>
+            <?php $this->intro() ?>
 
             <div class="wbg-cep-form-wrapper">
 
-                <?php self::state_selection(); ?>    
+                <?php $this->state_selection(); ?>    
                 
-                <?php self::input_cep(); ?>
+                <?php $this->input_cep(); ?>
 
-                <?php self::render_notification_failed(); ?>
+                <?php $this->render_notification(); ?>
 
-                <?php self::busca_cep(); ?>
+                <!-- TODO: temporary disable. It should encapsulate in a windows to avoid the user exit from the app   -->
+                <!-- <?php $this->busca_cep(); ?> -->
 
-                <?php self::nonce_field(); ?>
+                <?php $this->nonce_field(); ?>
                     
-                <?php self::verify_cep_button(); ?>
+                <?php $this->verify_cep_button(); ?>
 
-                <?php self::voltar_button(); ?>
+                <?php $this->voltar_button(); ?>
 
             </div>
 
@@ -37,9 +71,9 @@ class Webigo_View_Cep_Verification_Form {
 <?php
     }
 
-    private static function delivery_image() {
+    private function delivery_image() {
 
-        $delivery_img_data = Webigo_Shipping_Settings::shipping_view_options( 'delivery' );
+        $delivery_img_data = Webigo_Shipping_Settings::images( 'delivery' );
 
         $classes = 'wbg-cep-form-' . $delivery_img_data['name'];
     ?>
@@ -52,7 +86,7 @@ class Webigo_View_Cep_Verification_Form {
     <?php
     }
 
-    private static function intro() 
+    private function intro() 
     {
         ?>
             <div class="wbg-cep-form-intro">
@@ -65,7 +99,7 @@ class Webigo_View_Cep_Verification_Form {
 <?php
     }
 
-    private static function state_selection() {
+    private function state_selection() {
         ?>
 
             <div class="wbg-cep-form-wrapper-states" data-visibility="visible">
@@ -73,13 +107,16 @@ class Webigo_View_Cep_Verification_Form {
                 <select name="wbg-cep-form-states" id="wbg-cep-form-select-states" class="wbg-cep-form-states">
                     <?php
 
-                    $default_country_code = Webigo_Shipping_Settings::DEFAULT_COUNTRY_CODE;
-                    $default_state_code = Webigo_Shipping_Settings::DEFAULT_STATE_CODE;
+                    $states_code = WC()->countries->states[$this->default['country_code']];
 
-                    $states_code = WC()->countries->states[$default_country_code];
+                    $selected_state = $this->default['state_code'];
+
+                    if ( $this->customer_shipping_data->state_code() !== '' ) {
+                        $selected_state = $this->customer_shipping_data->state_code();
+                    }
 
                     foreach ($states_code as $key => $value) {
-                        $selected = $key === $default_state_code ? 'selected' : '';
+                        $selected = $key === $selected_state ? 'selected' : '';
                         $optionOutput = "<option value=$key $selected>$value</option>";
                         echo $optionOutput;
                     }
@@ -92,17 +129,34 @@ class Webigo_View_Cep_Verification_Form {
         <?php
     }
 
-    private static function input_cep() 
+    private function is_customer_cep_loaded() {
+        if ( isset( $this->customer_postcode ) && ( $this->customer_postcode ) !== '' ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function input_cep() 
     {
 
         $label = "CEP (ex: 85503328)";
         $placeholder = "Preencha o campo com seu CEP";
 
+        
+        $_customer_postcode     = '';
+        
+        if ( $this->is_customer_cep_loaded() ) {
+            $_customer_postcode = str_replace( "-", "", $this->customer_postcode );
+        }
+        
+
         // TODO: input inputmode="numeric" not supported by Firefox23+ Safari
         ?>
             <div class="wbg-cep-form-input-cep-wrapper">
                 <label for="wbg-input-cep" class="small-text"><?php echo esc_attr( $label ) ?></label>
-                <input type="number" name="wbg-input-cep" id="wbg-cep-form-input-cep" placeholder="<?php echo esc_attr( $placeholder ) ?>" maxlength="8">
+                <input type="number" name="wbg-input-cep" id="wbg-cep-form-input-cep" placeholder="<?php echo esc_attr( $placeholder ) ?>" value="<?php echo esc_attr( $_customer_postcode ) ?>" maxlength="8">
+                <?php $this->is_customer_cep_loaded() ? $this->render_notification('Seu CEP foi carregado automaticamente') : '' ?>
             </div>
 
 <?php
@@ -110,7 +164,7 @@ class Webigo_View_Cep_Verification_Form {
     }
 
 
-    private static function busca_cep()
+    private function busca_cep()
     {
         $correios_url = Webigo_Shipping_Settings::CORREIOS_URL_BUSCA_CEP;
         ?>
@@ -119,26 +173,31 @@ class Webigo_View_Cep_Verification_Form {
 <?php
     }
 
-    private static function nonce_field() {
+    private function nonce_field() {
 
         $action_name = Webigo_Shipping_Settings::AJAX_CEP_VERIFICATION_ACTION_NAME;
 
         return wp_nonce_field( $action_name , 'webigo_cep_verification_nonce' );
     }
 
-    private static function verify_cep_button() {
+    private function verify_cep_button() {
+
+        // TODO: managing the notification of http response with the notification module inside the AJAX class
+        $button_visibility = $this->is_customer_cep_loaded() ? 'visible' : 'hidden';
 
         $button_options = array(
             'button' => array(
                 'class' => ['wbg-button-cep-form-verifycep'],
+                'attributes' => array(
+                    'data-visibility' => $button_visibility,
+                )
             )
         );
 
         Webigo_View_Buttons::render( '', 'primary', $button_options );
-
     }
 
-    private static function voltar_button() {
+    private function voltar_button() {
 
         $button_options = array(
             'button' => array(
@@ -150,8 +209,24 @@ class Webigo_View_Cep_Verification_Form {
 
     }
 
-    private static function render_notification_failed()
+    private function render_notification( $message = null ) 
     {
+        // TODO: managing with the notification module
+        $_message = $message !== null ? $message : '';
+        ?>
+
+        <div class="wbg-cep-form-notification-container">
+            <div class="wbg-cep-form-notification-notice">
+                <span class="text-small"><?php echo esc_html( $_message ) ?></span>
+            </div>
+            <?php $this->render_failed_notification(); ?>
+        </div>
+<?php
+    }
+
+    private function render_failed_notification()
+    {
+        // TODO: managing with the notification module
         $message = 'Occoreu um erro! Ritente por favor';
         ?>
 

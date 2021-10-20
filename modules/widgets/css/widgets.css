@@ -1,0 +1,33 @@
+.wbg-store-address-banner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem 1rem;
+}
+
+.wbg-store-address-banner-container .wbg-icon-card {
+  flex-direction: row;
+}
+.wbg-store-address-banner-container .wbg-icon-mini-card {
+  width: 100%;
+}
+
+.wbg-store-address-banner-container .wbg-icon-card-content span:nth-child(2) {
+  font-size: 0.85rem;
+}
+
+.wbg-store-address {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--hzbi-white);
+  text-transform: uppercase;
+  width: 60%;
+}
+
+.wbg-store-address-banner-content {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}

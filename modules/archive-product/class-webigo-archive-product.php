@@ -8,12 +8,19 @@ require_once WEBIGO_PLUGIN_PATH . 'includes/abstract-class-webigo-module.php';
 class Webigo_Archive_Product extends Webigo_Module
 {
 
-	protected $name = 'archive-product';
+	protected $name;
 
-	private $style_version = '1.0';
+	private $style_version;
+
+	private $js_version;
 
 	public function __construct()
 	{
+		
+		$this->name          = Webigo_Archive_Product_Settings::MODULE_NAME;
+		$this->style_version = Webigo_Archive_Product_Settings::CSS_VERSION;
+		$this->js_version    = Webigo_Archive_Product_Settings::JS_VERSION;
+		
 		parent::__construct();
 
 		$this->load_dependencies();
@@ -23,9 +30,9 @@ class Webigo_Archive_Product extends Webigo_Module
 	public function load_dependencies()
 	{
 
-		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-archive-product-settings.php';
-
 		require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/includes/class-webigo-woo-archive-product-shortcode.php';
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/core/views/class-webigo-view-buttons.php';
 		
 	}
 
@@ -39,9 +46,10 @@ class Webigo_Archive_Product extends Webigo_Module
 	public function add_style()
 	{
 		$style_data = array(
-			'module'      => $this->name,
-			'file_name'   => 'archive-product.css',
-			'dependencies' => array('core')
+			'module'       => $this->name,
+			'file_name'    => 'archive-product.css',
+			'dependencies' => array('core'),
+			'version'      => $this->style_version
 		);
 
 		$this->style->register_public_style($style_data);
@@ -62,6 +70,7 @@ class Webigo_Archive_Product extends Webigo_Module
 			'module'      => $this->name,
 			'file_name'   => 'archive-product.js',
 			'dependencies' => array('core', 'add-to-cart'),
+			'version'      => $this->js_version,
 			'in_footer'   => true
 		);
 
@@ -70,6 +79,15 @@ class Webigo_Archive_Product extends Webigo_Module
 
 	public function add_hooks()
 	{
+
+		// $view_notifications = new Webigo_View_Notifications();
+
+		// $hook_head = array(
+		// 	'hook'     => 'wp_head',
+		// 	'callback' => array( $view_notifications, 'render' )
+		// );
+
+		// $this->hooks->register($hook_head);
 	}
 
 	private function add_shortcodes()

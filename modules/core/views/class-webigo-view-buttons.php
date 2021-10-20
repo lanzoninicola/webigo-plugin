@@ -78,7 +78,7 @@ class Webigo_View_Buttons {
 
 
 ?>
-        <div class="wbg-button wbg-<?php echo esc_attr( $type ); ?>-button <?php echo esc_attr( $button_classes ); ?>" data-visibility="visible" data-action-state="idle">
+        <div class="wbg-button wbg-<?php echo esc_attr( $type ); ?>-button <?php echo esc_attr( $button_classes ); ?>" <?php echo esc_attr( $button_attributes ); ?> data-action-state="idle">
             <span class="wbg-button-label"><?php echo esc_html( trim( $label ) ); ?></span>
         </div>
 

@@ -1,0 +1,31 @@
+.webigo-menu-target-roles p {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.webigo-menu-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: 90%;
+  margin-top: 1rem;
+}
+
+.webigo-menu-item {
+  width: 33%;
+  padding: 1.15rem 1rem;
+}
+
+.webigo-menu-item[data-menu-hidden="1"] {
+  color: red;
+}
+
+.webigo-menu-item[data-menu-hidden="0"] {
+  color: yellowgreen;
+}
+
+.webigo-menu-item p {
+  line-height: 1;
+  margin: 0.15rem;
+  text-transform: lowercase;
+  font-family: "Courier New";
+}

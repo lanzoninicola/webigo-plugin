@@ -59,7 +59,7 @@ class Webigo_Woo_Ajax_Add_To_Cart
      *     
      * @return void
      */
-    public function ajax_add_to_cart(): void
+    public function handle_ajax_request(): void
     {
 
         $this->request->sanitize_input();

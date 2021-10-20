@@ -111,8 +111,11 @@ class Webigo_Pod_Custom_Settings_Page extends Webigo_Pod_Fields {
     public function value_of( string $field_name ) : string 
     {
 
-        return $this->settings_page[$field_name]['value'];
+        if ( $this->is_field_exists( $field_name ) ) {
+            return $this->settings_page[$field_name]['value'];
+        }
 
+        return '';
     }
 
 }

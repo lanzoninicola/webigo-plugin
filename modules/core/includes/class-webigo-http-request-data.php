@@ -34,8 +34,9 @@ class Webigo_Http_Request_Data implements IWebigo_Http_Request_Data {
      * 
      * @param string $http_method
      * @param array  $data_filter_settings
+     * @param bool   $test  Optional - TODO: if true it disables the sanitization phase (for try purpose)
      */
-    public function __construct( string $http_method = 'post', array $data_filter_settings ) 
+    public function __construct( string $http_method = 'post', array $data_filter_settings, bool $test = false ) 
     {
         $this->http_method = $this->trimmer( $http_method );
         $this->data_filter_settings = $data_filter_settings;
@@ -64,7 +65,7 @@ class Webigo_Http_Request_Data implements IWebigo_Http_Request_Data {
     }
     
     /**
-     * Data sent are sanitized and saved inside the object ($this->post_data_sanitized)
+     * Data sent are sanitized and saved inside the object ($this->data_sanitized)
      * 
      * @return void
      */
@@ -83,8 +84,8 @@ class Webigo_Http_Request_Data implements IWebigo_Http_Request_Data {
 
         $post_data_trimmed = array_filter( $raw_request_data, array( $this, 'trimmer' ) );
 
+        // TODO: Test if JSON data sent are filtered
         $this->data_sanitized = filter_var_array( $post_data_trimmed, $this->data_filter_settings );
-
     }
 
     /**

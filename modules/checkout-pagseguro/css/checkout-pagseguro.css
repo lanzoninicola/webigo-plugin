@@ -46,6 +46,7 @@
   font-weight: 600;
   -webkit-border-radius: unset;
   border-radius: unset;
+  font-size: 1rem;
 }
 
 .woocommerce-checkout .woocommerce fieldset#pagseguro-payment-form p input {

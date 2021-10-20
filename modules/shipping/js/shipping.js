@@ -1,6 +1,4 @@
 (function (webigoHelper, d) {
-  const setState = webigoHelper?.stateManager?.setState;
-  const state = { ...webigoHelper?.stateManager?.state };
   const _event = webigoHelper?.eventManager;
   const _dom = webigoHelper?.domManager;
   const _request = webigoHelper?.httpRequestManager;
@@ -10,8 +8,20 @@
     ".wbg-shipping-options-container"
   )[0];
 
-  const gotoStoreBtn = d.querySelectorAll(".wbg-button-goto-store");
+  const inlineHomeNotification = d.querySelectorAll(
+    ".wbg-shipping-inline-notifications"
+  )[0];
 
+  const shippingOptionDeliveryBtn = d.querySelectorAll(
+    ".wbg-shipping-option.delivery"
+  )[0];
+  const shippingOptionGotostoreBtn = d.querySelectorAll(
+    ".wbg-shipping-option.pickupstore"
+  )[0];
+
+  const cepVerificationContainer = d.querySelectorAll(
+    ".wbg-cep-verification-container"
+  )[0];
   const cepFormContainer = d.querySelectorAll(".wbg-cep-form-container")[0];
   const cepFormStateSelected = d.getElementById("wbg-cep-form-select-states");
   const cepFormCepInput = d.getElementById("wbg-cep-form-input-cep");
@@ -34,43 +44,27 @@
   init();
 
   function init() {
-    initShippingOptions();
-
-    initCepForm();
-  }
-
-  function initShippingOptions() {
-    const shippingOptionDeliveryBtn = d.querySelectorAll(
-      ".wbg-shipping-option.delivery"
-    )[0];
-    const shippingOptionGotostoreBtn = d.querySelectorAll(
-      ".wbg-shipping-option.retirar_na_loja"
-    )[0];
-
     resetShippingMethodSession();
 
-    _event.attachEvent({
-      el: shippingOptionDeliveryBtn,
-      ev: _event.type.click,
-      cb: showCepVerificationForm,
-    });
+    const userAction = getUserAction();
 
-    _event.attachEvent({
-      el: shippingOptionGotostoreBtn,
-      ev: _event.type.click,
-      cb: gotoStore,
-    });
+    initCepForm();
 
-    _event.bulkAttachEvent({
-      el: gotoStoreBtn,
-      ev: _event.type.click,
-      cb: gotoStore,
-    });
+    if (typeof userAction !== "undefined" || userAction !== null) {
+      if (userAction === "delivery") {
+        handleGotoCepVerification();
+      }
+    }
+  }
+
+  function getUserAction() {
+    const url_string = window.location.href;
+    const url = new URL(url_string);
+
+    return url.searchParams.get("shipping_method");
   }
 
   function initCepForm() {
-    _dom.hide(cepFormVerifyBtn);
-
     _event.attachEvent({
       el: cepFormCepInput,
       ev: _event.type.input,
@@ -96,24 +90,45 @@
     }
 
     if (
-      shippingOptionsContainer.getAttribute("data-visibility") === "visible"
+      _dom.shouldVisible(shippingOptionsContainer)
+      // shippingOptionsContainer.getAttribute("data-visibility") === "visible"
     ) {
-      _session.remove("wbg-shipping-method");
+      _session.set("wbg-shipping-method", {});
     }
   }
 
-  function showCepVerificationForm() {
-    _dom.hide(shippingOptionsContainer);
-    _dom.show(cepFormContainer);
+  function handleGotoCepVerification() {
+    _dom.show(inlineHomeNotification);
+    gotoCepVerificationForm();
+    setTimeout(() => resetAfterRedirect(), 1500);
   }
 
-  function gotoStore() {
-    const origin = window.location.origin;
-    const destinationPath = "/loja";
+  function gotoCepVerificationForm() {
+    _dom.hide(shippingOptionsContainer);
+    _dom.show(cepVerificationContainer);
+    _dom.show(cepFormContainer);
 
-    window.location.href = origin + "/hazbier/" + destinationPath;
+    if (shippingOptionDeliveryBtn) {
+      const { actionState } = _dom.getElementAttribute(
+        shippingOptionDeliveryBtn
+      );
 
-    _session.set("wbg-shipping-method", "pickup-in-store");
+      if (actionState === "idle") {
+        shippingOptionDeliveryBtn.setAttribute("data-action-state", "selected");
+      }
+    }
+  }
+
+  function resetAfterRedirect() {
+    _dom.hide(inlineHomeNotification);
+
+    if (shippingOptionGotostoreBtn) {
+      shippingOptionGotostoreBtn.setAttribute("data-action-state", "idle");
+    }
+
+    if (shippingOptionDeliveryBtn) {
+      shippingOptionDeliveryBtn.setAttribute("data-action-state", "idle");
+    }
   }
 
   function handleOnChangeInputCep() {
@@ -156,14 +171,14 @@
       _dom.hide(cepFormContainer);
       _dom.show(cepVerificationSuccessMessage);
 
-      _session.set("wbg-shipping-method", "delivery");
+      _session.set("wbg-shipping-method", { value: "delivery" });
     }
 
     if (wcResponse.success === false) {
       _dom.hide(cepFormContainer);
       _dom.show(cepVerificationFailedMessage);
 
-      _session.set("wbg-shipping-method", "pickup-in-store");
+      _session.set("wbg-shipping-method", { value: "pickupstore" });
     }
 
     function handleRequestInit() {
@@ -176,7 +191,50 @@
   }
 
   function goBackCepForm() {
+    _dom.hide(cepVerificationContainer);
     _dom.hide(cepFormContainer);
     _dom.show(shippingOptionsContainer);
+  }
+})(webigoHelper, document);
+
+/** Managing Shipping on Checkout */
+(function (webigoHelper, d) {
+  const _event = webigoHelper?.eventManager;
+  const _dom = webigoHelper?.domManager;
+  const _session = webigoHelper?.sessionManager;
+
+  const isWooCheckoutPage =
+    d.body.classList.contains("woocommerce-checkout") &&
+    !d.body.classList.contains("woocommerce-order-received");
+  const postcodeInput = _dom.el("input[name='billing_postcode']");
+  const cepInput = _dom.el("input[name='wbg-input-cep']");
+
+  init();
+
+  function init() {
+    _event.bulkAttachEvent({
+      el: cepInput,
+      ev: _event.type.change,
+      cb: handleCepInputChange,
+    });
+
+    if (cepInput && cepInput.value !== "") {
+      _session.set("wbg-shipping-cep", cepInput.value);
+    }
+
+    updateCheckoutCepField();
+  }
+
+  function handleCepInputChange() {
+    _session.set("wbg-shipping-cep", this.value);
+  }
+
+  function updateCheckoutCepField() {
+    if (isWooCheckoutPage && _dom.exists(postcodeInput)) {
+      const cepInputSession = _session.get("wbg-shipping-cep");
+      if (cepInputSession) {
+        postcodeInput.value = cepInputSession;
+      }
+    }
   }
 })(webigoHelper, document);

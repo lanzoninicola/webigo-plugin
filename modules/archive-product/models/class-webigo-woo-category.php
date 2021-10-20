@@ -38,21 +38,21 @@ class Webigo_Woo_Category {
     /**
      * @var string
      */
-    private $pod_name = 'product_cat';
+    // private $pod_name = 'product_cat';
 
     /**
      * @var array
      */
-    private $custom_fields;
+    // private $custom_fields;
 
 
     public function __construct() {
 
-        $this->custom_fields = array();
+        // $this->custom_fields = array();
         $this->load_dependencies();
 
         //TODO: check if POD plugin is enabled
-        $this->load_custom_fields();
+        // $this->load_custom_fields();
     }
 
     protected function load_dependencies() : void
@@ -60,24 +60,24 @@ class Webigo_Woo_Category {
 
     }
 
-    /**
-     * Load custom fields built with the POD Plugin
-     */
-    private function load_custom_fields() : void
-    {
+    // /**
+    //  * Load custom fields built with the POD Plugin
+    //  */
+    // private function load_custom_fields() : void
+    // {
 
-        $pod_object = (object) pods($this->pod_name);
+    //     $pod_object = (object) pods($this->pod_name);
 
-        $pod_fields = (array) $pod_object->fields;
+    //     $pod_fields = (array) $pod_object->fields;
 
-        foreach ($pod_fields as $pod_field => $pod_field_data) {
+    //     foreach ($pod_fields as $pod_field => $pod_field_data) {
 
-            $this->custom_fields[$pod_field] = array(
-                'label'       => $pod_field_data['label'],
-                'description' => $pod_field_data['description']
-            );
-        }
-    }
+    //         $this->custom_fields[$pod_field] = array(
+    //             'label'       => $pod_field_data['label'],
+    //             'description' => $pod_field_data['description']
+    //         );
+    //     }
+    // }
 
 
     public function init( string $id, string $name, string $slug, string $description, string $url, string $image_url ) : void
@@ -91,29 +91,29 @@ class Webigo_Woo_Category {
         $this->url         = isset( $url ) ? $url : false;
         $this->image_url   = isset( $image_url ) ? $image_url : false;
 
-        $this->load_custom_fields_data();
+        // $this->load_custom_fields_data();
     }
 
-    /**
-     * Loads the data of custom fields.
-     */
-    private function load_custom_fields_data() : void
-    {
-        foreach ($this->custom_fields as $custom_field => $custom_field_data) {
+    // /**
+    //  * Loads the data of custom fields.
+    //  */
+    // private function load_custom_fields_data() : void
+    // {
+    //     foreach ($this->custom_fields as $custom_field => $custom_field_data) {
 
-            $category_id     = absint( $this->id );
-            $term_meta_value = (array) get_term_meta( $category_id, $custom_field );
+    //         $category_id     = absint( $this->id );
+    //         $term_meta_value = (array) get_term_meta( $category_id, $custom_field );
 
-            if ( isset( $term_meta_value ) & is_array( $term_meta_value ) & !empty( $term_meta_value ) ) {
+    //         if ( isset( $term_meta_value ) & is_array( $term_meta_value ) & !empty( $term_meta_value ) ) {
 
-                $this->custom_fields[$custom_field]['value'] = $term_meta_value[0];
-            } else {
+    //             $this->custom_fields[$custom_field]['value'] = $term_meta_value[0];
+    //         } else {
 
-                $this->custom_fields[$custom_field]['value'] = false;
-            }
+    //             $this->custom_fields[$custom_field]['value'] = false;
+    //         }
 
-        }
-    }
+    //     }
+    // }
 
     public function get_instance( ) : Webigo_Woo_Category
     {

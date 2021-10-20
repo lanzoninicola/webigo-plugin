@@ -117,7 +117,7 @@ class Webigo_Module_Style
          */
         $this->styles = array();
         $this->action_name = 'wp_enqueue_scripts';
-        $this->init_module_info($style_data['module']);
+        $this->init_module_info( $style_data['module'] );
         $this->set_public_stylesheet_src_path();
         $this->set_stylesheet_info($style_data);
         $this->add();
@@ -271,7 +271,6 @@ class Webigo_Module_Style
         // TODO: this not works with multiple stylesheet
         // This method is added to the hook, each style might have each enqueue_style method
         foreach( $this->styles as $module_name => $style_info ) {
-
             wp_enqueue_style($module_name, $style_info['src'], $style_info['dependencies'], $style_info['version'], 'all');
         }
     }

@@ -31,7 +31,7 @@ class Webigo_HTTP_Request {
      * @return void JSON response with success data
      * 
      */
-    public function send_success_response( array $successData ) : void
+    public function send_success_response( array $successData = array() ) : void
     {
         wp_send_json_success( $successData );
     }
@@ -42,7 +42,7 @@ class Webigo_HTTP_Request {
      * @param  array $errorData
      * @return void
      */
-    public function send_error_response( array $errorData ): void
+    public function send_error_response( array $errorData = array() ) : void
     {
 
         $base_http_response = array(

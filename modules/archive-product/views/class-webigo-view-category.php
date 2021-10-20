@@ -17,6 +17,13 @@ class Webigo_View_Category
      */
     private $database;
 
+    
+    /**
+     * @var Webigo_View_Category_Attributes
+     */
+    private $view_category_attributes;
+
+
     public function __construct( object $category, object $database )
     {
         $this->category = $category;
@@ -26,7 +33,10 @@ class Webigo_View_Category
 
     private function load_dependencies() {
 
+        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-category-attributes.php';
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product.php';
+
+        $this->view_category_attributes = new Webigo_View_Category_Attributes( $this->category );
 
     }
 
@@ -41,10 +51,10 @@ class Webigo_View_Category
         $output .= $this->render_category_content();
 
         $output .= '</div>';
-        
-        $output .= '</li>';
 
         $output .= $this->render_products();
+
+        $output .= '</li>';
 
         return $output;
     }
@@ -80,30 +90,7 @@ class Webigo_View_Category
 
         $output = '<div class="wbg-category-info">';
 
-        $output .= '<div class="wbg-category-attributes" data-category-id="' . esc_attr( $this->category->id() ) . '">';
-        
-        // TODO: create a Webigo_Woo_Category_Custom_Fields to encapsulate the attributes.
-        $output .= '<div class="wbg-category-attributes-descriptions" data-visibility="hidden">';
-        foreach ( $this->category->custom_fields() as $custom_field_values ) {
-
-            if( ! empty( $custom_field_values['value'] ) ) {
-                $output .= '<p class="wbg-category-attribute-description">' . esc_html($custom_field_values['description']) . '</p>';
-            }
-        }
-
-        $output .= '</div>';
-        
-        $output .= '<div class="wbg-category-attributes-values">';
-        foreach ( $this->category->custom_fields() as $custom_field_values ) {
-
-            if( ! empty( $custom_field_values['value'] ) ) {
-                $output .= '<span class="wbg-category-attribute-value">' . esc_html($custom_field_values['label']) . ' ' . esc_html($custom_field_values['value']) . '</span>';
-            }
-        }
-        $output .= '</div>';
-
-
-        $output .= '</div>';
+        $output .= $this->view_category_attributes->render();
 
         $output .= '</div>';
 
@@ -113,9 +100,11 @@ class Webigo_View_Category
     private function render_expande_collapse_products() : string
     {
 
-        $output = '<div class="product-category-explode" data-category-id="' . esc_attr( $this->category->id() ) . '">';
-                
-        $output .= '<div class="toggleExpandLabel" data-category-id="' . esc_attr( $this->category->id() ) . '">';
+        $output = '<div class="product-category-toggle" data-category-id="' . esc_attr( $this->category->id() ) . '" data-action-state="collapsed">';
+        
+        $output .= '<span></span>';
+        
+        $output .= '<div class="toggleExpandLabel arrow-toggle-expand-collapse" data-category-id="' . esc_attr( $this->category->id() ) . '" data-action-state="collapsed">';
         
                 $output .= $this->arrow_expand_collapse();
         
@@ -170,9 +159,34 @@ class Webigo_View_Category
 
         $output .= '</ul>';
 
+        $output .= $this->collapse_category();
+
         $output .= '</div>';
 
         return $output;
 
+    }
+
+    private function collapse_category() : string
+    {
+
+        $output = '<div class="wbg-category-collapse-wrapper">';
+        
+        $output .= '<div class="action-buttons wbg-category-collapse" data-category-id="' . esc_attr( $this->category->id() ) . '">';
+
+        $output .= '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.00888 8.125L17.3169 16.4331L16.4331 17.3169L8.125 9.00888V13.75H6.875V6.875H13.75V8.125H9.00888Z" fill="white"/>
+        <circle cx="12" cy="12" r="11" stroke="white" stroke-width="2"/>
+        </svg>';
+
+        $output .= '<span>Voltar</span>';
+
+        $output .= '</div>';
+
+        $output .= '</div>';
+
+        return $output;
+
+        return $output;
     }
 }

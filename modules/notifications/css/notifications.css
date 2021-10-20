@@ -1,0 +1,41 @@
+.wbg-notifications-container {
+  position: fixed;
+  z-index: 1001;
+  top: 0;
+  width: 100%;
+}
+
+.wbg-notifications-wrapper {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: auto;
+  backdrop-filter: blur(3px);
+  transform: translateY(-100%);
+  animation: slideInDown 1200ms ease-in forwards;
+  padding: 0 1.5rem;
+}
+
+.wbg-notification-item {
+  width: 100%;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+.wbg-notification-item[data-visibility="hidden"] {
+  display: none;
+}
+
+.wbg-notification-success {
+  background-color: var(--hzbi-light-green);
+}
+
+.wbg-notification-failed {
+  background-color: var(--hzbi-light-red);
+}
+
+.wbg-notification-message {
+  color: var(--hzbi-black);
+  font-size: 0.95rem;
+}

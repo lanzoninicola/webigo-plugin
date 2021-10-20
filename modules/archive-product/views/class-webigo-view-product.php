@@ -29,6 +29,12 @@ class Webigo_View_Product {
     private $product_quantity;
 
     /**
+     * 
+     * @var Webigo_View_Product_Image
+     */
+    private $view_product_image;
+
+    /**
      * Dependency
      * 
      * @var Webigo_View_Add_To_Cart
@@ -42,6 +48,14 @@ class Webigo_View_Product {
      * @var Webigo_View_Product_Whatsapp
      */
     private $product_whatsapp;
+
+    /**
+     * Dependency
+     * 
+     * @var Webigo_View_Product_Zoom
+     */
+    private $product_zoom;
+    
 
     /**
      * 
@@ -64,11 +78,17 @@ class Webigo_View_Product {
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-info.php';
         $this->product_info = new Webigo_View_Product_Info( $this->product, $this->category );
 
+        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-image.php';
+        $this->view_product_image = new Webigo_View_Product_Image( $this->product, $this->category );
+
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-quantity.php';
         $this->product_quantity = new Webigo_View_Product_Quantity( $this->product, $this->category );
 
         require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-whatsapp.php';
         $this->product_whatsapp = new Webigo_View_Product_Whatsapp( $this->product );
+
+        require_once WEBIGO_PLUGIN_PATH . '/modules/archive-product/views/class-webigo-view-product-zoom.php';
+        $this->product_zoom = new Webigo_View_Product_Zoom( $this->product, $this->category );
 
         // TODO Future feature Below is a module dependency, so i might to query the registry to load this module
         // Because I can unregister the module. The app must work but the specific funcionality no
@@ -80,7 +100,9 @@ class Webigo_View_Product {
     {
 
         $output = '<li class="wbg-product" data-product-id="' . esc_html( $this->product->id() ) . '">';
-        
+            
+            $output .= $this->product_zoom->render();
+
             $output .= $this->render_combo_promotion_message();
 
             $output .= '<div class="wbg-product-container">';
@@ -90,32 +112,57 @@ class Webigo_View_Product {
                     $output .= $this->render_sale_banner();
                 }
 
-                $output .= $this->product_info->render_image();
+                $output .= $this->render_product_col1();
             
-                $output .= '<div class="wbg-product-inner-details">';
-                $output .= $this->product_info->render();
-      
-                if ( $this->product_whatsapp->is_whatsapp_required() ) {
-                    $output .= $this->product_whatsapp->render();
-                }
-
-                if ( !$this->product_whatsapp->is_whatsapp_required() ) {
-                    $output .= $this->product_quantity->render();    
-      
-                    $output .=  '<div class="wbg-product-footer">';
-                        $output .= $this->render_subtotal();
-                        $output .= $this->add_to_cart->render( $this->product, $this->category );
-                        $output .= '</div>';
-                    $output .= '</div>';
-                }
-
+                $output .= $this->render_product_col2();
                 
             $output .= '</div>';
+        
         $output .= '</li>';
 
         return $output;
     }
 
+
+    private function render_product_col1() : string
+    {
+
+        $output = '<div class="wbg-product-details-col1">';
+        
+        $output .= $this->view_product_image->render();
+
+        $output .= $this->product_info->render_details_button();
+
+        $output .= '</div>';
+
+        return $output;
+
+    }
+
+    private function render_product_col2() {
+
+        $output = '<div class="wbg-product-details-col2">';
+                
+        $output .= $this->product_info->render();
+
+        if ( $this->product_whatsapp->is_whatsapp_required() ) {
+            $output .= $this->product_whatsapp->render();
+        }
+
+        if ( !$this->product_whatsapp->is_whatsapp_required() ) {
+            $output .= $this->product_quantity->render();    
+
+            $output .=  '<div class="wbg-product-footer">';
+                $output .= $this->render_subtotal();
+                $output .= $this->add_to_cart->render( $this->product, $this->category );
+            $output .= '</div>';
+        }
+    
+        $output .= '</div>';
+
+        return $output;
+        
+    }
     
 
     private function render_subtotal() : string

@@ -60,23 +60,13 @@ class Webigo_View_Product_Quantity
 
     private function render_quantity_actions() : string
     {
-
-        $button_style = array(
-            'style'      => 'box-shadow: rgb(136 165 191 / 22%) 6px 2px 16px 0px, rgb(255 255 255 / 80%) -6px -2px 16px 0px; border-radius: 50%;',
-            'width'      => '25',
-            'height'     => '25',
-            'background' => '#E7E7E7',
-            'stroke'     => '#000'
-        );
-
-
         $output = '<div class="wbg-product-quantity-actions">';
 
-        $output .= $this->quantity_button->render( 'decrease', $button_style );
+        $output .= $this->quantity_button->render_minus_button();
 
         $output .= $this->render_quantity_input();
 
-        $output .= $this->quantity_button->render( 'increase', $button_style );
+        $output .= $this->quantity_button->render_plus_button();
 
         $output .= '</div>';
 

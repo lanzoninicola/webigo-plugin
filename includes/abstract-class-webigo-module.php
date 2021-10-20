@@ -3,6 +3,8 @@
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-style.php';
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-script.php';
 require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-hooks.php';
+require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-module-localize-script.php';
+require_once WEBIGO_PLUGIN_PATH . '/includes/class-webigo-woo-custom-template-handler.php';
 
 /**
  * The children classes are responsible to load their:
@@ -57,7 +59,6 @@ abstract class Webigo_Module
 	 */
 	protected $views_path;
 
-
 	/**
 	 * Encapsulate the style of module
 	 * 
@@ -71,6 +72,13 @@ abstract class Webigo_Module
 	 * @var Webigo_Module_Script
 	 */
 	public $script;
+	
+	/**
+	 * Encapsulate the script of module
+	 * 
+	 * @var Webigo_Module_Localize_Script
+	 */
+	public $localize_script;
 
 	/**
 	 * Encapsulate the script of module
@@ -79,27 +87,32 @@ abstract class Webigo_Module
 	 */
 	public $hooks;
 
+	/**
+	 * Encapsulate method for overriding Woocommerce Templates
+	 * From here is available to all modules.
+	 * 
+	 * The module that require custom template need to appropriate Woocommerce Filter
+	 * Open the class file for the instructions
+	 * 
+	 * @var Webigo_Woo_Custom_Template_Handler
+	 */
+	public $woo_custom_template_handler;
+
 
 	public function __construct() {
 
 		// with this setup the module can manage only 1 css file
 		// alternative call the Webigo_Module_Style directly in the module class
-		$this->style = new Webigo_Module_Style();
-		
-		$this->script = new Webigo_Module_Script();
-
-		$this->hooks = new Webigo_Module_Hooks();
-
-		$this->module_path = plugin_dir_path(__DIR__) . 'modules/' . $this->name;
-		
-		$this->dependecies_path = plugin_dir_path(__DIR__) . 'modules/' . $this->name . '/includes/';
-
-		$this->views_path = plugin_dir_path(__DIR__) . 'modules/' . $this->name . '/views/';
+		$this->style                       = new Webigo_Module_Style();
+		$this->script                      = new Webigo_Module_Script();
+		$this->localize_script             = new Webigo_Module_Localize_Script();
+		$this->hooks                       = new Webigo_Module_Hooks();
+		$this->woo_custom_template_handler = new Webigo_Woo_Custom_Template_Handler();
+		$this->module_path                 = plugin_dir_path(__DIR__) . 'modules/' . $this->name;
+		$this->dependecies_path            = plugin_dir_path(__DIR__) . 'modules/' . $this->name . '/includes/';
+		$this->views_path                  = plugin_dir_path(__DIR__) . 'modules/' . $this->name . '/views/';
 
 		$this->load_dependencies();
-		// Initially developed to load the view of shortcode
-		// The shortcode was moved in a separeted and dedidcated class
-		// $this->load_views();
 		$this->add_style();
 		$this->add_script();
 		$this->add_hooks();
@@ -125,6 +138,18 @@ abstract class Webigo_Module
 
 		return $this->script;
 	}
+
+
+	/**
+	 * Returns the Webigo_Module_Script that encapsulates the style of module
+	 *
+	 * @return Webigo_Module_Script of related module
+	 */
+	public function localize_script() {
+
+		return $this->localize_script;
+	}
+
 
 	abstract protected function load_dependencies();
 
@@ -196,6 +221,29 @@ abstract class Webigo_Module
 	 *	}
 	 */
 	abstract protected function add_hooks();
+
+
+
+	/**
+	 * Method to register the hooks of module.
+	 * The callback must be a static method
+	 * 
+	 * @return void
+	 * 
+	 * 	public function add_hooks() {
+	 *	
+	 *	   $script_data = array(
+	 *		    'module'        => 'core',
+	 *			'object_name'   => 'core_params'
+	 *			'params'        => array( 'timeout_settings' => 5000 )
+	 *	        );
+	 *
+	 *		$this->localize_scripts->register_script_data($hook_data);
+	 *	
+	 *	}
+	 *
+	 */
+	// abstract protected function add_script_data();
 
 
 }
