@@ -9,6 +9,8 @@ class Webigo_Module_Conditionals {
     public function test( string $name ) 
     {
 
+        $name = trim( $name );
+
         /** Start Woocommerce conditionals */
         if ( $name === 'is_woocommerce') {
             return is_woocommerce();
