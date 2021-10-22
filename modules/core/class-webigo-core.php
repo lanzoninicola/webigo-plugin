@@ -100,6 +100,7 @@ class Webigo_Core extends Webigo_Module
 			'module'    => $this->name,
 			'file_name' => 'pix.css',
 			'version'   => $this->style_version,
+			'includes'  => array( 'is_checkout' ),
 		);
 
 		$this->style->register_public_style( $pix );
@@ -146,6 +147,7 @@ class Webigo_Core extends Webigo_Module
 			'module'      => $this->name,
 			'file_name'   => 'header.js',
 			'version'     => $this->js_version,
+			'includes'  => array( 'is_archive' ),
 		);
 
 		$this->script->register_public_script( $header );

@@ -49,6 +49,7 @@ class Webigo_Orders extends Webigo_Module
 			'file_name'    => 'orders.css',
 			'dependencies' => array('core'),
 			'version'      => $this->style_version,
+			'disabled'     => true
 		);
 
 		$this->style->register_public_style($style_data);
@@ -63,7 +64,7 @@ class Webigo_Orders extends Webigo_Module
 			'file_name'    => 'orders.js',
 			'dependencies' => array('core'),
 			'version'      => $this->js_version,
-			'in_footer'    => true
+			'disabled'     => true
 		);
 
 		$this->script->register_public_script( $script_data );

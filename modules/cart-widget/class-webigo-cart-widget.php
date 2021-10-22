@@ -49,6 +49,7 @@ class Webigo_Cart_Widget extends Webigo_Module
 			'file_name'    => 'cart-widget.css',
 			'dependencies' => array('core'),
 			'version'	   => $this->style_version,
+			'includes'	   => array( 'is_shop' ),
 		);
 
 		$this->style->register_public_style($style_data);
@@ -66,7 +67,7 @@ class Webigo_Cart_Widget extends Webigo_Module
 			'file_name'    => 'cart-widget.js',
 			'dependencies' => array('core', 'archive-product'),
 			'version'	   => $this->js_version,
-			'in_footer'    => true
+			'includes'	   => array( 'is_shop' ),
 		);
 
 		$this->script->register_public_script( $script_data );

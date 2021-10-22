@@ -49,18 +49,12 @@ class Webigo_Archive_Product extends Webigo_Module
 			'module'       => $this->name,
 			'file_name'    => 'archive-product.css',
 			'dependencies' => array('core'),
-			'version'      => $this->style_version
+			'version'      => $this->style_version,
+			'includes'	   => array( 'is_shop' ),
 		);
 
 		$this->style->register_public_style($style_data);
 
-		// $style_data = array(
-		// 	'module' => $this->name,
-		// 	'file_name' => 'view-product.css',
-		// 	'dependecies' => array('core')
-		// );
-
-		// $this->style->register_public_style($style_data);
 	}
 
 	public function add_script()
@@ -71,7 +65,7 @@ class Webigo_Archive_Product extends Webigo_Module
 			'file_name'   => 'archive-product.js',
 			'dependencies' => array('core', 'add-to-cart'),
 			'version'      => $this->js_version,
-			'in_footer'   => true
+			'includes'	   => array( 'is_shop' ),
 		);
 
 		$this->script->register_public_script( $script_data );

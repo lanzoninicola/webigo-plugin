@@ -71,6 +71,7 @@ class Webigo_Myaccount extends Webigo_Module
 			'file_name'    => 'myaccount.css',
 			'dependencies' => array('core'),
 			'version'      => $this->style_version,
+			'includes'     => array( 'is_account_page' ),
 		);
 
 		$this->style->register_public_style($style_data);
@@ -85,7 +86,7 @@ class Webigo_Myaccount extends Webigo_Module
 			'file_name'    => 'myaccount.js',
 			'dependencies' => array('core'),
 			'version'      => $this->js_version,
-			'in_footer'    => true
+			'includes'     => array( 'is_account_page' ),
 		);
 
 		$this->script->register_public_script( $script_data );
