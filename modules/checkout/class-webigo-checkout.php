@@ -49,21 +49,21 @@ class Webigo_Checkout extends Webigo_Module
 		$style_data = array(
 			'module'       => $this->name,
 			'file_name'    => 'checkout.css',
-			'dependencies' => array('core'),
+			'dependencies' => array( 'core' ),
 			'version'      => $this->style_version,
 			'includes'	   => array( 'is_checkout '),
 		);
 
-		$this->style->register_public_style($style_data);
+		$this->style->register_public_style( $style_data );
 
 		$pagseguro = array(
-			'module'      => $this->name,
-			'file_name'   => 'pagseguro.css',
-			'dependencies' => array('core'),
+			'module'       => $this->name,
+			'file_name'    => 'pagseguro.css',
+			'dependencies' => array( 'core' ),
 			'includes'	   => array( 'is_checkout '),
 		);
 
-		$this->style->register_public_style($pagseguro);
+		$this->style->register_public_style( $pagseguro );
 
 	}
 
@@ -92,16 +92,11 @@ class Webigo_Checkout extends Webigo_Module
 		$this->hooks_shared();
 
 		$this->hooks_thankyou_page();
-
-
-
-	
 	}
 
 
 	private function hooks_checkout_page()
 	{
-
 		$view_before_checkout_registration = new Webigo_View_Before_Checkout_Registration();
 
 		$hook_before_checkout_registration_form = array(
