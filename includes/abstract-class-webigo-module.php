@@ -246,6 +246,14 @@ abstract class Webigo_Module
 	 */
 	// abstract protected function add_script_data();
 
+	protected function require_once( string $module_file_path ) {
+
+		if ( file_exists( $module_file_path ) === false ) {
+			throw "=== The file or path $module_file_path doesn't exists";
+		}
+
+		require_once $module_file_path;
+	}
 
 }
 
