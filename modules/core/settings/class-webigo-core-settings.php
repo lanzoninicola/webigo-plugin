@@ -15,6 +15,16 @@ class Webigo_Core_Settings {
 
     const JS_VERSION = '2010071538';
 
+    const PLUGIN_MENU = array(
+        'root'  => array(
+            'page_title'   => 'Webigo',
+            'menu_title'   => 'Webigo',
+            'capability'   => 'manage_options',
+            'menu_slug'    => 'webigo'
+        ),
+        'submenus' => array(),
+    );
+
     /**
      *  @return array
      */

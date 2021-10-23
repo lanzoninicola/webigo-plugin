@@ -147,7 +147,7 @@ class Webigo_Core extends Webigo_Module
 			'module'      => $this->name,
 			'file_name'   => 'header.js',
 			'version'     => $this->js_version,
-			'includes'  => array( 'is_archive' ),
+			'includes'    => array( 'is_archive' ),
 		);
 
 		$this->script->register_public_script( $header );
@@ -179,6 +179,22 @@ class Webigo_Core extends Webigo_Module
 
 		$this->hooks->register( $hook_footer );
 
+		$this->add_root_menu_page();
+
+	}
+
+	private function add_root_menu_page()
+	{
+		$this->require_once( WEBIGO_PLUGIN_PATH . 'modules/core/includes/class-webigo-plugin-menu-handler.php' );
+		$plugin_menu_handler = new Webigo_Plugin_Menu_Handler();
+
+        $hook_admin_menu_add_root_page = array(
+			'hook'     => 'admin_menu',
+			'callback' => array( $plugin_menu_handler, 'add_root_page' ),
+            'priority' => 915
+		);
+		
+		$this->hooks->register( $hook_admin_menu_add_root_page );
 	}
 	
 }
