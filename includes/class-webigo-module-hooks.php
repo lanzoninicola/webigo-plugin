@@ -1,8 +1,9 @@
 <?php
 
 
+require_once WEBIGO_PLUGIN_PATH . 'includes/interface-webigo-hooks.php';
 
-class Webigo_Module_Hooks {
+class Webigo_Module_Hooks implements IWebigo_Hooks {
 
     
     /**
@@ -47,7 +48,7 @@ class Webigo_Module_Hooks {
      *              )                
      * 
      */
-    public function register(array $user_hook_data) {
+    public function register( array $user_hook_data ) {
 
         if( ! isset( $user_hook_data['hook'] ) ) {
             return false;
