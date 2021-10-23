@@ -143,6 +143,16 @@ class Webigo_Core extends Webigo_Module
 
 		$this->script->register_script( $script_data );
 
+		$admin_script_data = array(
+			'module'      => $this->name,
+			'file_name'   => 'core.js',
+			'version'     => $this->js_version,
+			'admin'       => true,
+			'use_public'  => true,
+		);
+
+		$this->script->register_script( $admin_script_data );
+
 		$header = array(
 			'module'      => $this->name,
 			'file_name'   => 'header.js',

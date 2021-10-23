@@ -171,10 +171,22 @@ class Webigo_Module_Script
             throw 'Webigo_Module_Style - "file_name" key is required on array input';
         }
 
+        // Start: Core module: I need to use the same css of public side to handle admin css code
+        $this->scripts[$this->script_id]['use_public'] = false;
+
+        if ( isset( $this->script_data['use_public'] ) ) {
+            $this->scripts[$this->script_id]['use_public'] = $this->script_data['use_public'];
+        }
+        // End: Core module: I need to use the same css of public side to handle admin css code
+        
+
         $path = plugin_dir_url(__DIR__) . 'modules/' . $this->script_data['module'] . '/js/';
 
         // handle script on admin side of the site
-        if ( $this->scripts[$this->script_id]['admin'] === true ) {
+        if ( $this->scripts[$this->script_id]['admin'] === true && 
+            // Core module: I need to use the same css of public side to handle admin css code
+            $this->scripts[$this->script_id]['use_public'] === false
+        ) {
             $path = plugin_dir_url(__DIR__) . 'modules/' . $this->script_data['module'] . '/admin/js/';
         }
 
