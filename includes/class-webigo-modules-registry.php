@@ -17,7 +17,8 @@ class Webigo_Modules_Registry
      * @var array
      */
     private $customer_modules = array(
-        'core' => 'Webigo_Core_Settings',
+        'core'         => 'Webigo_Core_Settings', 
+        'wpadmin-menu' => 'Webigo_Wpadmin_Menu_Settings'
     );
 
     /**
@@ -101,7 +102,13 @@ class Webigo_Modules_Registry
 
         foreach ( $customer_modules as $module_name => $settings_class ) {
 
-            require_once WEBIGO_PLUGIN_PATH . "/modules/$module_name/settings/class-webigo-$module_name-settings.php";
+            $module_settings_path = WEBIGO_PLUGIN_PATH . "/modules/$module_name/settings/class-webigo-$module_name-settings.php";
+
+            if ( file_exists( $module_settings_path ) === false ) {
+                throw "============ Trying to load the settings file class-webigo-$module_name-settings.php but it doesn't exist in the following path: WEBIGO_PLUGIN_PATH . '/modules/$module_name/settings/class-webigo-$module_name-settings.php'";
+            }
+
+            require_once $module_settings_path;
 
             $this->register(
                 $settings_class::MODULE_NAME,

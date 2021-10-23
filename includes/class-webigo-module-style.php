@@ -1,7 +1,5 @@
 <?php
 
-// TODO: need to create a separeted class for admin styles
-
 /**
  * This class encapsulate the style of module and 
  * it contains the callback function fired by the Wordpress hook
@@ -39,7 +37,7 @@ class Webigo_Module_Style
      * 
      * @var string
      */
-    private $register_action_name = 'wp_enqueue_scripts';
+    // private $register_action_name = 'wp_enqueue_scripts';
 
     
     /**
@@ -47,7 +45,7 @@ class Webigo_Module_Style
      * 
      * @var string
      */
-    private $enqueue_action_name = 'wp_footer';
+    // private $enqueue_action_name = 'wp_footer';
 
     /**
      * List of callbacks name used to register the style.
@@ -70,15 +68,15 @@ class Webigo_Module_Style
     {
     }
 
-    public function register_action_name()
-    {
-        return $this->register_action_name;
-    }
+    // public function register_action_name()
+    // {
+    //     return $this->register_action_name;
+    // }
 
-    public function enqueue_action_name()
-    {
-        return $this->enqueue_action_name;
-    }
+    // public function enqueue_action_name()
+    // {
+    //     return $this->enqueue_action_name;
+    // }
 
 
     public function register_callbacks() : array
@@ -116,6 +114,7 @@ class Webigo_Module_Style
          */
         $this->set_style_id();
         $this->set_handle_name();
+        $this->set_admin_style();
         $this->set_stylesheet_src();
         $this->set_dependencies();
         $this->set_version();
@@ -151,6 +150,16 @@ class Webigo_Module_Style
       
     }
 
+    private function set_admin_style()
+    {
+
+        $this->styles[$this->style_id]['admin'] = false;
+
+        if ( isset( $this->style_data['admin'] ) && $this->style_data['admin'] === true ) {
+            $this->styles[$this->style_id]['admin'] = true;      
+        }
+    }
+
     /**
      *  Internal utility function to build the full css path for the public facing site
      *  
@@ -163,6 +172,11 @@ class Webigo_Module_Style
         }
 
         $path = plugin_dir_url(__DIR__) . 'modules/' . $this->style_data['module'] . '/css/';
+
+        // handle script on admin side of the site
+        if ( $this->styles[$this->style_id]['admin'] === true ) {
+            $path = plugin_dir_url(__DIR__) . 'modules/' . $this->style_data['module'] . '/admin/css/';
+        }
 
         $this->styles[$this->style_id]['src'] = $path . $this->style_data['file_name'];
     }
@@ -249,14 +263,14 @@ class Webigo_Module_Style
     public function set_register_callbacks_function()
     {
         foreach( array_keys( $this->styles ) as $id ) {
-            array_push( $this->register_callbacks_name, "wp_register_style_$id");
+            array_push( $this->register_callbacks_name, array( "wp_register_style_$id", $this->styles[$this->style_id]['admin'] ) );
         }
     }
 
     public function set_enqueue_callbacks_function()
     {
         foreach( array_keys( $this->styles ) as $id ) {
-            array_push( $this->enqueue_callbacks_name, "wp_enqueue_style_$id");
+            array_push( $this->enqueue_callbacks_name, array( "wp_enqueue_style_$id", $this->styles[$this->style_id]['admin'] ) );
         }
     }
 

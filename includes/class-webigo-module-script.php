@@ -1,7 +1,5 @@
 <?php
 
-// TODO: need to create a separeted class for admin scripts
-
 /**
  * This class encapsulate the script of module and 
  * it contains the callback function fired by the Wordpress hook
@@ -39,7 +37,7 @@ class Webigo_Module_Script
      * 
      * @var string
      */
-    private $register_action_name = 'wp_enqueue_scripts';
+    // private $register_action_name = 'wp_enqueue_scripts';
 
     
     /**
@@ -70,10 +68,10 @@ class Webigo_Module_Script
     {
     }
 
-    public function register_action_name()
-    {
-        return $this->register_action_name;
-    }
+    // public function register_action_name()
+    // {
+    //     return $this->register_action_name;
+    // }
 
     public function enqueue_action_name()
     {
@@ -116,6 +114,7 @@ class Webigo_Module_Script
          */
         $this->set_script_id();
         $this->set_handle_name();
+        $this->set_admin_script();
         $this->set_script_src();
         $this->set_dependencies();
         $this->set_version();
@@ -131,7 +130,6 @@ class Webigo_Module_Script
         $this->script_id = uniqid();
         $this->scripts[$this->script_id] = array();
     }
-
      
     /**
      * Set the name of handle for the css.
@@ -151,6 +149,17 @@ class Webigo_Module_Script
       
     }
 
+
+    private function set_admin_script()
+    {
+
+        $this->scripts[$this->script_id]['admin'] = false;
+
+        if ( isset( $this->script_data['admin'] ) && $this->script_data['admin'] === true ) {
+            $this->scripts[$this->script_id]['admin'] = true;      
+        }
+    }
+
     /**
      *  Internal utility function to build the full css path for the public facing site
      *  
@@ -163,6 +172,11 @@ class Webigo_Module_Script
         }
 
         $path = plugin_dir_url(__DIR__) . 'modules/' . $this->script_data['module'] . '/js/';
+
+        // handle script on admin side of the site
+        if ( $this->scripts[$this->script_id]['admin'] === true ) {
+            $path = plugin_dir_url(__DIR__) . 'modules/' . $this->script_data['module'] . '/admin/js/';
+        }
 
         $this->scripts[$this->script_id]['src'] = $path . $this->script_data['file_name'];
     }
@@ -248,14 +262,17 @@ class Webigo_Module_Script
     public function set_register_callbacks_function()
     {
         foreach( array_keys( $this->scripts ) as $id ) {
-            array_push( $this->register_callbacks_name, "wp_register_script_$id");
+            array_push( $this->register_callbacks_name, array( "wp_register_script_$id", $this->scripts[$id]['admin'] ) );
         }
     }
 
+    /**
+     * This function push the all callbacks will be fired on enqueued script wp action
+     */
     public function set_enqueue_callbacks_function()
     {
         foreach( array_keys( $this->scripts ) as $id ) {
-            array_push( $this->enqueue_callbacks_name, "wp_enqueue_script_$id");
+            array_push( $this->enqueue_callbacks_name, array( "wp_enqueue_script_$id", $this->scripts[$id]['admin'] ) );
         }
     }
 

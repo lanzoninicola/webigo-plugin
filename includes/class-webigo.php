@@ -211,19 +211,33 @@ class Webigo
 			$style_object  = $module_obj_instance->style;
 			
 			// Registering the styles
-			$register_action_name    = $module_obj_instance->style->register_action_name();
-			$register_callbacks_name = $module_obj_instance->style->register_callbacks();
+			$register_callbacks = $module_obj_instance->style->register_callbacks();
 
-			foreach( $register_callbacks_name as $callback ) {
-				$this->loader->add_action( $register_action_name, $style_object, $callback );	
+			foreach( $register_callbacks as $callback_item ) {
+				$callback_name   = $callback_item[0];
+				$action_name     = 'wp_enqueue_scripts'; // for the public scripts
+				$is_admin_action = $callback_item[1];
+
+				if ( $is_admin_action ) {
+					$action_name = 'admin_enqueue_scripts'; // for the admin scripts
+				}
+
+				$this->loader->add_action( $action_name, $style_object, $callback_name );	
 			}
 			
 			// Enqueue the style
-			$enqueue_action_name    = $module_obj_instance->style->enqueue_action_name();
-			$enqueue_callbacks_name = $module_obj_instance->style->enqueue_callbacks();
+			$enqueue_callbacks = $module_obj_instance->style->enqueue_callbacks();
 
-			foreach( $enqueue_callbacks_name as $callback ) {
-				$this->loader->add_action( $enqueue_action_name, $style_object, $callback );	
+			foreach( $enqueue_callbacks as $callback_item ) {
+				$callback_name   = $callback_item[0];
+				$action_name     = 'wp_footer';	// for the public scripts
+				$is_admin_action = $callback_item[1];
+
+				if ( $is_admin_action ) {
+					$action_name = 'admin_enqueue_scripts'; // for the admin scripts
+				}
+
+				$this->loader->add_action( $action_name, $style_object, $callback_name );	
 			}
 		}
 	}
@@ -238,20 +252,39 @@ class Webigo
 			
 			$script_object  = $module_obj_instance->script;
 
-			// Registering the styles
-			$register_action_name    = $module_obj_instance->script->register_action_name();
-			$register_callbacks_name = $module_obj_instance->script->register_callbacks();
+			// Registering the scripts
+			$register_callbacks = $module_obj_instance->script->register_callbacks();
 
-			foreach( $register_callbacks_name as $callback ) {
-				$this->loader->add_action( $register_action_name, $script_object, $callback );	
+			foreach( $register_callbacks as $callback_item ) {
+				$callback_name   = $callback_item[0];
+				$action_name     = 'wp_enqueue_scripts'; // for the public scripts
+				$is_admin_action = $callback_item[1];
+
+				if ( $is_admin_action ) {
+					$action_name = 'admin_enqueue_scripts'; // for the admin scripts
+				}
+
+				$this->loader->add_action( $action_name, $script_object, $callback_name );	
 			}
 			
-			// Enqueue the style
-			$enqueue_action_name    = $module_obj_instance->script->enqueue_action_name();
-			$enqueue_callbacks_name = $module_obj_instance->script->enqueue_callbacks();
+			/**
+			 * Enqueued phase
+			 * 
+			 * The scripts are enqueued in the "wp_footer" action 
+			 * because there is the time to fired the conditional functions
+			 */
+			$enqueue_callbacks = $module_obj_instance->script->enqueue_callbacks();
 
-			foreach( $enqueue_callbacks_name as $callback ) {
-				$this->loader->add_action( $enqueue_action_name, $script_object, $callback );	
+			foreach( $enqueue_callbacks as $callback_item ) {
+				$callback_name   = $callback_item[0];
+				$action_name     = 'wp_footer';	// for the public scripts
+				$is_admin_action = $callback_item[1];
+
+				if ( $is_admin_action ) {
+					$action_name = 'admin_enqueue_scripts'; // for the admin scripts
+				}
+
+				$this->loader->add_action( $action_name, $script_object, $callback_name );	
 			}
 		}
 	}
