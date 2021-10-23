@@ -107,7 +107,7 @@ class Webigo_Module_Menu
      *                 )
      * 
      */
-    public function register_public_style( array $style_data )
+    public function register_style( array $style_data )
     {
         $this->style_data = $style_data;
 

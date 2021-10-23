@@ -171,7 +171,7 @@ abstract class Webigo_Module
 	 *			'file_name' => 'archive-product.css'
 	 *		);
 	 *	
-	 *		$this->style->register_public_style($style_data);
+	 *		$this->style->register_style($style_data);
 	 *		
 	 *	}
 	 * 

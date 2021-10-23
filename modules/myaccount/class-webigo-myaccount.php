@@ -74,7 +74,7 @@ class Webigo_Myaccount extends Webigo_Module
 			'includes'     => array( 'is_account_page' ),
 		);
 
-		$this->style->register_public_style($style_data);
+		$this->style->register_style($style_data);
 
 	}
 

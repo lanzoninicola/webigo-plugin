@@ -52,7 +52,7 @@ class Webigo_Orders extends Webigo_Module
 			'disabled'     => true
 		);
 
-		$this->style->register_public_style($style_data);
+		$this->style->register_style($style_data);
 
 	}
 

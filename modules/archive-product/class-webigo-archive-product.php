@@ -53,7 +53,7 @@ class Webigo_Archive_Product extends Webigo_Module
 			'includes'	   => array( 'is_shop' ),
 		);
 
-		$this->style->register_public_style($style_data);
+		$this->style->register_style($style_data);
 
 	}
 

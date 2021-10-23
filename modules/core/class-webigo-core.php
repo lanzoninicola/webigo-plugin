@@ -46,7 +46,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $core );
+		$this->style->register_style( $core );
 
 		$colors = array(
 			'module'    => $this->name,
@@ -54,7 +54,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $colors );
+		$this->style->register_style( $colors );
 
 		$fonts = array(
 			'module'    => $this->name,
@@ -62,7 +62,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $fonts );
+		$this->style->register_style( $fonts );
 
 		$buttons = array(
 			'module'    => $this->name,
@@ -70,7 +70,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $buttons );
+		$this->style->register_style( $buttons );
 
 		$hazbier = array(
 			'module'    => $this->name,
@@ -78,7 +78,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $hazbier );
+		$this->style->register_style( $hazbier );
 
 		$keyframes = array(
 			'module'    => $this->name,
@@ -86,7 +86,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $keyframes );
+		$this->style->register_style( $keyframes );
 
 		$overlay = array(
 			'module'    => $this->name,
@@ -94,7 +94,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $overlay );
+		$this->style->register_style( $overlay );
 
 		$pix = array(
 			'module'    => $this->name,
@@ -103,7 +103,7 @@ class Webigo_Core extends Webigo_Module
 			'includes'  => array( 'is_checkout' ),
 		);
 
-		$this->style->register_public_style( $pix );
+		$this->style->register_style( $pix );
 
 		$swiper = array(
 			'module'    => $this->name,
@@ -112,7 +112,7 @@ class Webigo_Core extends Webigo_Module
 			'disabled'  => true
 		);
 
-		$this->style->register_public_style( $swiper );
+		$this->style->register_style( $swiper );
 
 		$woocommerce = array(
 			'module'    => $this->name,
@@ -120,7 +120,7 @@ class Webigo_Core extends Webigo_Module
 			'version'   => $this->style_version,
 		);
 
-		$this->style->register_public_style( $woocommerce );
+		$this->style->register_style( $woocommerce );
 		
 	}
 

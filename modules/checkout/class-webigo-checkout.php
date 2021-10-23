@@ -54,7 +54,7 @@ class Webigo_Checkout extends Webigo_Module
 			'includes'	   => array( 'is_checkout '),
 		);
 
-		$this->style->register_public_style( $style_data );
+		$this->style->register_style( $style_data );
 
 		$pagseguro = array(
 			'module'       => $this->name,
@@ -63,7 +63,7 @@ class Webigo_Checkout extends Webigo_Module
 			'includes'	   => array( 'is_checkout '),
 		);
 
-		$this->style->register_public_style( $pagseguro );
+		$this->style->register_style( $pagseguro );
 
 	}
 

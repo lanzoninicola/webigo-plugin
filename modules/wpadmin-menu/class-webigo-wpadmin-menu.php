@@ -53,7 +53,7 @@ class Webigo_Wpadmin_Menu extends Webigo_Module
 			'admin'        => true
 		);
 
-		$this->style->register_public_style( $style_data );
+		$this->style->register_style( $style_data );
 
 	}
 

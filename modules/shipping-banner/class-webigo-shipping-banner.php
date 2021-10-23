@@ -42,7 +42,7 @@ class Webigo_Shipping_Banner extends Webigo_Module
 			'dependencies' => array('core')
 		);
 
-		$this->style->register_public_style($style_data);
+		$this->style->register_style($style_data);
 
 	}
 

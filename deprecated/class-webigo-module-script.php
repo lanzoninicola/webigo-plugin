@@ -21,7 +21,7 @@ class Webigo_Module_Script
 
     /**
      * The name of module who instanciate this class, passed by 
-     * the register_public_style or register_admin_style methods
+     * the register_style or register_admin_style methods
      * 
      * @var string
      */

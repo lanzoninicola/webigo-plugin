@@ -20,7 +20,7 @@ class Webigo_Module_Style
 
     /**
      * The name of module who instanciate this class, passed by 
-     * the register_public_style or register_admin_style methods
+     * the register_style or register_admin_style methods
      * 
      * @var string
      */
@@ -110,7 +110,7 @@ class Webigo_Module_Style
      *                 )
      * 
      */
-    public function register_public_style(array $style_data)
+    public function register_style(array $style_data)
     {
         /**
          *  Do not change the orders of these functions
