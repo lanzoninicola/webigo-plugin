@@ -285,7 +285,7 @@ class Webigo_Module_Style
 
         if ( substr( $function, 0, 18 ) === 'wp_register_style_' ) {
             $style_id = substr( $function, 18, 99 );
-            $this->register_style( $style_id );
+            $this->wp_register_style( $style_id );
         }
 
         if ( substr( $function, 0, 17 ) === 'wp_enqueue_style_' ) {
@@ -301,7 +301,7 @@ class Webigo_Module_Style
      *  
      *  @return void
      */
-    public function register_style( $style_id )
+    public function wp_register_style( $style_id )
     {
 
         $handle       = $this->styles[$style_id]['handle'];

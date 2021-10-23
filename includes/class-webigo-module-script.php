@@ -289,7 +289,7 @@ class Webigo_Module_Script
 
         if ( substr( $function, 0, 19 ) === 'wp_register_script_' ) {
             $script_id = substr( $function, 19, 99 );
-            $this->register_script( $script_id );
+            $this->wp_register_script( $script_id );
         }
 
         if ( substr( $function, 0, 18 ) === 'wp_enqueue_script_' ) {
@@ -305,7 +305,7 @@ class Webigo_Module_Script
      *  
      *  @return void
      */
-    public function register_script( $script_id )
+    public function wp_register_script( $script_id )
     {
 
         $handle       = $this->scripts[$script_id]['handle'];
