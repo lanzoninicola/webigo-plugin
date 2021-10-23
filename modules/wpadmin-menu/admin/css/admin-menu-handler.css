@@ -1,0 +1,19 @@
+.wbg-system-roles-selections {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-block: 2rem;
+}
+
+.wbg-menu-item {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-block: 0.5rem;
+}
+
+.wbg-menu-item-default {
+  font-weight: 600;
+  font-size: 0.75rem;
+}

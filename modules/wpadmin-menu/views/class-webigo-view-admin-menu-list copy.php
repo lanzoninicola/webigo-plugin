@@ -2,7 +2,7 @@
 
 
 
-class Webigo_View_Wpadmin_Menu {
+class Webigo_View_Admin_Menu_List {
 
 
     public function __construct()
@@ -12,8 +12,24 @@ class Webigo_View_Wpadmin_Menu {
 
     private function load_dependencies()
     {
-        require_once WEBIGO_PLUGIN_PATH . '/module/wpadmin-menu/includes/class-webigo-wpadmin-menu-handler.php';
+        require_once WEBIGO_PLUGIN_PATH . '/modules/wpadmin-menu/includes/class-webigo-wpadmin-menu-handler.php';
         $this->wpadmin_menu_handler = new Webigo_Wpadmin_Menu_Handler();
+    }
+
+    /**
+     * This function is triggered when the "admin_menu" hook is fired
+     * 
+     */
+    public function add_menu() : void
+    {
+        add_submenu_page(
+            'webigo',
+            __('Admin Menu List'),
+            __('Admin Menu List'),
+            'manage_options',
+            'webigo_hide_menu_setup',
+            array( $this, 'render' )
+        );
     }
 
     public function render()

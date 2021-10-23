@@ -14,7 +14,7 @@ class Webigo_Wpadmin_Menu_Settings {
     const CSS_VERSION = '2109292134';
 
     const JS_VERSION = '2109292134';
-   
+
     public static function images( string $image_name = '' ) {
 
         $base_url = plugin_dir_url(__DIR__);

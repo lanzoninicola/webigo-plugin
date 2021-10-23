@@ -3,99 +3,101 @@
 
 class Webigo_Wpadmin_Menu_Handler
 {
-    private $menus_to_hide = ['painel', 'bricks', 'posts', 'páginas', 'ferramentas'];
+    
 
-    private $target_roles = ['shop_manager', 'editor'];
+    // private $is_admin_area = false;
 
-    private $is_admin_area = false;
+    // private $is_valid_user_logged = false;
 
-    private $is_valid_user_logged = false;
+    // private $user_logged;
 
-    private $user_logged;
-
-    private $user_logged_role;
-
-    private $menu_list;
-    // private $show_menu_list = true; // discover mode: setting true shows all menu values
-
+    // private $user_logged_role;
 
     /**
-     * @var Webigo_View_Wpadmin_Menu
+     * @var array
      */
-    private $view_wpadmin_menu;
-
+    private $menu_list = array();
 
     public function __construct()
     {
-        $this->load_dependencies();
     }
 
-    private function load_dependencies()
-    {
-        require_once WEBIGO_PLUGIN_PATH . '/modules/wpadmin-menu/views/class-webigo-wpadmin-menu.php';
-        $this->$view_wpadmin_menu = new Webigo_View_Wpadmin_Menu();
-    }
+    // public function init_checks()
+    // {
+    //     $this->should_admin_area();
+    //     $this->should_current_user_logged();
+    //     $this->should_valid_user_logged();
+    //     $this->get_user_logged_roles();
+    // }
+
+    // private function should_admin_area()
+    // {
+    //     $this->is_admin_area = is_admin();
+    // }
 
 
-    public function init_checks()
-    {
-        $this->should_admin_area();
-        $this->should_current_user_logged();
-        $this->should_valid_user_logged();
-        $this->get_user_logged_roles();
-    }
+    // private function should_current_user_logged()
+    // {
+    //     $this->user_logged = wp_get_current_user();
+    // }
 
-    private function should_admin_area()
-    {
-        $this->is_admin_area = is_admin();
-    }
+    // private function should_valid_user_logged()
+    // {
+    //     if (isset($this->user_logged) & $this->user_logged->exists()) {
+    //         $this->is_valid_user_logged = true;
+    //     }
+    // }
 
-
-    private function should_current_user_logged()
-    {
-        $this->user_logged = wp_get_current_user();
-    }
-
-    private function should_valid_user_logged()
-    {
-        if (isset($this->user_logged) & $this->user_logged->exists()) {
-            $this->is_valid_user_logged = true;
-        }
-    }
-
-    private function get_user_logged_roles()
-    {
-        if ($this->is_valid_user_logged) {
-            $user_roles = (array) $this->user_logged->roles;
-            $this->user_logged_role = $user_roles[0];
-        }
-    }
+    // private function get_user_logged_roles()
+    // {
+    //     if ($this->is_valid_user_logged) {
+    //         $user_roles = (array) $this->user_logged->roles;
+    //         $this->user_logged_role = $user_roles[0];
+    //     }
+    // }
 
     public function build_menu_schema()
     {
-        if (!$this->is_admin_area || !$this->is_valid_user_logged) {
-            return;
-        }
-        // start he hiding menu items process
+            // start he hiding menu items process
         $wp_admin_menu = $GLOBALS['menu'];
 
         $this->menu_list = array();
 
         // build a menu schema
-        foreach ($wp_admin_menu as $key => $wp_admin_menu_item) {
+        foreach ($wp_admin_menu as $wp_admin_menu_item) {
             /**
              *      $wp_admin_menu_item[0] = menu label
+             *      $wp_admin_menu_item[1] = capability
              *      $wp_admin_menu_item[2] = menu slug
              */
 
             $menu_item_label = strtolower($wp_admin_menu_item[0]);
 
-            if (substr($wp_admin_menu_item[2], 0, 9) === 'separator') {
+            if ( substr( $wp_admin_menu_item[2], 0, strlen('separator')) === 'separator' ) {
                 $menu_item_label = 'separator';
             }
 
-            $this->menu_list[$menu_item_label] = array('hidden' => false, 'slug' => $wp_admin_menu_item[2]);
+            $this->menu_list_by_label[$menu_item_label] = array(
+                'capability' => $wp_admin_menu_item[1],
+                'slug'       => $wp_admin_menu_item[2]
+            );
+
+            $this->menu_list_by_slug[$wp_admin_menu_item[2]] = array(
+                'capability' => $wp_admin_menu_item[1],
+                'label'      => $menu_item_label,
+            );
+
+            if ( isset( $this->menu_list_by_capabilities[$wp_admin_menu_item[1]] ) === false ) {
+                $this->menu_list_by_capabilities[$wp_admin_menu_item[1]] = array();
+            }
+
+            array_push( $this->menu_list_by_capabilities[$wp_admin_menu_item[1]], array(
+                'label' => $menu_item_label,
+                'slug'  => $wp_admin_menu_item[2]
+            ));
         }
+
+        // var_dump( $this->menu_list_by_slug); die;
     }
 
     public function hide_menus()
@@ -119,21 +121,84 @@ class Webigo_Wpadmin_Menu_Handler
         }
     }
 
-    public function add_setup_menu()
-    {
-        add_submenu_page(
-            'webigo',
-            __('Admin Menu List'),
-            __('Admin Menu List'),
-            'manage_options',
-            'webigo_hide_menu_setup',
-            array( $this->view_wpadmin_menu, 'render' )
-        );
-    }
+
 
     public function menu_schema()
     {
         return $this->menu_list;
+    }
+
+    public function should_menu_visible_for_role( string $slug, string $role ) : bool
+    {
+        
+        if ( isset( $this->menu_list_by_slug[$slug] ) === false ) {
+            return false;
+        }
+
+        // This return an array as following: 'capability' => true
+        // The key is the capability, all values of each capability is true
+        $role_capabilities = (array) get_role( $role )->capabilities;
+
+        if ( array_key_exists( $this->menu_list_by_slug[$slug]['capability'], $role_capabilities ) ) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    // public function should_menu_visible_for_role( string $slug, string $role ) : bool
+    // {
+    //     $wp_admin_menu = $GLOBALS['menu'];
+
+    //     // This return an array as following: 'capability' => true
+    //     // The key is the capability, all values of each capability is true
+    //     $role_capabilities = (array) get_role( $role )->capabilities;
+        
+
+    //     // TODO: using the menu in this class, but pay attention when this class is instatiated
+    //     foreach ( $wp_admin_menu as $wp_admin_menu_item ) {
+    //         /**
+    //          *      $wp_admin_menu_item[0] = menu label
+    //          *      $wp_admin_menu_item[1] = capability
+    //          *      $wp_admin_menu_item[2] = menu slug
+    //          */
+
+    //          if ( $slug === $wp_admin_menu_item[2] ) {
+    //              if ( array_key_exists( $wp_admin_menu_item[1], $role_capabilities ) ) {
+    //                  return true;
+    //              }
+    //          }
+    //     }
+
+    //     return false;
+    // }
+
+
+    public function should_menu_visible_for_capability( string $slug, string $capability ) : bool
+    {
+        $wp_admin_menu = $GLOBALS['menu'];
+
+        foreach ( $wp_admin_menu as $wp_admin_menu_item ) {
+            /**
+             *      $wp_admin_menu_item[0] = menu label
+             *      $wp_admin_menu_item[1] = capability
+             *      $wp_admin_menu_item[2] = menu slug
+             */
+
+             if ( $slug === $wp_admin_menu_item[2] ) {
+                 if ( $capability === $wp_admin_menu_item[1] ) {
+                     return true;
+                 }
+             }
+        }
+
+        return false;
+    }
+
+
+    public function roles() {
+
     }
 
    
