@@ -105,7 +105,7 @@ class Webigo_Module_Script
      *                 )
      * 
      */
-    public function register_public_script( array $script_data )
+    public function register_script( array $script_data )
     {
         $this->script_data = $script_data;
 

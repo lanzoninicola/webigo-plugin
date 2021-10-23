@@ -68,7 +68,7 @@ class Webigo_Archive_Product extends Webigo_Module
 			'includes'	   => array( 'is_shop' ),
 		);
 
-		$this->script->register_public_script( $script_data );
+		$this->script->register_script( $script_data );
 	}
 
 	public function add_hooks()

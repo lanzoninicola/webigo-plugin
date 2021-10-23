@@ -193,7 +193,7 @@ abstract class Webigo_Module
 	 *			'file_name' => 'archive-product.js'
 	 *		);
 	 *	
-	 *		$this->script->register_public_script($script_data);
+	 *		$this->script->register_script($script_data);
 	 *	}
 	 * 
 	 */

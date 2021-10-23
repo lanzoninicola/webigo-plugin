@@ -78,7 +78,7 @@ class Webigo_Checkout extends Webigo_Module
 			'includes'	   => array( 'is_checkout '),
 		);
 
-		$this->script->register_public_script( $script_data );
+		$this->script->register_script( $script_data );
 		
 	}
 

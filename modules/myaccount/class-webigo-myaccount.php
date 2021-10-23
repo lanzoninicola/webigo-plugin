@@ -89,7 +89,7 @@ class Webigo_Myaccount extends Webigo_Module
 			'includes'     => array( 'is_account_page' ),
 		);
 
-		$this->script->register_public_script( $script_data );
+		$this->script->register_script( $script_data );
 	}
 
 	public function add_hooks()

@@ -64,7 +64,7 @@ class Webigo_Widgets extends Webigo_Module
 			'in_footer'    => true
 		);
 
-		$this->script->register_public_script( $script_data );
+		$this->script->register_script( $script_data );
 	}
 
 	public function add_hooks()

@@ -68,7 +68,7 @@ class Webigo_Wpadmin_Menu extends Webigo_Module
 			'admin'        => true
 		);
 
-		$this->script->register_public_script( $script_data );
+		$this->script->register_script( $script_data );
 	}
 
 	public function add_hooks()

@@ -133,7 +133,7 @@ class Webigo_Core extends Webigo_Module
 			'disabled'    => true
 		);
 
-		$this->script->register_public_script( $state_manager );
+		$this->script->register_script( $state_manager );
 
 		$script_data = array(
 			'module'      => $this->name,
@@ -141,7 +141,7 @@ class Webigo_Core extends Webigo_Module
 			'version'     => $this->js_version,
 		);
 
-		$this->script->register_public_script( $script_data );
+		$this->script->register_script( $script_data );
 
 		$header = array(
 			'module'      => $this->name,
@@ -150,7 +150,7 @@ class Webigo_Core extends Webigo_Module
 			'includes'    => array( 'is_archive' ),
 		);
 
-		$this->script->register_public_script( $header );
+		$this->script->register_script( $header );
 
 		$buttons = array(
 			'module'      => $this->name,
@@ -158,7 +158,7 @@ class Webigo_Core extends Webigo_Module
 			'version'     => $this->js_version,
 		);
 
-		$this->script->register_public_script( $buttons );
+		$this->script->register_script( $buttons );
 
 		$overlay = array(
 			'module'      => $this->name,
@@ -166,7 +166,7 @@ class Webigo_Core extends Webigo_Module
 			'version'     => $this->js_version,
 		);
 
-		$this->script->register_public_script( $overlay );
+		$this->script->register_script( $overlay );
 	}
 
 	public function add_hooks()

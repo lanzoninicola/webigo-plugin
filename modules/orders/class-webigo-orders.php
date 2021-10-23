@@ -67,7 +67,7 @@ class Webigo_Orders extends Webigo_Module
 			'disabled'     => true
 		);
 
-		$this->script->register_public_script( $script_data );
+		$this->script->register_script( $script_data );
 	}
 
 	public function add_hooks()

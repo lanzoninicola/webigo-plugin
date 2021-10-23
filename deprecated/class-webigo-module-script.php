@@ -119,7 +119,7 @@ class Webigo_Module_Script
      *                 )
      * 
      */
-    public function register_public_script(array $script_data)
+    public function register_script(array $script_data)
     {
 
         $this->action_name = 'wp_enqueue_scripts';
