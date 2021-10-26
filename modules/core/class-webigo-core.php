@@ -26,6 +26,9 @@ class Webigo_Core extends Webigo_Module
 		$this->view_overlay = new Webigo_View_Overlay();
 
 		require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-woo-urls.php';
+
+		require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-user.php';
+		$GLOBALS['wbg_user'] = new Webigo_User();
 	}
 
 	public function load_views() {}
