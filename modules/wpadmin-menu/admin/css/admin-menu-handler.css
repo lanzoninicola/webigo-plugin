@@ -1,8 +1,28 @@
+*[data-visibility="hidden"] {
+  display: none;
+}
+
+.wbg-admin-menu-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 50%;
+}
+
 .wbg-system-roles-selections {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   margin-block: 2rem;
+}
+
+.wbg-admin-menu-visibility-editor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 0.5rem;
+  max-width: 50%;
 }
 
 .wbg-menu-item {
@@ -13,7 +33,15 @@
   padding-block: 0.5rem;
 }
 
+.wbg-menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 .wbg-menu-item-default {
   font-weight: 600;
   font-size: 0.75rem;
+}
+
+.wbg-admin-menu-visibility-editor-footer {
+  margin-top: 1rem;
 }

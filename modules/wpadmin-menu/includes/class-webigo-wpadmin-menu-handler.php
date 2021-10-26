@@ -4,57 +4,24 @@
 class Webigo_Wpadmin_Menu_Handler
 {
     
+    private $menu_visibility = array();
 
-    // private $is_admin_area = false;
-
-    // private $is_valid_user_logged = false;
-
-    // private $user_logged;
-
-    // private $user_logged_role;
-
-    /**
-     * @var array
-     */
-    private $menu_list = array();
 
     public function __construct()
     {
+        $this->init_module_options();
     }
 
-    // public function init_checks()
-    // {
-    //     $this->should_admin_area();
-    //     $this->should_current_user_logged();
-    //     $this->should_valid_user_logged();
-    //     $this->get_user_logged_roles();
-    // }
+    private function init_module_options()
+    {
+        $visibility_edited_option = get_option('webigo_admin_menu_visibility');
 
-    // private function should_admin_area()
-    // {
-    //     $this->is_admin_area = is_admin();
-    // }
+        if ( is_array( $visibility_edited_option ) === true && empty( $visibility_edited_option) === false ) {
+            return;
+        }
 
-
-    // private function should_current_user_logged()
-    // {
-    //     $this->user_logged = wp_get_current_user();
-    // }
-
-    // private function should_valid_user_logged()
-    // {
-    //     if (isset($this->user_logged) & $this->user_logged->exists()) {
-    //         $this->is_valid_user_logged = true;
-    //     }
-    // }
-
-    // private function get_user_logged_roles()
-    // {
-    //     if ($this->is_valid_user_logged) {
-    //         $user_roles = (array) $this->user_logged->roles;
-    //         $this->user_logged_role = $user_roles[0];
-    //     }
-    // }
+        add_option( 'webigo_admin_menu_visibility', array() );
+    }
 
     public function build_menu_schema()
     {
@@ -97,38 +64,74 @@ class Webigo_Wpadmin_Menu_Handler
             ));
         }
 
-        // var_dump( $this->menu_list_by_slug); die;
     }
+
+
+    public function handle_menu_items_visibility_changed()
+    {
+        if ( isset( $_POST['edit-admin-menu-settings'] ) ) {
+            $menu_visibility_json      = str_replace( '\"', '"', $_POST['edit-admin-menu-settings']  );
+            $menu_visibility_json_decoded = json_decode( $menu_visibility_json, true );
+
+            // Administrator menu cannot be changed
+            if ( isset( $menu_visibility_json_decoded['administrator'] ) ) {
+                unset( $menu_visibility_json_decoded['administrator'] );
+            }
+
+            if ( $menu_visibility_json_decoded !== false ) {
+                $this->menu_visibility = $menu_visibility_json_decoded;
+
+                $this->update_visibility_settings();
+            }
+        }
+    }
+
+    
+    private function update_visibility_settings() : void
+    {
+
+        $visibility_edited_option = get_option('webigo_admin_menu_visibility');
+        $new_visibility_edited_option = array();
+
+        if ( is_array( $visibility_edited_option ) === true && empty( $visibility_edited_option) === false ) {
+            $new_visibility_edited_option = $visibility_edited_option;
+            
+            foreach ( array_keys( $this->menu_visibility ) as $role ) {
+                foreach ( $this->menu_visibility[$role] as $menu_item => $new_value ) {
+                    $new_visibility_edited_option[$role][$menu_item] = $new_value; 
+                }
+            }
+
+            update_option( 'webigo_admin_menu_visibility', $new_visibility_edited_option );
+        }
+    }
+
 
     public function hide_menus()
     {
-        if (!$this->is_admin_area || !$this->is_valid_user_logged) {
+
+        $current_user = $GLOBALS['wbg_user'];
+
+        if ( is_admin() === false || $current_user->is_valid() === false ) {
             return;
         }
+
         // hide the menu
-        foreach ($this->menu_list as $label => $menu_data) {
+        foreach ( array_keys( $this->menu_list_by_slug ) as $slug ) {
+           
+            $should_hidden = $this->should_menu_hidden_for_role( $slug , $current_user->role() );
 
-            if (in_array($label, $this->menus_to_hide)) {
-
-                if (in_array($this->user_logged_role, $this->target_roles)) {
-                    $this->menu_list[$label]['hidden'] = true;
-                    $has_menu_removed = remove_menu_page($menu_data['slug']);
-                }
-                // if(!$has_menu_removed) {
-                //     echo esc_html('<h1>Menu ' . $label . ' has not be removed</h1>');
-                // }
+            if ( $should_hidden === true ) {
+                remove_menu_page( $slug );
             }
         }
     }
 
 
 
-    public function menu_schema()
-    {
-        return $this->menu_list;
-    }
 
-    public function should_menu_visible_for_role( string $slug, string $role ) : bool
+
+    public function should_default_visibile_for_role( string $slug, string $role ) : bool
     {
         
         if ( isset( $this->menu_list_by_slug[$slug] ) === false ) {
@@ -144,6 +147,28 @@ class Webigo_Wpadmin_Menu_Handler
         }
 
         return false;
+    }
+
+    /**
+     * 
+     * Returns null if the user has not changed the default visibility
+     * 
+     * @return bool|null 
+     */
+    public function should_menu_hidden_for_role( string $slug, string $role )
+    {
+        
+        $visibility_edited_option = get_option( 'webigo_admin_menu_visibility' );
+        
+
+        if ( is_array( $visibility_edited_option ) === true && empty( $visibility_edited_option) === false ) {
+
+            if ( isset( $visibility_edited_option[$role][$slug] ) ) {
+                return $visibility_edited_option[$role][$slug] === false ? true : false;
+            }
+        }
+
+        return null;
     }
 
 
@@ -197,8 +222,27 @@ class Webigo_Wpadmin_Menu_Handler
     }
 
 
-    public function roles() {
+    /**
+     * @param string $attribute label|slug|capability
+     * @return array 
+     */
+    public function get_menu_by( string $attribute = 'label' ) : array
+    {
 
+        if ( $attribute === 'label' ) {
+            return $this->menu_list_by_label;
+        }
+
+        if ( $attribute === 'slug' ) {
+            return $this->menu_list_by_slug;
+        }
+
+        if ( $attribute === 'capability' ) {
+            return $this->menu_list_by_capabilities;
+        }
+
+        return [];
+        
     }
 
    

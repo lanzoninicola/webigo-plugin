@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 class Webigo_View_Admin_Menu_List {
 
 
@@ -24,12 +22,6 @@ class Webigo_View_Admin_Menu_List {
 
     }
 
-    private function set_default()
-    {
-
-    }
-
-
     /**
      * This function is triggered when the "admin_menu" hook is fired
      * 
@@ -50,8 +42,11 @@ class Webigo_View_Admin_Menu_List {
     {
       ?>
         
-            <div class="wbg-admin-menu-visibility-editor">
-                <?php $this->role_selection() ?>
+            <div class="wbg-admin-menu-visibility-container">
+                <div class="wbg-admin-menu-header">
+                    <?php $this->role_selection() ?>
+                    <?php $this->reset() ?>
+                </div>
                 <?php $this->render_edit_menu_visibility() ?>
             </div>
         
@@ -68,20 +63,19 @@ class Webigo_View_Admin_Menu_List {
              *      $wp_admin_menu_item[1] = capability
              *      $wp_admin_menu_item[2] = menu slug
              */
-            $wp_admin_menu_items = $GLOBALS['menu']
-     
+            $admin_menu_items = $this->wpadmin_menu_handler->get_menu_by( 'label' );
      ?>
 
             <form method="post" role="edit-menu-visibility">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(5, 1fr); grid-gap: 0.5rem;">
+                <div class="wbg-admin-menu-visibility-editor">
                     <?php 
-                    foreach( $wp_admin_menu_items as $wp_admin_menu_item) {
-                        $this->render_menu_item( $wp_admin_menu_item[0], $wp_admin_menu_item[2] );
+                    foreach( array_keys( $admin_menu_items ) as $label ) {
+                        $this->render_menu_item( $label, $admin_menu_items[$label]['slug'] );
                     }
                     ?>
                 </div>
-                <div>
-                    <button type="submit" name="action" value="update-admin-menu-settings">Save</button>
+                <div class="wbg-admin-menu-visibility-editor-footer">
+                    <button type="submit" name="edit-admin-menu-settings" value="false">Save</button>
                 </div>
             </form>
 
@@ -97,23 +91,26 @@ class Webigo_View_Admin_Menu_List {
             return;
         }
 
-        $should_visible = $this->wpadmin_menu_handler->should_menu_visible_for_role( $slug, $this->role_selected );
+        $should_default_visible = $this->wpadmin_menu_handler->should_default_visibile_for_role( $slug, $this->role_selected );
+        $should_hide            = $this->wpadmin_menu_handler->should_menu_hidden_for_role( $slug, $this->role_selected );
+
+        $checked = $should_hide !== null ? !$should_hide : $should_default_visible;
 
         ?>
             <div class="wbg-menu-item">
                 <label for="<?php echo esc_attr( $slug ); ?>">
-                    <input type="checkbox" name="<?php echo esc_attr( $slug ); ?>" id="<?php echo esc_attr( $slug ); ?>" <?php checked( $should_visible, true ); ?> >
+                    <input type="checkbox" name="<?php echo esc_attr( $label ); ?>" id="<?php echo esc_attr( $slug ); ?>" <?php checked( $checked ); ?> >
                         <?php 
                             if ( $slug == 'edit-comments.php' ) {
                                 echo 'Comentários';
                             } elseif ( $slug == 'plugins.php' ) {
                                 echo 'Plugins';
                             } else {
-                                echo esc_html( $label );
+                                echo esc_html( ucfirst( $label ) );
                             }
                         ?>
                 </label>
-                <?php if ( $should_visible === true ) : ?>
+                <?php if ( $should_default_visible === true ) : ?>
                     <span class="wbg-menu-item-default">(Default: enabled)</span>
                 <?php endif; ?>
             </div>
@@ -127,10 +124,23 @@ class Webigo_View_Admin_Menu_List {
         ?>
             <form method="post" role="system-roles-selections">
                 <div class="wbg-system-roles-selections">
-                    <select name="system-role-selected">
+                    <select name="system-role">
                         <?php echo esc_html( wp_dropdown_roles( $this->role_selected ) ) ?>
                     </select>
-                    <button type="submit" name="action" value="system-role-selection">Go</button>
+                    <button type="submit" name="system-role-selected" value="<?php echo esc_attr( $this->role_selected ) ?>">Go</button>
+                </div>
+            </form>
+
+<?php
+    }
+
+    private function reset()
+    {
+        ?>
+            <form method="post" role="reset-to-default">
+                <div>
+                    <button type="submit" name="wbg-menu-visibility-reset-role" value="true">Reset Role</button>
+                    <button type="submit" name="wbg-menu-visibility-reset-all" value="true">Reset All</button>
                 </div>
             </form>
 

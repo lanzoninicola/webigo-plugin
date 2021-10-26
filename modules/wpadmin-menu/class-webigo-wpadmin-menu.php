@@ -33,7 +33,6 @@ class Webigo_Wpadmin_Menu extends Webigo_Module
 	{
 		require_once WEBIGO_PLUGIN_PATH . 'modules/wpadmin-menu/includes/class-webigo-wpadmin-menu-handler.php';
 		$this->wpadmin_menu_handler = new Webigo_Wpadmin_Menu_Handler();
-		
 	}
 
 	public function module()
@@ -82,17 +81,17 @@ class Webigo_Wpadmin_Menu extends Webigo_Module
 		
 		$this->hooks->register( $hook_admin_menu_init );
 
-        // $hook_admin_menu_build_menu_schema = array(
-		// 	'hook'     => 'admin_menu',
-		// 	'callback' => array( $this->wpadmin_menu_handler, 'build_menu_schema' ),
-        //     'priority' => 910
-		// );
+		$hook_admin_menu_post_edit_data = array(
+			'hook'     => 'admin_menu',
+			'callback' => array( $this->wpadmin_menu_handler, 'handle_menu_items_visibility_changed' ),
+            'priority' => 901
+		);
 		
-		// $this->hooks->register( $hook_admin_menu_build_menu_schema );
+		$this->hooks->register( $hook_admin_menu_post_edit_data );
 
 		$this->add_submenu_items();
 
-		// $this->hide_menus();
+		$this->hide_menus();
 	}
 
 
