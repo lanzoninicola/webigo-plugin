@@ -2,6 +2,7 @@
 
 require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-wordpress-ajax-request.php';
 
+// TODO: managing json error https://www.php.net/manual/en/function.json-last-error.php
 
 class Webigo_Add_To_Cart_Ajax_Bulk_Request extends Webigo_Wordpress_Ajax_Request {
 
