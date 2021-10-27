@@ -25,7 +25,7 @@ class Webigo_View_Login_Button {
         <div class="wbg-login-button-wrapper">
 
             <?php if ( is_user_logged_in() ) { ?>
-                <a href="<?php echo esc_url( $href );  ?>" title="<?php _e('My Account','woothemes'); ?>">
+                <a href="<?php echo esc_url( $href );  ?>" title="<?php echo esc_attr( 'entra' ); ?>">
 
                     <?php Webigo_View_Buttons::render( 'Entra' , $type, $options ) ?>
 
@@ -34,7 +34,7 @@ class Webigo_View_Login_Button {
             <?php } 
             
             else { ?>
-                <a href="<?php echo esc_url( $href ); ?>" title="<?php _e('Login / Register','woothemes'); ?>">
+                <a href="<?php echo esc_url( $href ); ?>" title="<?php echo esc_attr( 'entra ou cadastra-se' ); ?>">
                 
                     <?php Webigo_View_Buttons::render( 'Entra / Cadastra-se' , $type , $options ) ?>
                 
