@@ -40,17 +40,13 @@ input::placeholder {
   color: var(--hzbi-green);
   border-radius: 10px;
   background-color: var(--hzbi-lighter-green);
-  /* box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px var(--hzbi-white); */
   margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .woocommerce-checkout .woocommerce-form-login-toggle .woocommerce-info a {
   font-size: 0.75rem;
   text-align: right;
-}
-
-.woocommerce-checkout .woocommerce-form-login-toggle .woocommerce-info {
-  margin-top: 1rem;
 }
 
 .woocommerce-checkout .lost_password {

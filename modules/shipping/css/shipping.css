@@ -10,7 +10,6 @@
   background-position: top 1.5rem left;
   background-size: 300px;
   min-height: 100vh;
-  /* min-height: calc(var(--vh, 1vh) * 100); */
 }
 
 .wbg-shipping-header {
@@ -318,13 +317,9 @@
 
 .wbg-cep-form-footer {
   display: flex;
+  flex-direction: column;
   gap: 0.5em;
   margin-top: 0.25em;
-}
-
-.wbg-cep-form-footer {
-  display: flex;
-  flex-direction: column;
 }
 
 .wbg-cep-verification-success,
