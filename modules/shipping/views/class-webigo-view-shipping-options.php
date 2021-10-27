@@ -54,7 +54,7 @@ class Webigo_View_Shipping_Options {
     }
 
    
-
+    /*
     private function shipping_info()
     {
         ?>
@@ -68,6 +68,7 @@ class Webigo_View_Shipping_Options {
 
         <?php
     }
+    */
 
 
 }

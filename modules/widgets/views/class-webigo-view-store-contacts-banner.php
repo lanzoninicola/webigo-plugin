@@ -106,6 +106,7 @@ class Webigo_View_Store_Contacts_Banner {
         echo esc_html( $icon_card->render() );
     }
 
+    /*
     private function render_phone() : void
     {
 
@@ -121,6 +122,7 @@ class Webigo_View_Store_Contacts_Banner {
         echo esc_html( $icon_card->render() );
        
     }
+    */
 
     private function render_address() : void
     {

@@ -43,7 +43,7 @@ abstract class Webigo_Module
 	 * @var array
 	 */
 	// TODO: Implements module dependencies
-	private $wp_dependencies;
+	// private $wp_dependencies;
 
 	/**
 	 * The path where the classes of module dependecies are located.

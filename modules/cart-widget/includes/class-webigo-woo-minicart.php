@@ -7,6 +7,8 @@ class Webigo_Woo_Minicart {
 
     /**
 	 * This hide the bundled item in the cart
+	 * 
+	 * Do not remove unused parameters because used by Wordpress filter
 	 */
 	public function hide_bundled_items( $is_visible, $cart_item, $cart_item_key ) : bool
 	{
@@ -24,6 +26,9 @@ class Webigo_Woo_Minicart {
 	/**
 	 * This replace the permalink of product in the cart with #.
      * Avoiding open the single product page from the minicart
+	 * 
+	 * Do not remove unused parameters because used by Wordpress filter
+	 * 
 	 */
 	public function remove_product_link( $product, $cart_item, $cart_item_key ) : string
 	{

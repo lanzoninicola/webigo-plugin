@@ -46,6 +46,7 @@ class Webigo_View_Add_To_Cart_Footer {
         <?php
     }
 
+    /*
     private function render_add_to_cart_button() : void
     {
         $button_options = array(
@@ -75,6 +76,7 @@ class Webigo_View_Add_To_Cart_Footer {
         Webigo_View_Buttons::render('Veja o carrinho', 'secondary', $button_options );
 
     }
+    */
 
     private function render_wp_nonce() {
 

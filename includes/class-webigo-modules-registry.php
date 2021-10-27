@@ -142,10 +142,12 @@ class Webigo_Modules_Registry
         array_push( $this->modules, $this->module_descriptor );
     }
 
+    /*
     public function unregister($name)
     {
         //TODO: implement
     }
+    */
 
     /**
      * 

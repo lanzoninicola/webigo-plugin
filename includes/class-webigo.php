@@ -328,7 +328,7 @@ class Webigo
 
 			$module_hooks = $module_obj_instance->hooks->hooks();
 
-			foreach ( $module_hooks as $hook => $hook_data ) {
+			foreach ( $module_hooks as $hook_data ) {
 
 				if ( $hook_data['callback'][0] === false ) {
 					throw new Exception('Class Webigo->define_hooks(). Action callback object is not defined. Check in the module ' . $module_name . ' the registration of ' . $module_hooks . ' hook');
