@@ -58,7 +58,7 @@
     const { prodId, catId, price } = _dom.getElementAttribute(this);
 
     _state.setState({
-      currentTarget: { prodId: prodId, catId: catId, price: price },
+      currentTarget: { prodId, catId, price },
     });
 
     increaseQty();
@@ -73,7 +73,7 @@
     const { prodId, catId, price } = _dom.getElementAttribute(this);
 
     _state.setState({
-      currentTarget: { prodId: prodId, catId: catId, price: price },
+      currentTarget: { prodId, catId, price },
     });
 
     decreaseQty();
@@ -97,7 +97,7 @@
       cart: {
         [prodId]: {
           qty: newQty,
-          catId: catId,
+          catId,
         },
       },
     });
@@ -412,7 +412,7 @@
     const { prodId, catId } = _dom.getElementAttribute(this);
 
     _state.setState({
-      currentZoomTarget: { prodId: prodId, catId: catId },
+      currentZoomTarget: { prodId, catId },
     });
 
     showProductZoomWindow();
