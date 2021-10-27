@@ -59,7 +59,7 @@ class StateManager {
   mergeData = (source = {}, target = {}) => {
     for (const [key, val] of Object.entries(source)) {
       if (val !== null && typeof val === `object`) {
-        if (target[key] === undefined) {
+        if (typeof target[key] === "undefined") {
           target[key] = new val.__proto__.constructor();
         }
         this.mergeData(val, target[key]);
@@ -263,12 +263,12 @@ class EventManager {
   attachEvent = ({ el, ev, cb, debug = false }) => {
     if (debug) {
       console.log({
-        element: _el,
+        element: el,
         event: ev,
         callback_called: cb,
       });
 
-      if (!_el) {
+      if (!el) {
         console.error(
           `EventManager 'attachEvent': Elements not found: event ${ev} - cb ${cb}`
         );

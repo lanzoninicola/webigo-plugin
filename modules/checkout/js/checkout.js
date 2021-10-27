@@ -1,16 +1,12 @@
-(function (webigoHelper, d, $) {
-  const _event = webigoHelper?.eventManager;
+(function (webigoHelper, d) {
   const _dom = webigoHelper?.domManager;
 
-  const formExistingAccount = _dom.el(
-    ".woocommerce-checkout .woocommerce-form-login"
-  );
   const rememberMeLoginNode = _dom.el(
     ".woocommerce-checkout .woocommerce-form-login .woocommerce-form-login__rememberme"
   );
 
   const rememberMeLogin = _dom.el(
-    '.woocommerce-checkout .woocommerce-form-login .woocommerce-form-login__rememberme input[name="rememberme"]'
+    ".woocommerce-checkout .woocommerce-form-login .woocommerce-form-login__rememberme input[name='rememberme']"
   );
 
   if (rememberMeLogin) {
@@ -30,4 +26,4 @@
   }
 
   /** End Checkout Existing Account */
-})(webigoHelper, document, jQuery);
+})(webigoHelper, document);

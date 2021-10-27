@@ -58,8 +58,8 @@
   }
 
   function getUserAction() {
-    const url_string = window.location.href;
-    const url = new URL(url_string);
+    const urlString = window.location.href;
+    const url = new URL(urlString);
 
     return url.searchParams.get("shipping_method");
   }
