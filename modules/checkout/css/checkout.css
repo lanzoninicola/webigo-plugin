@@ -69,9 +69,11 @@ input::placeholder {
   color: var(--hzbi-black);
   margin-bottom: 1rem;
 }
+
 /* Start Hiding Coupon */
+
 .woocommerce-checkout .woocommerce-form-coupon-toggle,
-.woocommerce-checkout .checkout_coupon woocommerce-form-coupon {
+.woocommerce-checkout .checkout_coupon .woocommerce-form-coupon {
   display: none;
 }
 
