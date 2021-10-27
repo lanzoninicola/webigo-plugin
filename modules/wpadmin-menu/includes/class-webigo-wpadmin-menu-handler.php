@@ -8,13 +8,7 @@ class Webigo_Wpadmin_Menu_Handler
 
     public function __construct()
     {
-        $this->load_dependencies();
         $this->init_module_options();
-    }
-
-    private function load_dependencies()
-    {
-        require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-globals.php';
     }
 
     private function init_module_options()

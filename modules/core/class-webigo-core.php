@@ -27,10 +27,7 @@ class Webigo_Core extends Webigo_Module
 
 		require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-woo-urls.php';
 
-		require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-globals.php';
-
 		require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-user.php';
-		Webigo_Globals::set( 'wbg_user', new Webigo_User() );
 	}
 
 	public function load_views() {}
