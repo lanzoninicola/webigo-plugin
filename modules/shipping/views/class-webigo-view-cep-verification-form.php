@@ -117,8 +117,9 @@ class Webigo_View_Cep_Verification_Form {
 
                     foreach ($states_code as $key => $value) {
                         $selected = $key === $selected_state ? 'selected' : '';
-                        $optionOutput = "<option value=$key $selected>$value</option>";
-                        echo $optionOutput;
+                        ?>
+                        <option value="<?php echo esc_attr( $key ) ?>" <?php echo esc_attr( $selected ) ?>><?php echo esc_html( $value ) ?></option>
+                        <?php
                     }
 
                     ?>
