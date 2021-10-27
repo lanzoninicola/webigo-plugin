@@ -51,12 +51,12 @@ class Webigo_Myaccount_Page {
             global $wp;
                 
             if ( $wp->request === 'my-account' ) {
-                wp_redirect( site_url( '/my-account/orders/' ) );
+                wp_safe_redirect( site_url( '/my-account/orders/' ) );
                 exit();
             }
         
             if ( $wp->request === 'minha-conta' ) {
-                wp_redirect( site_url( '/minha-conta/orders/' ) );
+                wp_safe_redirect( site_url( '/minha-conta/orders/' ) );
                 exit();
             }
         }
