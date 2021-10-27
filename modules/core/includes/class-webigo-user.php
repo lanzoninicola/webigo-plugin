@@ -89,5 +89,21 @@ class Webigo_User {
         return false;
     }
 
+    /**
+     * 
+     * @return bool
+     */
+    public function is_shopping_manager() : bool
+    {
+        if ( $this->is_valid() ) {
+            
+            $roles = (array) $this->current_user_logged->roles;
+
+            return $roles[0] === 'shopping_manager' ? true : false ;
+        }
+
+        return false;
+    }
+
 }
 
