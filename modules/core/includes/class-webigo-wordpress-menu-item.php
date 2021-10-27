@@ -19,7 +19,30 @@ class Webigo_Wordpress_Menu_Item {
      */
     private $hooks;
 
-
+    /**
+     * @var array $menu_item - Array that describes the menu item
+     * Array of TOP MENU ITEM
+     *  array(
+     *      'type'       => 'topmenu',
+     *      'menu_item'  => '',
+     *      'menu_title' => '',
+     *      'capability' => '',
+     *      'menu_slug'  => '',
+     *      )
+     * 
+     * Array of SUBMENU ITEM
+     *  array(
+     *      'type'         => 'submenu',
+     *      'parent_slug'  => '',
+     *      'menu_item'    => '',
+     *      'menu_title'   => '',
+     *      'capability'   => '',
+     *      'menu_slug'   => '',
+     *      )
+     * 
+     * @var IWebigo_View  $view - View object that will be used to render the menu item
+     * @var IWebigo_Hooks $hooks - Hooks object that will be used to register the menu item
+     */
     public function __construct( array $menu_item, IWebigo_View $view, IWebigo_Hooks $hooks ) {
 
         $this->validate_menu_item( $menu_item );
@@ -31,7 +54,10 @@ class Webigo_Wordpress_Menu_Item {
     private function validate_menu_item( array $menu_item )
     {
 
-        if ( isset( $menu_item['type'] ) === false ) {
+        if ( isset( $menu_item['type'] ) === false 
+            || $menu_item['type'] !== 'topmenu' 
+            || $menu_item['type'] !== 'submenu'
+            ) {
             throw 'You must define if the menu is a topmenu or a submenu ( topmenu|submenu )';
         }
 
