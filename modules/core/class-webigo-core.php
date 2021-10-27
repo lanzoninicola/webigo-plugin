@@ -128,15 +128,6 @@ class Webigo_Core extends Webigo_Module
 
 	public function add_script()
 	{
-		$state_manager = array(
-			'module'      => $this->name,
-			'file_name'   => 'state-manager.js',
-			'version'     => $this->js_version,
-			'disabled'    => true
-		);
-
-		$this->script->register_script( $state_manager );
-
 		$script_data = array(
 			'module'      => $this->name,
 			'file_name'   => 'core.js',
