@@ -16,10 +16,11 @@ class Webigo_View_Admin_Menu_List {
     private function handle_role_change()
     {
 
-        if ( isset( $_POST['system-role-selected'] ) ) {
-            $this->role_selected = filter_var( trim( $_POST['system-role-selected'] ), FILTER_SANITIZE_STRING );
-        }
+        $role_selected = filter_input( INPUT_POST, 'system-role-selected', FILTER_SANITIZE_STRING );
 
+        if ( $role_selected !== null ) {
+            $this->role_selected = $role_selected;
+        }
     }
 
     /**

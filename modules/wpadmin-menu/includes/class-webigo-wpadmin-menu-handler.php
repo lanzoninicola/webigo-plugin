@@ -75,9 +75,11 @@ class Webigo_Wpadmin_Menu_Handler
 
     public function handle_menu_items_visibility_changed()
     {
-        if ( isset( $_POST['edit-admin-menu-settings'] ) ) {
-            $menu_visibility_json      = str_replace( '\"', '"', $_POST['edit-admin-menu-settings']  );
-            $menu_visibility_json_decoded = json_decode( $menu_visibility_json, true );
+        
+        $admin_menu_edited = filter_input( INPUT_POST, 'edit-admin-menu-settings' );
+
+        if ( $admin_menu_edited !== null ) {
+            $menu_visibility_json_decoded = json_decode( $admin_menu_edited, true );
 
             // Administrator menu cannot be changed
             if ( isset( $menu_visibility_json_decoded['administrator'] ) ) {
