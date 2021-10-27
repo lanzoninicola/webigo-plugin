@@ -121,7 +121,7 @@
       const fragmentsData = data.fragments;
 
       Object.keys(fragmentsData).forEach((key) => {
-        $(key).replaceWith(fragmentsData[key]);
+        $(key.toString()).replaceWith(fragmentsData[key.toString()]);
       });
     }
   }
