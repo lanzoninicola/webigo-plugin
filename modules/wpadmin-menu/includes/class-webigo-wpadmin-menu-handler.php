@@ -6,10 +6,15 @@ class Webigo_Wpadmin_Menu_Handler
     
     private $menu_visibility = array();
 
-
     public function __construct()
     {
+        $this->load_dependencies();
         $this->init_module_options();
+    }
+
+    private function load_dependencies()
+    {
+        require_once WEBIGO_PLUGIN_PATH . '/modules/core/includes/class-webigo-globals.php';
     }
 
     private function init_module_options()
@@ -25,8 +30,9 @@ class Webigo_Wpadmin_Menu_Handler
 
     public function build_menu_schema()
     {
-            // start he hiding menu items process
-        $wp_admin_menu = $GLOBALS['menu'];
+        
+        // start hiding menu items process
+        $wp_admin_menu = Webigo_Globals::get( 'menu' );
 
         $this->menu_list = array();
 
@@ -110,7 +116,7 @@ class Webigo_Wpadmin_Menu_Handler
     public function hide_menus()
     {
 
-        $current_user = $GLOBALS['wbg_user'];
+        $current_user = Webigo_Globals::get( 'wbg_user' );
 
         if ( is_admin() === false || $current_user->is_valid() === false ) {
             return;
@@ -171,38 +177,9 @@ class Webigo_Wpadmin_Menu_Handler
         return null;
     }
 
-
-    // public function should_menu_visible_for_role( string $slug, string $role ) : bool
-    // {
-    //     $wp_admin_menu = $GLOBALS['menu'];
-
-    //     // This return an array as following: 'capability' => true
-    //     // The key is the capability, all values of each capability is true
-    //     $role_capabilities = (array) get_role( $role )->capabilities;
-        
-
-    //     // TODO: using the menu in this class, but pay attention when this class is instatiated
-    //     foreach ( $wp_admin_menu as $wp_admin_menu_item ) {
-    //         /**
-    //          *      $wp_admin_menu_item[0] = menu label
-    //          *      $wp_admin_menu_item[1] = capability
-    //          *      $wp_admin_menu_item[2] = menu slug
-    //          */
-
-    //          if ( $slug === $wp_admin_menu_item[2] ) {
-    //              if ( array_key_exists( $wp_admin_menu_item[1], $role_capabilities ) ) {
-    //                  return true;
-    //              }
-    //          }
-    //     }
-
-    //     return false;
-    // }
-
-
     public function should_menu_visible_for_capability( string $slug, string $capability ) : bool
     {
-        $wp_admin_menu = $GLOBALS['menu'];
+        $wp_admin_menu = Webigo_Globals::get( 'menu' );
 
         foreach ( $wp_admin_menu as $wp_admin_menu_item ) {
             /**
