@@ -332,13 +332,29 @@ class SessionManager {
 
     sessionStorage.setItem(key, _value);
   };
+
   get = (key) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
       throw "Error to get the browser sesssion for the key selected. The key parameter is undefined";
     }
 
-    return sessionStorage.getItem(key);
+    const value = sessionStorage.getItem(key);
+
+    if (value === "null") {
+      return null;
+    }
+
+    if (value === "undefined") {
+      return false;
+    }
+
+    if (value.charAt(0) === "{") {
+      return JSON.parse(value);
+    }
+
+    return value;
   };
+
   remove = (key) => {
     if (this.typeManager.isUndefined(key) || this.typeManager.isNull(key)) {
       throw "Error to remove from the browser sesssion the key selected. The key parameter is undefined";
