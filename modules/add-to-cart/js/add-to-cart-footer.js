@@ -131,7 +131,11 @@
       const fragmentsData = data.fragments;
 
       Object.keys(fragmentsData).forEach((key) => {
-        $(key.toString()).replaceWith(fragmentsData[key.toString()]);
+        const safeKey = key.replace(
+          /[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g,
+          "."
+        );
+        $(key).replaceWith(fragmentsData[key]);
       });
     }
   }
