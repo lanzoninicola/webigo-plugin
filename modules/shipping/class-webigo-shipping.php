@@ -123,7 +123,9 @@ class Webigo_Shipping extends Webigo_Module
 
 			// if $_POST['shipping_method'] is available means the user 
 			// has changed the shipping method
-			if ( isset( $_POST['shipping_method'] ) === false ) {
+			$shipping_method = filter_input( INPUT_POST, 'shipping_method', FILTER_SANITIZE_STRING );
+			
+			if ( $shipping_method !== false || $shipping_method !== null ) {
 				if ( $chosen_shipping_method[0] !== null ) {
 					WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_method );
 
