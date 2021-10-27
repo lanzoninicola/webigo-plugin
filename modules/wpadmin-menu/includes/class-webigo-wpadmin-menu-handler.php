@@ -32,12 +32,12 @@ class Webigo_Wpadmin_Menu_Handler
     {
         
         // start hiding menu items process
-        $wp_admin_menu = Webigo_Globals::get( 'menu' );
+        global $menu;
 
         $this->menu_list = array();
 
         // build a menu schema
-        foreach ($wp_admin_menu as $wp_admin_menu_item) {
+        foreach ($menu as $wp_admin_menu_item) {
             /**
              *      $wp_admin_menu_item[0] = menu label
              *      $wp_admin_menu_item[1] = capability
@@ -118,7 +118,7 @@ class Webigo_Wpadmin_Menu_Handler
     public function hide_menus()
     {
 
-        $current_user = Webigo_Globals::get( 'wbg_user' );
+        $current_user = new Webigo_User();
 
         if ( is_admin() === false || $current_user->is_valid() === false ) {
             return;
@@ -181,9 +181,9 @@ class Webigo_Wpadmin_Menu_Handler
 
     public function should_menu_visible_for_capability( string $slug, string $capability ) : bool
     {
-        $wp_admin_menu = Webigo_Globals::get( 'menu' );
+        global $menu;
 
-        foreach ( $wp_admin_menu as $wp_admin_menu_item ) {
+        foreach ( $menu as $wp_admin_menu_item ) {
             /**
              *      $wp_admin_menu_item[0] = menu label
              *      $wp_admin_menu_item[1] = capability
