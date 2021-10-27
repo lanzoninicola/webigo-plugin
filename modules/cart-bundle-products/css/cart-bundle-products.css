@@ -1,7 +1,0 @@
-/*
-  This rule hide the bundled items of YITH Plugin.
-  The rule must be !important to override the default
-*/
-form.woocommerce-cart-form .yith-wcpb-child-of-bundle-table-item {
-  display: none !important;
-}
