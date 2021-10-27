@@ -8,6 +8,13 @@ class Webigo_View_Myaccount_Form_Login {
 
     public function render()
     {
+
+        $username = filter_input( INPUT_POST, 'username', FILTER_SANITIZE_STRING );
+
+        if ( $username == false || $username == '' ) {
+            $username = '';
+        }
+
         ?>
 
         <div class="u-column1 col-1" data-visibility="hidden">
@@ -19,7 +26,7 @@ class Webigo_View_Myaccount_Form_Login {
 
                 <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
                     <label for="username"><?php esc_html_e( 'Username or email address', 'woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
-                    <input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="username" autocomplete="username" placeholder="<?php esc_html_e( 'Username or email address', 'woocommerce' ); ?>" value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; ?>" /><?php // @codingStandardsIgnoreLine ?>
+                    <input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="username" autocomplete="username" placeholder="<?php esc_html_e( 'Username or email address', 'woocommerce' ); ?>" value="<?php echo ( ! empty( $username ) ) ? esc_attr( wp_unslash( $username ) ) : ''; ?>" /><?php // @codingStandardsIgnoreLine ?>
                 </p>
 
                 <?php $this->password_field() ?>
