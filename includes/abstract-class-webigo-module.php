@@ -248,7 +248,7 @@ abstract class Webigo_Module
 
 	protected function require_once( string $module_file_path ) {
 
-		if ( file_exists( $module_file_path ) === false ) {
+		if ( is_file( $module_file_path ) === false ) {
 			throw "=== The file or path $module_file_path doesn't exists";
 		}
 

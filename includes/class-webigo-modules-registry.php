@@ -104,7 +104,7 @@ class Webigo_Modules_Registry
 
             $module_settings_path = WEBIGO_PLUGIN_PATH . "/modules/$module_name/settings/class-webigo-$module_name-settings.php";
 
-            if ( file_exists( $module_settings_path ) === false ) {
+            if ( is_file( $module_settings_path ) === false ) {
                 throw "============ Trying to load the settings file class-webigo-$module_name-settings.php but it doesn't exist in the following path: WEBIGO_PLUGIN_PATH . '/modules/$module_name/settings/class-webigo-$module_name-settings.php'";
             }
 

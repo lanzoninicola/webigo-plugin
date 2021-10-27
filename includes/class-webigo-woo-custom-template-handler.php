@@ -88,7 +88,7 @@ class Webigo_Woo_Custom_Template_Handler{
             } else {
                 $path = $this->template_directory_path . "/{$slug}.php";
             }
-            return file_exists( $path ) ? $path : $template;
+            return is_file( $path ) ? $path : $template;
         }
 
         return $template;
@@ -106,7 +106,7 @@ class Webigo_Woo_Custom_Template_Handler{
 
         if ( $this->is_custom_template_enabled() ) {
             $path = $this->template_directory_path . $template_name;
-            return file_exists( $path ) ? $path : $template;
+            return is_file( $path ) ? $path : $template;
         }
         
         return $template;
