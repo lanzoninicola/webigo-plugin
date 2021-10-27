@@ -36,7 +36,7 @@ class Webigo_Http_Request_Data implements IWebigo_Http_Request_Data {
      * @param array  $data_filter_settings
      * @param bool   $test  Optional - TODO: if true it disables the sanitization phase (for try purpose)
      */
-    public function __construct( string $http_method = 'post', array $data_filter_settings, bool $test = false ) 
+    public function __construct( string $http_method = 'post', array $data_filter_settings ) 
     {
         $this->http_method = $this->trimmer( $http_method );
         $this->data_filter_settings = $data_filter_settings;

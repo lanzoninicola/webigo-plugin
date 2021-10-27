@@ -21,9 +21,10 @@ class Webigo_Checkout_Fields {
 
     }
 
+    /*
     public function checkout_shipping_fields( $fields )
     {
-
     }
+    */
 
 }

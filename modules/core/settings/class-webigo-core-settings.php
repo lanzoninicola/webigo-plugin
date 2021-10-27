@@ -31,8 +31,6 @@ class Webigo_Core_Settings {
     public static function images( string $image_name = '' ) : array
     {
 
-        $base_url = plugin_dir_url(__DIR__);
-
         $images = array(
 
             'logo' => array(

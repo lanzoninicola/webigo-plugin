@@ -8,23 +8,25 @@ require_once WEBIGO_PLUGIN_PATH . 'includes/abstract-class-webigo-module.php';
 class Webigo_Shipping_Banner extends Webigo_Module
 {
 
-	protected $name = 'shipping-banner';
+	protected $name;
 
-	private $style_version = '1.0';
+	private $style_version;
+
+	private $js_version;
 
 	public function __construct()
 	{
+		$this->name          = Webigo_Shipping_Banner_Settings::MODULE_NAME;
+		$this->style_version = Webigo_Shipping_Banner_Settings::CSS_VERSION;
+		$this->js_version    = Webigo_Shipping_Banner_Settings::JS_VERSION;
+
 		parent::__construct();
 
 	}
 
 	public function load_dependencies()
 	{
-		
-		// require_once WEBIGO_PLUGIN_PATH . '/modules/shipping/includes/class-webigo-shipping-settings.php';
-
 		require_once WEBIGO_PLUGIN_PATH . '/modules/shipping-banner/views/class-webigo-view-shipping-banner.php';
-		
 	}
 
 	public function module()
@@ -36,9 +38,11 @@ class Webigo_Shipping_Banner extends Webigo_Module
 
 	public function add_style()
 	{
+
 		$style_data = array(
-			'module'      => $this->name,
-			'file_name'   => 'shipping-banner.css',
+			'module'       => $this->name,
+			'file_name'    => 'shipping-banner.css',
+			'version'      => $this->style_version,
 			'dependencies' => array('core')
 		);
 
@@ -50,10 +54,10 @@ class Webigo_Shipping_Banner extends Webigo_Module
 	{
 
 		$script_data = array(
-			'module'      => $this->name,
-			'file_name'   => 'shipping-banner.js',
+			'module'       => $this->name,
+			'file_name'    => 'shipping-banner.js',
+			'version'      => $this->js_version,
 			'dependencies' => array('core', 'shipping'),
-			'in_footer'   => true
 		);
 
 		$this->script->register_script( $script_data );
