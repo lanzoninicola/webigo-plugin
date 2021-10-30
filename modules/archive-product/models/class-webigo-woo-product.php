@@ -172,4 +172,10 @@ class Webigo_Woo_Product extends WC_Product_Simple {
     }
 
 
+    public function is_available() : bool
+    {
+        return $this->is_in_stock();
+    }
+
+
 }

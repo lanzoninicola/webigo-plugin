@@ -348,7 +348,7 @@ class SessionManager {
       return false;
     }
 
-    if (value.charAt(0) === "{") {
+    if (value?.charAt(0) === "{") {
       return JSON.parse(value);
     }
 

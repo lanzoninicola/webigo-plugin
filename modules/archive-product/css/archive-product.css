@@ -704,6 +704,23 @@
   font-weight: 600;
 }
 
+.wbg-product-out-of-stock {
+  display: grid;
+  place-items: center;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  background-color: var(--hzbi-light-green);
+  border-radius: 20px;
+  margin-block: 1rem;
+}
+
+.wbg-product-out-of-stock span {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--hzbi-white);
+}
+
 .arrow-voltar {
   display: flex;
 }
