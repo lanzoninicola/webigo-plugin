@@ -115,5 +115,10 @@ class Webigo_Woo_Product_Bundle extends WC_Product_Yith_Bundle {
         return false;
     }
 
+    public function is_available( ) : bool
+    {
+        return $this->all_items_in_stock();
+    }
+
 
 }

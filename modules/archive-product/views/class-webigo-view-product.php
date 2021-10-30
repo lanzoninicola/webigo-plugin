@@ -149,15 +149,22 @@ class Webigo_View_Product {
             $output .= $this->product_whatsapp->render();
         }
 
-        if ( !$this->product_whatsapp->is_whatsapp_required() ) {
-            $output .= $this->product_quantity->render();    
+        if ( $this->product->is_available() === false ) {
+            $output .= $this->render_out_of_stock();
+            
+        } else {
 
-            $output .=  '<div class="wbg-product-footer">';
-                $output .= $this->render_subtotal();
-                $output .= $this->add_to_cart->render( $this->product, $this->category );
-            $output .= '</div>';
-        }
+            if ( !$this->product_whatsapp->is_whatsapp_required() ) {
+                $output .= $this->product_quantity->render();    
     
+                $output .=  '<div class="wbg-product-footer">';
+                    $output .= $this->render_subtotal();
+                    $output .= $this->add_to_cart->render( $this->product, $this->category );
+                $output .= '</div>';
+            }
+
+        }
+
         $output .= '</div>';
 
         return $output;
@@ -210,6 +217,18 @@ class Webigo_View_Product {
         }
 
         return $output;
+    }
+
+    private function render_out_of_stock() {
+
+        $output = '<div class="wbg-product-out-of-stock">';
+
+        $output .= '<span>Esgotado</span>';
+
+        $output .= '</div>';
+
+        return $output;
+
     }
     
 
